@@ -1,5 +1,5 @@
 <?php
-namespace app\pages\doc;
+namespace app\pages\doc\redirect;
 
 use Slim\Psr7\Response;
 use Slim\Views\Twig;
@@ -24,7 +24,7 @@ class LegacyDesignerGuideDocAction
         }
         
         $redirectUrl = $this->getRedirectUrl($doc);        
-        return $this->view->render($response, 'doc/redirect-designer-guide.twig', ['redirectUrl' => $redirectUrl]);
+        return $this->view->render($response, 'doc/redirect/redirect-designer-guide.twig', ['redirectUrl' => $redirectUrl]);
     }
 
     private function getRedirectUrl($doc)

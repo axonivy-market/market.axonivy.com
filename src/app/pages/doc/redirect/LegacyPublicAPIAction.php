@@ -1,5 +1,5 @@
 <?php
-namespace app\pages\doc;
+namespace app\pages\doc\redirect;
 
 use Slim\Psr7\Response;
 use app\domain\util\Redirect;
