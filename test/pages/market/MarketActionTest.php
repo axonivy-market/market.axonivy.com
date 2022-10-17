@@ -10,7 +10,7 @@ class MarketActionTest extends TestCase
 
   public function testMarketPage()
   {
-    AppTester::assertThatGet('/market')
+    AppTester::assertThatGet('/')
       ->ok()
       ->bodyContains('Portal')
       ->bodyContains('VisualVM Plugin')
@@ -19,7 +19,7 @@ class MarketActionTest extends TestCase
 
   public function testMarketPageSearch()
   {
-    AppTester::assertThatGet('/market?search=portal')
+    AppTester::assertThatGet('/?search=portal')
       ->ok()
       ->bodyContains('Portal')
       ->bodyDoesNotContain('No products found')
@@ -29,7 +29,7 @@ class MarketActionTest extends TestCase
 
   public function testMarketPageSearchNothingFound()
   {
-    AppTester::assertThatGet('/market?search=doesnotexist')
+    AppTester::assertThatGet('/?search=doesnotexist')
       ->ok()
       ->bodyContains('Nothing found')
       ->bodyDoesNotContain('Portal')
@@ -39,7 +39,7 @@ class MarketActionTest extends TestCase
   
   public function testMarketPage_querySearch()
   {
-    AppTester::assertThatGet('/market?type=CONNECTOR&search=uipath')
+    AppTester::assertThatGet('/?type=CONNECTOR&search=uipath')
       ->ok()
       ->bodyContains('uipath')
       ->bodyContains('id="main"');
@@ -47,7 +47,7 @@ class MarketActionTest extends TestCase
   
   public function testMarketPage_querySearchOnly()
   {
-    AppTester::assertThatGet('/market?resultsOnly&type=CONNECTOR&search=uipath') // stable URI since Designer 9.2!
+    AppTester::assertThatGet('/?resultsOnly&type=CONNECTOR&search=uipath') // stable URI since Designer 9.2!
       ->ok()
       ->bodyContains('uipath')
       ->bodyDoesNotContain('id="main"'); // no search input!

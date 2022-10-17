@@ -29,7 +29,7 @@ class ProductTest extends TestCase
   public function test_url()
   {
     $product = Market::getProductByKey('visualvm-plugin');
-    Assert::assertEquals('/market/visualvm-plugin', $product->getUrl());
+    Assert::assertEquals('/visualvm-plugin', $product->getUrl());
   }
 
   public function test_vendor()

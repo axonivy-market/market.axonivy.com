@@ -4,7 +4,6 @@ namespace app\pages\market;
 
 use Slim\Exception\HttpNotFoundException;
 use Slim\Views\Twig;
-use Slim\App;
 use app\domain\util\CookieUtil;
 use app\domain\market\Market;
 use app\domain\market\Product;
@@ -14,6 +13,7 @@ use app\domain\market\ProductDescription;
 use app\domain\market\ProductMavenArtifactDownloader;
 use app\domain\maven\MavenArtifact;
 use app\domain\market\OpenAPIProvider;
+use app\domain\util\Redirect;
 
 class ProductAction
 {
@@ -32,10 +32,49 @@ class ProductAction
     if ($product == null) {
       throw new HttpNotFoundException($request);
     }
+    
+    $version = $args['version'] ?? '';
+    $topic = $args['topic'] ?? '';
+    $path = $args['path'] ?? '';
+
+    $mavenProductInfo = $product->getMavenProductInfo();
+
+    // redirect to full version for shortcut versions (e.g. 9, 9.0, dev, nightly, sprint, latest)
+    if (!empty($version) && $mavenProductInfo != null) {
+      $v = self::versionToShow($mavenProductInfo, $version);
+      if ($v == null) {
+        throw new HttpNotFoundException($request, "$key for $version does not exist");
+      }
+      if ($v != $version) {
+        $url = "/$key/$v";
+        if (!empty($topic)) {
+          $url .= "/$topic";
+        }
+        if (!empty($path)) {
+          $url .= "/$path";
+        }
+        return Redirect::to($response, $url);
+      }
+    }
+
+    // redirect to doc
+    if ($topic == 'doc' && $mavenProductInfo != null) {
+      $docArtifact = $mavenProductInfo->getFirstDocArtifact();
+      if ($docArtifact == null) {
+        throw new HttpNotFoundException($request, 'no doc artifact');
+      }
+      $exists = (new ProductMavenArtifactDownloader())->downloadArtifact($product, $docArtifact, $version);
+      If (!$exists) {        
+        throw new HttpNotFoundException($request, "doc artifact does not exist for version $version");
+      }
+      $docUrl = $docArtifact->getDocUrl($product, $version);
+      if (!empty($path)) {
+        $path = "/$path";
+      }
+      return Redirect::to($response, $docUrl . $path);
+    }
 
     $installNow = isset($request->getQueryParams()['installNow']);
-    $mavenProductInfo = $product->getMavenProductInfo();
-    $version = $args['version'] ?? '';
     $initVersion = $args['version'] ?? '';
     $mavenArtifactsAsDependency = [];
     $mavenArtifacts = [];
@@ -83,8 +122,7 @@ class ProductAction
             $mavenArtifactsAsDependency[] = $artifact;
           }
         }
-        
-        
+
         $mavenArtifacts = array_filter($mavenArtifacts, fn(MavenArtifact $a) => !$a->isProductArtifact());
         $versionsToDisplay = $mavenProductInfo->getVersionsToDisplay($showDevVersions, $requestVersion);
         if (empty($initVersion) && !empty($versionsToDisplay)) {
@@ -159,7 +197,36 @@ class ProductAction
     }
     return $mavenProductInfo->findBestMatchingVersion($version);
   }
+
+  private static function versionToShow(MavenProductInfo $mavenProductInfo, string $version) : ?string {
+     // redirect to latest version at all
+     if ($version == 'dev' || $version == 'nightly' || $version == 'sprint') {
+      $v = $mavenProductInfo->getLatestVersion();
+      if ($v == null) {
+        return null;
+      }
+      return $v;
+    }
+
+    // redirect latest
+    if ($version == 'latest') {
+      $v = $mavenProductInfo->getLatestVersionToDisplay(true, false);
+      if ($v == null) {
+        return null;
+      }
+      return $v;
+    }
+
+    // redirect to real version if major e.g (9), minor (9.1) version is given 
+    $v = $mavenProductInfo->getLatestReleaseVersion($version);
+    if ($v == null) {
+      return null;
+    }
+    return $v;
+  }
 }
+
+
 
 class InstallButton
 {
