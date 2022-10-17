@@ -45,7 +45,6 @@ pipeline {
       }
     }
 
-    /*
     stage('deploy') {
       when {
         branch 'master'
@@ -73,14 +72,12 @@ pipeline {
             sh "ssh $host rm -f $targetFile"
 
             // symlink
-            sh "ssh $host mkdir $targetFolder/src/web/releases"
             sh "ssh $host ln -fns /home/axonivya/data/market $targetFolder/src/web/_market"
             sh "ssh $host ln -fns /home/axonivya/data/market-cache $targetFolder/src/web/market-cache"
-            sh "ssh $host ln -fns $targetFolder/src/web /home/axonivya/www/market.axonivy.com/linktoweb"
+            sh "ssh $host ln -fns $targetFolder/src/web /home/axonivya/www/test-market.axonivy.com/linktoweb"
           }
         }
       }
     }
-    */
   }
 }

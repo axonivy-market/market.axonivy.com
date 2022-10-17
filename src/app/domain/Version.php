@@ -28,6 +28,11 @@ class Version
     return version_compare($this->versionNumber, $versionNumber, '>=');
   }
 
+  public function isMajor(): bool
+  {
+    return substr_count($this->versionNumber, '.') == 0;
+  }
+
   public function isMinor(): bool
   {
     return substr_count($this->versionNumber, '.') == 1;

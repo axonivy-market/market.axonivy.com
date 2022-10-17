@@ -222,7 +222,7 @@ class Product
   
   public function getUrl(): string
   {
-    return '/market/' . $this->key;
+    return '/' . $this->key;
   }
 
   public function getInstallationCount(): int
