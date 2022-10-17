@@ -6,7 +6,6 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Psr7\Request;
 use app\domain\market\Market;
 use app\domain\util\Redirect;
-use app\domain\ReleaseType;
 use app\domain\market\MavenProductInfo;
 use app\domain\market\ProductMavenArtifactDownloader;
 
@@ -57,9 +56,8 @@ class PortalPermalinkAction
   }
 
   public static function evaluatePortalVersion(String $version, MavenProductInfo $portal): String
-  {
-    $releaseType = ReleaseType::byKey($version);    
-    if ($releaseType != null && $releaseType->isDevRelease()) {      
+  {    
+    if ($version == 'nightly' || $version == 'dev' || $version == 'sprint') {      
       return $portal->getLatestVersion();
     }
 

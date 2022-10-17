@@ -4,15 +4,12 @@ namespace app;
 
 use DI\Container;
 use Middlewares\TrailingSlash;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 use Slim\Psr7\Response;
 use Slim\Views\Twig;
-use app\domain\ReleaseInfo;
-use app\domain\ReleaseType;
 use DI\ContainerBuilder;
 use Throwable;
 
@@ -54,28 +51,8 @@ class Website
   {
     $container = $this->app->getContainer();
     $view = $container->get(Twig::class);
-
-    $releaseTypeLTS = ReleaseType::LTS();
-    $releaseTypeLE = ReleaseType::LE();
-
-    $versionLTS = $this->getDisplayVersion($releaseTypeLTS->releaseInfo());
-    $leRelease = $this->getDisplayVersion($releaseTypeLE->releaseInfo());
-
-    $text = $versionLTS;
-    $textLong = $releaseTypeLTS->shortName() . " $versionLTS";
-    if (!empty($leRelease)) {
-      $text .= " / $leRelease";
-      $textLong .= " / " . $releaseTypeLE->shortName() . " $leRelease";
-    }
-    $view->getEnvironment()->addGlobal('CURRENT_VERSION_DOWNLOAD', $text);
-    $view->getEnvironment()->addGlobal('CURRENT_VERSION_DOWNLOAD_LONG', $textLong);
-
     $view->getEnvironment()->addGlobal('PRODUCTIVE_SYSTEM', Config::isProductionEnvironment());
-
-    $view->getEnvironment()->addGlobal('ANNOUNCMENT_SHOW', !isset($_COOKIE["announcment"]));
-
     $view->getEnvironment()->addGlobal('BASE_URL', $this->baseUrl());
-
     return $view;
   }
 
@@ -88,11 +65,6 @@ class Website
     }
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
     return $protocol . "://" . $host;
-  }
-
-  private function getDisplayVersion(?ReleaseInfo $info): string
-  {
-    return $info == null ? '' : $info->getVersion()->getDisplayVersion();
   }
 
   private function installTrailingSlashRedirect()
