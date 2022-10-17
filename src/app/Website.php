@@ -51,7 +51,6 @@ class Website
   {
     $container = $this->app->getContainer();
     $view = $container->get(Twig::class);
-    $view->getEnvironment()->addGlobal('PRODUCTIVE_SYSTEM', Config::isProductionEnvironment());
     $view->getEnvironment()->addGlobal('BASE_URL', $this->baseUrl());
     return $view;
   }
