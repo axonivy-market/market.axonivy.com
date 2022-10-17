@@ -11,7 +11,7 @@ pipeline {
   }
   
   environment {
-    DIST_FILE = "ivy-website-developer.tar"
+    DIST_FILE = "ivy-website-market.tar"
   }
   
   stages {
@@ -24,7 +24,7 @@ pipeline {
       steps {
         echo 'create distribution package'
         sh 'composer install --no-dev --no-progress'
-        sh "tar -cf ${env.DIST_FILE} --exclude=src/web/releases --exclude=src/web/_market --exclude=src/web/market-cache src vendor"
+        sh "tar -cf ${env.DIST_FILE} --exclude=src/web/_market --exclude=src/web/market-cache src vendor"
         archiveArtifacts env.DIST_FILE
         stash name: 'website-tar', includes: env.DIST_FILE
  
@@ -33,21 +33,6 @@ pipeline {
         sh './vendor/bin/phpunit --log-junit phpunit-junit.xml || exit 0'
         junit 'phpunit-junit.xml'
       } 
-    }
-
-    stage('sonar') {
-      when {
-        branch 'master'
-      }
-      agent {
-        docker {
-          image 'sonarsource/sonar-scanner-cli'
-          args '-e SONAR_HOST_URL=https://sonar.ivyteam.io'
-        }
-      }
-      steps {
-        sh 'sonar-scanner'
-      }
     }
 
     stage('check editorconfig') {
@@ -74,7 +59,7 @@ pipeline {
           script {
             unstash 'website-tar'
 
-            def targetFolder = "/home/axonivya/deployment/ivy-website-developer-" + new Date().format("yyyy-MM-dd_HH-mm-ss-SSS");
+            def targetFolder = "/home/axonivya/deployment/ivy-website-market-" + new Date().format("yyyy-MM-dd_HH-mm-ss-SSS");
             def targetFile =  targetFolder + ".tar"
             def host = 'axonivya@217.26.51.247'
 
@@ -88,10 +73,9 @@ pipeline {
 
             // symlink
             sh "ssh $host mkdir $targetFolder/src/web/releases"
-            sh "ssh $host ln -fns /home/axonivya/data/ivy-releases $targetFolder/src/web/releases/ivy"
             sh "ssh $host ln -fns /home/axonivya/data/market $targetFolder/src/web/_market"
             sh "ssh $host ln -fns /home/axonivya/data/market-cache $targetFolder/src/web/market-cache"
-            sh "ssh $host ln -fns $targetFolder/src/web /home/axonivya/www/developer.axonivy.com/linktoweb"
+            sh "ssh $host ln -fns $targetFolder/src/web /home/axonivya/www/market.axonivy.com/linktoweb"
           }
         }
       }
