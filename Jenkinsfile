@@ -45,6 +45,7 @@ pipeline {
       }
     }
 
+    /*
     stage('deploy') {
       when {
         branch 'master'
@@ -80,5 +81,6 @@ pipeline {
         }
       }
     }
+    */
   }
 }
