@@ -74,7 +74,7 @@ pipeline {
             // symlink
             sh "ssh $host ln -fns /home/axonivya/data/market $targetFolder/src/web/_market"
             sh "ssh $host ln -fns /home/axonivya/data/market-cache $targetFolder/src/web/market-cache"
-            sh "ssh $host ln -fns $targetFolder/src/web /home/axonivya/www/test-market.axonivy.com/linktoweb"
+            sh "ssh $host ln -fns $targetFolder/src/web /home/axonivya/www/market-test.axonivy.com/linktoweb"
           }
         }
       }
