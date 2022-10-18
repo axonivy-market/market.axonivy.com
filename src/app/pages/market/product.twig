@@ -1,6 +1,6 @@
 {% extends "_parts/base.twig" %}
 
-{% block title %}{{ product.name }} | Axon Ivy Market {{ parent() }}{% endblock %}
+{% block title %}{{ product.name }} {{ parent() }}{% endblock %}
 
 {% block meta %}
   <meta property="description" content="{{ product.shortDescription }}" />

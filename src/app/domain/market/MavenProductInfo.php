@@ -58,10 +58,9 @@ class MavenProductInfo
 
   public function getLatestReleaseVersion(string $version): ?string
   {
-    // TODO fix: do not respect snapshot versions! milestones etc.
     $v = new Version($version);
     if ($v->isMinor() || $v->isMajor()) {
-      $versions = $this->getVersions();
+      $versions = $this->getVersionsToDisplay(false, null);
       foreach ($versions as $ver) {
         if (str_starts_with($ver, $version)) {
           return $ver;
