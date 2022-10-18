@@ -19,7 +19,6 @@ class RoutingRules
   {
     $app->get('/', MarketAction::class);
 
-    $app->get('/permalink/lib/{version}/{name}', LibraryPermalinkAction::class);
     $app->get('/_market/{key}/_product.json', ProductJsonFromMarketRepoAction::class);
     $app->get('/market-cache/{key}/{artifactId}/{version}/logo.png', MarketProductLogoRedirector::class);
     $app->get('/market-cache/{key}/{artifactId}/{version}/_product.json', ProductJsonFromProductRepoAction::class);
@@ -31,6 +30,7 @@ class RoutingRules
     
     $app->get('/api/status', StatusApi::class);
     
+    $app->get('/{key}/{version}/lib/{name}', LibraryPermalinkAction::class);
     $app->get('/{key}[/{version}[/{topic}[/{path:.*}]]]', ProductAction::class);
   }
 }
