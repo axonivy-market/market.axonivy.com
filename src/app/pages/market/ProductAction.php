@@ -93,9 +93,9 @@ class ProductAction
       }
     }
 
-    $showDevVersionsLink = "/market/$key?showDevVersions=true#download";
+    $showDevVersionsLink = "/$key?showDevVersions=true#download";
     if ($showDevVersions) {
-      $showDevVersionsLink = "/market/$key?showDevVersions=false#download";
+      $showDevVersionsLink = "/$key?showDevVersions=false#download";
     }
 
     if ($mavenProductInfo == null && !empty($version)) {
