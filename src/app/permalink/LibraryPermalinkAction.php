@@ -2,6 +2,7 @@
 
 namespace app\permalink;
 
+use app\domain\market\Market;
 use Slim\Exception\HttpNotFoundException;
 use app\domain\util\Redirect;
 use app\domain\maven\MavenArtifactRepository;
@@ -11,23 +12,42 @@ class LibraryPermalinkAction
 {
   public function __invoke($request, $response, $args)
   {
-    $version = $args['version'];
+    $key = $args['key'];
+    if (empty($key)) {
+      throw new HttpNotFoundException($request);
+    }
+    
+    $product = Market::getProductByKey($key);
+    if ($product == null) {
+      throw new HttpNotFoundException($request);
+    }
 
+    $version = $args['version'];
     if (empty($version)) {
       throw new HttpNotFoundException($request);
     }
 
+    $info = $product->getMavenProductInfo();
+    if ($info == null) {
+      throw new HttpNotFoundException($request);
+    }
+    
     $name = $args['name'] ?? ''; // e.g demo-app.zip
-
     $type = pathinfo($name, PATHINFO_EXTENSION); // e.g. zip 
     $filename = pathinfo($name, PATHINFO_FILENAME); // e.g. demo-app
 
-    $mavenArtifact = MavenArtifactRepository::getMavenArtifact($filename, $type);
-    if ($mavenArtifact == null) {
+    $foundArtifact = null;
+    foreach($info->getMavenArtifacts() as $artifact) {
+      if ($artifact->getKey() == $filename && $artifact->getType() == $type) {
+        $foundArtifact = $artifact;
+      }
+    }
+
+    if ($foundArtifact == null) {
       throw new HttpNotFoundException($request);
     }
 
-    $url = self::getUrl($mavenArtifact, $version, $request);
+    $url = self::getUrl($foundArtifact, $version, $request);
     return Redirect::to($response, $url);
   }
 
