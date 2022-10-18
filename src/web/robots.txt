@@ -1,4 +1,3 @@
-Sitemap: https://developer.axonivy.com/sitemap.xml
+Sitemap: https://market.axonivy.com/sitemap.xml
 
 User-agent: *
-Disallow: /releases/
