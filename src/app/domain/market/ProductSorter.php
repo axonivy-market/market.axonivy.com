@@ -17,7 +17,7 @@ class ProductSorter
   private static function typeSort(Product $product): int
   {
     $prio = 0;
-    foreach (Market::types() as $type) {
+    foreach (Type::all() as $type) {
       $prio ++;
       if ($type->getFilter() === $product->getType()) {
         return $prio;

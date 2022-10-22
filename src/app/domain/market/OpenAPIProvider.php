@@ -25,20 +25,8 @@ class OpenAPIProvider
     }
     return "";
   }
-  
-  public function getOpenApiContent(string $version): string
-  {
-    $file = $this->getOpenApiFile($version);
-    if (empty($file)) {
-      return '';
-    }
-    if (file_exists($file)) {
-      return file_get_contents($file);
-    }
-    return "";
-  }
-  
-  public function getOpenApiFile(string $version): string
+ 
+  private function getOpenApiFile(string $version): string
   {
     // auto detect openapi.*
     $defaultFile = 'openapi.*';

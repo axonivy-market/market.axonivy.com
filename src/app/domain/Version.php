@@ -23,11 +23,6 @@ class Version
     return $this->versionNumber;
   }
 
-  public function isEqualOrGreaterThan(string $versionNumber): bool
-  {
-    return version_compare($this->versionNumber, $versionNumber, '>=');
-  }
-
   public function isMajor(): bool
   {
     return substr_count($this->versionNumber, '.') == 0;
@@ -104,28 +99,5 @@ class Version
     $v = explode('.', $this->versionNumber);
     $v = array_slice($v, 2, 1);
     return implode('.', $v);
-  }
-
-  /**
-   * Returns the display version.
-   * e.g. for 7.0.0 -> 7.0, for 7.0.1 -> 7.0.1
-   *
-   * @return string
-   */
-  public function getDisplayVersion(): string
-  {
-    $bugFixNumber = $this->getBugfixNumber();
-    if ($bugFixNumber == '0') {
-      return $this->getMinorVersion();
-    }
-    return $this->getBugfixVersion();
-  }
-
-  public function getNightlyMinorVersion(): string {
-    if (str_contains($this->versionNumber, "-")) {
-      $split = explode("-", $this->versionNumber);
-      return $split[1];
-    }
-    return "";
   }
 }
