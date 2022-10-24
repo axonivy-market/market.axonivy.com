@@ -1,20 +1,21 @@
 <?php
 
-namespace app\pages\product\json;
+namespace app\pages\market;
 
 use Slim\Exception\HttpNotFoundException;
 use app\domain\market\Market;
 use app\domain\market\MarketInstallCounter;
 use Slim\Psr7\Request;
+use app\domain\market\Product;
 
-class ProductJsonAction
+class ProductJsonFromProductRepoAction
 {
   public function __invoke(Request $request, $response, $args)
   {
     $key = $args['key'] ?? '';
     $product = Market::getProductByKey($key);
     if ($product == null) {
-      throw new HttpNotFoundException($request, "product $key does not exist");
+      throw new HttpNotFoundException($request, 'product does not exist');
     }
 
     $version = $args['version'] ?? '';
@@ -31,6 +32,11 @@ class ProductJsonAction
       throw new HttpNotFoundException($request, 'version does not exist');
     }
 
+    return self::exec($product, $version, $response);
+  }
+  
+  public static function exec(Product $product, string $version, $response)
+  {
     MarketInstallCounter::incrementInstallCount($product->getKey());
     $content = $product->getProductJsonContent($version);
     $content = str_replace('${version}', $version, $content);
@@ -41,7 +47,9 @@ class ProductJsonAction
     $json = json_decode($content);
     $json->name = $product->getName();
     $content = json_encode($json, JSON_PRETTY_PRINT);
+    
     $response->getBody()->write($content);
-    return $response->withHeader('Content-Type', 'application/json');
+    $response = $response->withHeader('Content-Type', 'application/json');
+    return $response;
   }
 }

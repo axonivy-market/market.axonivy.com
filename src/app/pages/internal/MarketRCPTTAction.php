@@ -29,13 +29,13 @@ class MarketRCPTTAction
     }
 
     $products = self::products($designerVersion);
-    $baseUrl = self::baseUrl($request);
+    $baseUrl = self::baseUrl();
 
     $urls = [];
     foreach ($products as $product) {
-      $mavenInfo = $product->getMavenProductInfo();
-      $bestMatchingVersion = $mavenInfo->getBestMatchVersion(true, $designerVersion);
-      $urls[] = $baseUrl . $product->getProductJsonUrl($bestMatchingVersion);
+        $mavenInfo = $product->getMavenProductInfo();
+        $bestMatchingVersion = $mavenInfo->findBestMatchingVersion($designerVersion);
+        $urls[] = $baseUrl . $product->getProductJsonUrl($bestMatchingVersion);
     }
 
     $response = $response->withHeader('Content-Type', 'text/plain');
@@ -54,13 +54,13 @@ class MarketRCPTTAction
   
   private static function isInstallableForDesignerVersion(string $designerVersion, Product $product) {
     $info = $product->getMavenProductInfo();
-    $bestMatchVersion = $info->getBestMatchVersion(true, $designerVersion);
+    $bestMatchVersion = $info->findBestMatchingVersion($designerVersion);
     (new ProductMavenArtifactDownloader())->download($product, $bestMatchVersion);
     return $product->isInstallable($bestMatchVersion);
   }
 
-  private static function baseUrl($request): string {
-    $uri = $request->getUri();
-    return $uri->getScheme() . '://' . $uri->getHost();
+  private static function baseUrl(): string {
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    return (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$host";
   }
 }

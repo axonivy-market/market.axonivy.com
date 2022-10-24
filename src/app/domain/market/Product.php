@@ -8,6 +8,7 @@ use app\domain\Version;
 class Product
 {
   private string $key;
+  private string $path;
 
   private string $name;
   private string $version;
@@ -28,16 +29,18 @@ class Product
   private bool $validate;
   private bool $contactUs;
 
+  private array $readMeParts;
   private int $installationCount;
 
   private ?MavenProductInfo $mavenProductInfo;
   private ProductFileResolver $fileResolver;
 
-  public function __construct(string $key, string $name, string $version, string $shortDesc, bool $listed, 
+  public function __construct(string $key, string $path, string $name, string $version, string $shortDesc, bool $listed, 
     string $type, array $tags, string $vendor, string $vendorImage, string $vendorUrl, string $platformReview, string $cost, string $sourceUrl, string $statusBadgeUrl, string $language, string $industry,
     string $compatibility, ?MavenProductInfo $mavenProductInfo, bool $validate, bool $contactUs)
   {
     $this->key = $key;
+    $this->path = $path;
     $this->name = $name;
     $this->version = $version;
     $this->shortDesc = $shortDesc;
@@ -85,16 +88,11 @@ class Product
     return $this->contactUs;
   }
 
-  public function getInTouchLink(): string
-  {
-    return 'https://www.axonivy.com/marketplace/contact/?market_solutions=' . $this->key;
-  }
-
   public function getVersion(): string
   {
     if (empty($this->version)) {
       if ($this->mavenProductInfo != null) {
-        $this->version = $this->mavenProductInfo->getNewestVersion() ?? '';
+        $this->version = $this->mavenProductInfo->getLatestVersion() ?? '';
       }
     }
     return $this->version;
@@ -196,7 +194,7 @@ class Product
 
   public function getTypeIcon(): string
   {
-    foreach (Type::all() as $type) {
+    foreach (Market::types() as $type) {
       if ($type->getFilter() == $this->type) {
         return $type->getIcon();
       }
@@ -207,12 +205,6 @@ class Product
   public function getTags(): array
   {
     return $this->tags;
-  }
-
-  public function getDocUrl(string $version): string
-  {
-    $key = $this->key;
-    return "/$key/$version/doc";
   }
   
   public function getFirstTag(): string
@@ -280,7 +272,18 @@ class Product
   public function getMavenProductInfo(): ?MavenProductInfo
   {
     return $this->mavenProductInfo;
-  }  
+  }
+  
+  public function getReasonWhyNotInstallable(bool $isDesignerRequest, string $version): string
+  {
+    if (!$isDesignerRequest) {
+      return "You need to open then Axon Ivy Market in the Axon Ivy Designer.";
+    }
+    if (!$this->isInstallable($version)) {
+      return $this->getName() . " in version $version is not installable.";
+    }
+    return '';
+  }
 }
 
 class ProductFileResolver
@@ -294,7 +297,10 @@ class ProductFileResolver
   
   public function productJsonUrl(string $version): string
   {
-    return $this->assetBaseUrl_versionized($version) . '/_product.json';
+    if ($this->existsFile_versionized($version, "product.json")) {
+      return $this->assetBaseUrl_versionized($version) . '/_product.json';
+    }
+    return $this->assetBaseUrl_unversionized() . "/_product.json?version=$version";
   }
 
   public function assetBaseUrl(string $version): string

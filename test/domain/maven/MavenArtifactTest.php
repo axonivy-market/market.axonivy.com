@@ -6,6 +6,7 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use app\domain\market\Market;
 use app\domain\maven\MavenArtifact;
+use app\domain\maven\MavenArtifactRepository;
 
 class MavenArtifactTest extends TestCase
 {
@@ -24,28 +25,29 @@ class MavenArtifactTest extends TestCase
   
   public function testGetMavenArtifact()
   {
-    $artifact = self::getMavenArtifact('workflow-demos', 'iar');
+    $artifact = MavenArtifactRepository::getMavenArtifact('workflow-demos', 'iar');
     $this->assertEquals('Workflow Demos', $artifact->getName());
   }
 
   public function testGetMavenArtifact_notExisting()
   {
-    $artifact = self::getMavenArtifact('does not exist', '');
+    $artifact = MavenArtifactRepository::getMavenArtifact('does not exist', '');
     $this->assertNull($artifact);
   }
 
   public function testGetWorkflowDemo()
   {
-    $artifact = self::getMavenArtifact('workflow-demos', 'iar');
+    $artifact = MavenArtifactRepository::getMavenArtifact('workflow-demos', 'iar');
     $this->assertEquals('Workflow Demos', $artifact->getName());
   }
 
   public function testMavenArtifact()
   {
-    $artifact = self::getMavenArtifact('connectivity-demos', 'iar');
+    $artifact = MavenArtifactRepository::getMavenArtifact('connectivity-demos', 'iar');
     $this->assertEquals('Connectivity Demos', $artifact->getName());
     $this->assertEquals('com.axonivy.demo', $artifact->getGroupId());
     $this->assertEquals('connectivity-demos', $artifact->getArtifactId());
+    $this->assertEquals('/permalink/lib/dev/connectivity-demos.iar', $artifact->getPermalinkDev());
   }
 
   public function testParseLatestVersionFromXml()
@@ -65,81 +67,58 @@ class MavenArtifactTest extends TestCase
 
   public function test_key()
   {
-    $artifact = self::getMavenArtifact('visualvm-plugin', 'nbm'); // artifactId in meta.json
+    $artifact = MavenArtifactRepository::getMavenArtifact('visualvm-plugin', 'nbm'); // artifactId in meta.json
     Assert::assertEquals('visualvm-plugin', $artifact->getKey());
 
-    $artifact = self::getMavenArtifact('demos', 'zip'); // key explicitly provided in meta.json
+    $artifact = MavenArtifactRepository::getMavenArtifact('demos', 'zip'); // key explicitly provided in meta.json
     Assert::assertEquals('demos', $artifact->getKey());
   }
 
   public function test_type()
   {
-    $artifact = self::getMavenArtifact('visualvm-plugin', 'nbm');
+    $artifact = MavenArtifactRepository::getMavenArtifact('visualvm-plugin', 'nbm');
     Assert::assertEquals('nbm', $artifact->getType());
 
-    $artifact = self::getMavenArtifact('demos', 'zip');
+    $artifact = MavenArtifactRepository::getMavenArtifact('demos', 'zip');
     Assert::assertEquals('zip', $artifact->getType());
 
-    $artifact = self::getMavenArtifact('workflow-demos', 'iar');
+    $artifact = MavenArtifactRepository::getMavenArtifact('workflow-demos', 'iar');
     Assert::assertEquals('iar', $artifact->getType());
   }
 
   public function test_makeSenseAsMavenDependency()
   {
-    $artifact = self::getMavenArtifact('visualvm-plugin', 'nbm');
+    $artifact = MavenArtifactRepository::getMavenArtifact('visualvm-plugin', 'nbm');
     Assert::assertFalse($artifact->getMakesSenseAsMavenDependency());
 
-    $artifact = self::getMavenArtifact('doc-factory', 'iar');
+    $artifact = MavenArtifactRepository::getMavenArtifact('doc-factory', 'iar');
     Assert::assertTrue($artifact->getMakesSenseAsMavenDependency());
   }
   
   public function test_repoUrl()
   {
-    $artifact = self::getMavenArtifact('a-trust-connector', 'iar');
+    $artifact = MavenArtifactRepository::getMavenArtifact('a-trust-connector', 'iar');
     Assert::assertEquals('https://maven.axonivy.com/', $artifact->getRepoUrl());
     
-    $artifact = self::getMavenArtifact('visualvm-plugin', 'nbm');
+    $artifact = MavenArtifactRepository::getMavenArtifact('visualvm-plugin', 'nbm');
     Assert::assertEquals('https://maven.axonivy.com/', $artifact->getRepoUrl());
   }
 
   public function test_isDocumentation()
   {
-    $artifact = self::getMavenArtifact('visualvm-plugin', 'nbm');
+    $artifact = MavenArtifactRepository::getMavenArtifact('visualvm-plugin', 'nbm');
     Assert::assertFalse($artifact->isDocumentation());
 
-    $artifact = self::getMavenArtifact('doc-factory-doc', 'zip');
+    $artifact = MavenArtifactRepository::getMavenArtifact('doc-factory-doc', 'zip');
     Assert::assertTrue($artifact->isDocumentation());
   }
 
   public function test_name()
   {
-    $artifact = self::getMavenArtifact('visualvm-plugin', 'nbm');
+    $artifact = MavenArtifactRepository::getMavenArtifact('visualvm-plugin', 'nbm');
     Assert::assertEquals('Visual VM Plugin', $artifact->getName());
 
-    $artifact = self::getMavenArtifact('doc-factory-doc', 'zip');
+    $artifact = MavenArtifactRepository::getMavenArtifact('doc-factory-doc', 'zip');
     Assert::assertEquals('DocFactory Documentation', $artifact->getName());
-  }
-
-  public static function getMavenArtifact($key, $type): ?MavenArtifact
-  {
-    $artifacts = self::getAll();
-    foreach ($artifacts as $artifact) {
-      if ($artifact->getKey() == $key && $artifact->getType() == $type) {
-        return $artifact;
-      }
-    }
-    return null;
-  }
-
-  private static function getAll(): array
-  {
-    $all = [];
-    foreach (Market::all() as $product) {
-      $info = $product->getMavenProductInfo();
-      if ($info != null) {
-        $all = array_merge($all, $info->getMavenArtifacts());
-      }
-    }
-    return $all;
   }
 }

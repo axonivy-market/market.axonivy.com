@@ -44,6 +44,6 @@ class ProductDescriptionTest extends TestCase
 
   private function desc(string $productKey): ProductDescription
   {
-    return ProductDescription::createByFile(__DIR__ . "/$productKey.md", 'http://localhost/assets');
+    return ProductDescription::createByFile(__DIR__ . '/../../../src/web/_market/' . $productKey . '/README.md', 'http://localhost/assets');
   }
 }
