@@ -15,18 +15,18 @@
 	"mavenArtifacts": [
 		{
 			"name": "Rule Engine Demos Product",
-			"groupId": "com.axonivy.demo",
+			"groupId": "ch.ivyteam.demo",
 			"artifactId": "rule-engine-demos-product",
 			"type": "zip"
 		},
 		{
 			"name": "Rule Engine Demos",
-			"groupId": "com.axonivy.demo",
+			"groupId": "ch.ivyteam.demo",
 			"artifactId": "rule-engine-demos"
 		},
 		{
 			"name": "Rule Engine Demos Test",
-			"groupId": "com.axonivy.demo",
+			"groupId": "ch.ivyteam.demo",
 			"artifactId": "rule-engine-demos-test"
 		}
 	]	

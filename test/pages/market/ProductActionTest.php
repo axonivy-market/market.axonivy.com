@@ -1,11 +1,10 @@
 <?php
 
-namespace test\pages\product;
+namespace test\pages\market;
 
 use PHPUnit\Framework\TestCase;
 use test\AppTester;
 use app\domain\market\Market;
-use app\domain\market\VersionResolver;
 use PHPUnit\Framework\Assert;
 
 class ProductActionTest extends TestCase
@@ -27,11 +26,20 @@ class ProductActionTest extends TestCase
 
   public function test_minorVersion_redirectToLatestBugfixVersion()
   {
-    $product = Market::getProductByKey('doc-factory');
-    $version = VersionResolver::findNewestVersion($product->getMavenProductInfo(), "10.0");
+    $product = Market::getProductByKey('portal');
+    $version = $product->getMavenProductInfo()->getLatestReleaseVersion("8.0");
 
-    Assert::assertNotEquals("10.0", $version);
-    AppTester::assertThatGet('/doc-factory/10.0')->redirect("/doc-factory/$version");
+    Assert::assertNotEquals("8.0", $version);
+    AppTester::assertThatGet('/portal/8.0')->redirect("/portal/$version");
+  }
+
+  public function test_minorVersion_redirectToLatestBugfixVersion_withSubPath()
+  {
+    $product = Market::getProductByKey('portal');
+    $version = $product->getMavenProductInfo()->getLatestReleaseVersion("8.0");
+
+    Assert::assertNotEquals("8.0", $version);
+    AppTester::assertThatGet('/portal/8.0/doc/deep/deeper/index.html')->redirect("/portal/$version/doc/deep/deeper/index.html");
   }
 
   public function test_minorVersion_notFoundIfNoVersionExist()
@@ -41,11 +49,11 @@ class ProductActionTest extends TestCase
 
   public function test_majorVersion_redirectToLatestBugfixVersion()
   {
-    $product = Market::getProductByKey('doc-factory');
-    $version = VersionResolver::findNewestVersion($product->getMavenProductInfo(), "10");
+    $product = Market::getProductByKey('portal');
+    $version = $product->getMavenProductInfo()->getLatestReleaseVersion("8");
 
-    Assert::assertNotEquals("10", $version);
-    AppTester::assertThatGet('/doc-factory/10')->redirect("/doc-factory/$version");
+    Assert::assertNotEquals("8", $version);
+    AppTester::assertThatGet('/portal/8')->redirect("/portal/$version");
   }
 
   public function test_majorVersion_notFoundIfNoVersionExist()
@@ -55,24 +63,24 @@ class ProductActionTest extends TestCase
 
   public function test_bugfixVersion()
   {
-    $product = Market::getProductByKey('doc-factory');
-    $version = VersionResolver::findNewestVersion($product->getMavenProductInfo(), "10");
+    $product = Market::getProductByKey('portal');
+    $version = $product->getMavenProductInfo()->getLatestReleaseVersion("8");
 
-    Assert::assertNotEquals("10", $version);
-    AppTester::assertThatGet("/doc-factory/$version")
+    Assert::assertNotEquals("8", $version);
+    AppTester::assertThatGet("/portal/$version")
       ->ok()
-      ->bodyContains("DocFactory");
+      ->bodyContains("Portal");
   }
 
   public function test_bugfixVersion_nonExisting()
   {
-    AppTester::assertThatGet('/doc-factory/1000.0.0')->notFound();
+    AppTester::assertThatGet('/portal/1000.0.0')->notFound();
   }
 
   public function test_devReleases()
   {
     $product = Market::getProductByKey('portal');
-    $version = $product->getMavenProductInfo()->getNewestVersion();
+    $version = $product->getMavenProductInfo()->getLatestVersion();
     AppTester::assertThatGet('/portal/dev')->redirect("/portal/$version");
     AppTester::assertThatGet('/portal/sprint')->redirect("/portal/$version");
     AppTester::assertThatGet('/portal/nightly')->redirect("/portal/$version");
@@ -80,8 +88,42 @@ class ProductActionTest extends TestCase
 
   public function test_latest()
   {
-    $v = reset(Market::getProductByKey('portal')->getMavenProductInfo()->getVersionsReleased());
-    AppTester::assertThatGet('/portal/latest')->redirect('/portal/' . $v);
+    AppTester::assertThatGet('/portal/latest')->redirect('/portal/' . Market::getProductByKey('portal')->getMavenProductInfo()->getLatestVersionToDisplay(true, null));
+  }
+
+  public function testPortalDoc()
+  {
+    $product = Market::getProductByKey('portal');
+    $version = $product->getMavenProductInfo()->getLatestReleaseVersion("8");
+    AppTester::assertThatGet('/portal/8.0.3/doc')->redirect('/market-cache/portal/portal-guide/8.0.3');
+    AppTester::assertThatGet('/portal/8.0/doc')->redirect("/portal/$version/doc");
+  }
+
+  public function testPortalDocWithDocument()
+  {
+    $product = Market::getProductByKey('portal');
+    $version = $product->getMavenProductInfo()->getLatestReleaseVersion("8");
+    AppTester::assertThatGet('/portal/8.0.3/doc/test.html')->redirect('/market-cache/portal/portal-guide/8.0.3/test.html');
+    AppTester::assertThatGet('/portal/8.0/doc/test.html')->redirect("/portal/$version/doc/test.html");
+  }
+
+  public function testPortalDocWithDocumentInSubfolder()
+  {
+    $product = Market::getProductByKey('portal');
+    $version = $product->getMavenProductInfo()->getLatestReleaseVersion("8");
+    AppTester::assertThatGet('/portal/8.0.3/doc/subfolder/test.html')->redirect('/market-cache/portal/portal-guide/8.0.3/subfolder/test.html');
+    AppTester::assertThatGet('/portal/8.0/doc/subfolder/test.html')->redirect("/portal/$version/doc/subfolder/test.html");
+  }
+
+  public function testPortalBrokenLink()
+  {
+    $product = Market::getProductByKey('portal');
+    $version = $product->getMavenProductInfo()->getLatestReleaseVersion("8");
+    AppTester::assertThatGet('/portal/8.0/doc/portal-developer-guide/introduction/index.html#new-and-noteworthy')
+      ->redirect("/portal/$version/doc/portal-developer-guide/introduction/index.html");
+
+    AppTester::assertThatGet('/portal/8.0.28/doc/portal-developer-guide/introduction/index.html#new-and-noteworthy')
+      ->redirect("/market-cache/portal/portal-guide/8.0.28/portal-developer-guide/introduction/index.html");
   }
 
   public function testSonatypeArtifact()
@@ -100,15 +142,15 @@ class ProductActionTest extends TestCase
 
   public function testInstallButton_canInstallInDesignerMarket()
   {
-    AppTester::assertThatGetWithCookie('http://localhost/genderize-io-connector', ['ivy-viewer' => 'designer-market', 'ivy-version' => '9.2.0'])
+    AppTester::assertThatGetWithCookie('http://localhost/genderize-io-connector', ['ivy-version' => '9.2.0'])
       ->ok()
-      ->bodyContains("http://localhost/market-cache/genderize-io-connector/genderize-io-connector-product/9.2.0/_product.json");
+      ->bodyContains("'http://localhost/_market/genderize-io-connector/_product.json?version=");
   }
 
   public function testInstallButton_byDefaultWithCurrentVersion()
   {
     $product = Market::getProductByKey('doc-factory');
-    $version = reset($product->getMavenProductInfo()->getVersionsReleased());
+    $version = $product->getMavenProductInfo()->getLatestVersionToDisplay(false, null);
 
     AppTester::assertThatGetWithCookie('http://localhost/doc-factory', ['ivy-version' => $version])
       ->ok()
@@ -127,7 +169,15 @@ class ProductActionTest extends TestCase
   public function testInstallButton_respectCookie_ltsMatchInstaller()
   {
     $product = Market::getProductByKey('doc-factory');
-    $version = VersionResolver::get($product->getMavenProductInfo(), '9.4');
+    // grab latest minor version of doc factory
+    $version = '';    
+    foreach ($product->getMavenProductInfo()->getVersionsToDisplay(false, '9.4.0') as $v)
+    {
+        if (str_starts_with($v, '9.4')) {
+           $version = $v;
+           break;
+        }
+    }
     AppTester::assertThatGetWithCookie('http://localhost/doc-factory', ['ivy-version' => '9.4.0'])
       ->ok()
       ->bodyContains($version);
@@ -135,9 +185,9 @@ class ProductActionTest extends TestCase
 
   public function testInstallButton_respectCookie_bestMatchInstaller()
   {
-      AppTester::assertThatGetWithCookie('http://localhost/doc-factory', ['ivy-version' => '9.4.0'])
+      AppTester::assertThatGetWithCookie('http://localhost/portal', ['ivy-version' => '8.0.10'])
         ->ok()
-        ->bodyContains("9.4.0");
+        ->bodyContains("8.0.10");
   }
   
   public function testInstallButton_respectCookie_bestMatchInstaller_showSnapshotIfNoMatch()
@@ -164,9 +214,17 @@ class ProductActionTest extends TestCase
 
   public function testInstallButton_respectCookie_bestMatchInstaller_ifNotExistUseLast()
   {
-    $product = Market::getProductByKey('portal');  
-    $version = VersionResolver::get($product->getMavenProductInfo(), '9.2');
-    AppTester::assertThatGetWithCookie('http://localhost/portal', ['ivy-version' => '9.2.99'])
+    $product = Market::getProductByKey('portal');
+    $version = '';
+    // grab latest minor version of doc factory
+    foreach ($product->getMavenProductInfo()->getVersionsToDisplay(true, null) as $v)
+    {
+        if (str_starts_with($v, '8.0')) {
+            $version = $v;
+            break;
+        }
+    }
+    AppTester::assertThatGetWithCookie('http://localhost/portal', ['ivy-version' => '8.0.99'])
       ->ok()
       ->bodyContains($version);
   }
@@ -194,14 +252,21 @@ class ProductActionTest extends TestCase
   {
     AppTester::assertThatGet('/genderize-io-connector')
       ->ok()
-      ->bodyContains("/api-browser?url=/market-cache/genderize-io-connector/genderize-io-connector-product/10.0.0/openapi.json");
+      ->bodyContains("/api-browser?url=/_market/genderize-io-connector/openapi");
+  }
+
+  public function testAPIBrowserButton_existsExtern()
+  {
+    AppTester::assertThatGet('/uipath')
+      ->ok()
+      ->bodyContains("/api-browser?url=https%3A%2F%2Fcloud.uipath.com%2FAXONPRESALES%2FAXONPRESALES%2Fswagger%2Fv13.0%2Fswagger.json");
   }
 
   public function testAPIBrowserButton_existsForYaml()
   {
     AppTester::assertThatGet('/amazon-lex')
       ->ok()
-      ->bodyContains("/api-browser?url=/market-cache/amazon-lex/amazon-lex-connector-product/10.0.0/openapi.yaml");
+      ->bodyContains("/api-browser?url=/market-cache/amazon-lex/amazon-lex-connector-product");
   }
 
   public function testAPIBrowserButton_existsNot()
@@ -210,7 +275,7 @@ class ProductActionTest extends TestCase
       ->ok()
       ->bodyDoesNotContain("/api-browser?url");
   }
-
+  
   public function testGetInTouchLink()
   {
     AppTester::assertThatGet('/employee-onboarding')

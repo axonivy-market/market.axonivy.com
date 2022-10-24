@@ -1,14 +1,10 @@
 <?php
-namespace app\pages\permalink;
+namespace app\pages\market;
 
 use Slim\Psr7\Request;
 use app\domain\util\Redirect;
 
-/**
- * Used that the Axon Ivy Designer can request the log relative
- * to the product.json
- */
-class ProductLogoPermalinkAction
+class MarketProductLogoRedirector
 {
   public function __invoke(Request $request, $response, $args)
   {

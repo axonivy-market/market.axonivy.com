@@ -15,14 +15,14 @@
 	"mavenArtifacts": [
 		{
 			"name": "Demo App Product",
-			"groupId": "com.axonivy.demo",
+			"groupId": "ch.ivyteam.demo",
 			"artifactId": "ivy-demos-app-product",
 			"type": "zip"
 		},
 		{
 			"key": "demos",
 			"name": "Demo App",
-			"groupId": "com.axonivy.demo",
+			"groupId": "ch.ivyteam.demo",
 			"artifactId": "ivy-demos-app",
 			"type": "zip"
 		}

@@ -63,7 +63,7 @@ class MavenArtifact
     return $this->artifactId;
   }
   
-  public function isProduct(): bool
+  public function isProductArtifact(): bool
   {
     return str_ends_with($this->getArtifactId(), '-product');
   }
@@ -91,6 +91,15 @@ class MavenArtifact
   public function getDocUrl(Product $product, string $version)
   {
     return '/market-cache/' . $product->getKey() . '/' . $this->artifactId . '/' . $version;
+  }
+
+  public function getDevUrl()
+  {
+    $versions = $this->getVersions();
+    if (empty($versions)) {
+      return "";
+    }
+    return $this->getUrl($versions[0]);
   }
 
   public function getUrl($version)
@@ -124,6 +133,11 @@ class MavenArtifact
   {
     $groupId = str_replace('.', '/', $this->groupId);
     return $this->repoUrl . "$groupId/" . $this->artifactId;
+  }
+
+  public function getPermalinkDev()
+  {
+    return '/permalink/lib/dev/' . $this->key . '.' . $this->type;
   }
 
   public function getVersions(): array
@@ -161,12 +175,6 @@ class MavenArtifact
         return false;
       }
     }
-    if (str_contains($v, '-m')) {
-      $relasedVersion = substr($v, 0, strpos($v, "-m"));
-      if (in_array($relasedVersion, $versions)) {
-        return false;
-      }
-    }
     return true;
   }
 
@@ -176,5 +184,105 @@ class MavenArtifact
     $result = $element->xpath('/metadata/versioning/versions');
     $versions = get_object_vars($result[0]->version);
     return array_values($versions);
+  }
+}
+
+/* caching on request scope */
+class HttpRequester
+{
+  private static $cache = [];
+
+  static function request($url)
+  {
+    // prevent metadata requests to CDN (maven.axonivy.com) - cache last too long.
+    $url = str_replace("https://maven.axonivy.com/", "https://nexus-mirror.axonivy.com/repository/maven/", $url);
+    if (!isset(self::$cache[$url])) {
+      $client = new Client();
+      $options = ['http_errors' => false];
+      $res = $client->request('GET', $url, $options);
+      $content = '';
+      if ('200' == $res->getStatusCode()) {
+        $content = $res->getBody();
+      }
+      self::$cache[$url] = $content;
+    }
+    return self::$cache[$url];
+  }
+}
+
+class MavenArtifactBuilder
+{
+  private $key;
+  private string $repoUrl = Config::MAVEN_ARTIFACTORY_URL;
+  private $name;
+  private $groupId;
+  private $artifactId;
+  private $type = 'iar';
+  private $makesSenseAsMavenDependency = false;
+  private $isDocumentation = false;
+
+  public function __construct($key)
+  {
+    $this->key = $key;
+  }
+  
+  public function repoUrl(string $repoUrl): MavenArtifactBuilder
+  {
+    if (!str_ends_with($repoUrl, '/'))
+    {
+      $repoUrl = $repoUrl . '/';
+    }
+    $this->repoUrl = $repoUrl;
+    return $this;
+  }
+
+  public function name(string $name): MavenArtifactBuilder
+  {
+    $this->name = $name;
+    return $this;
+  }
+
+  public function groupId(string $groupId): MavenArtifactBuilder
+  {
+    $this->groupId = $groupId;
+    return $this;
+  }
+
+  public function artifactId(string $artifactId): MavenArtifactBuilder
+  {
+    $this->artifactId = $artifactId;
+    return $this;
+  }
+
+  public function type(string $type): MavenArtifactBuilder
+  {
+    $this->type = $type;
+    return $this;
+  }
+
+  public function makesSenseAsMavenDependency(bool $makesSenseAsMavenDependency): MavenArtifactBuilder
+  {
+    $this->makesSenseAsMavenDependency = $makesSenseAsMavenDependency;
+    return $this;
+  }
+
+  public function doc(bool $doc): MavenArtifactBuilder
+  {
+    $this->isDocumentation = $doc;
+    return $this;
+  }
+
+  public function build(): MavenArtifact
+  {
+    return new MavenArtifact(
+      $this->key,
+      $this->name,
+      $this->repoUrl,
+      $this->groupId,
+      $this->artifactId,
+      $this->type,
+      $this->makesSenseAsMavenDependency,
+      $this->isDocumentation
+    );
   }
 }
