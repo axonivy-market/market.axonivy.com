@@ -13,8 +13,6 @@
   {% endif %}
 
   <title>{% block title %} | Axon Ivy Market{% endblock %}</title>
-  <link rel="stylesheet" href="/assets/css/main.css" />
-  <link rel="stylesheet" href="/assets/css/icons.css" />
   <link rel="stylesheet" href="/assets/css/primeflex-2.min.css" />
   <link rel="stylesheet" href="/assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" />
@@ -61,7 +59,7 @@
 </head>
 
 <body>
-  {% if hideHeader is not defined %}
+  {% if not IS_DESIGNER %}
     <header id="header">
       <div class="inner">
         <a href="/" class="logo"> <img src="/images/misc/axonivy-logo.svg" style="width: 200px; height: 3rem; margin-top: 1rem; vertical-align: initial;" alt="Axon Ivy"> </a>
@@ -95,12 +93,12 @@
   <div class="sticky-footer-wrapper">
     {% block global %}{% endblock %}
 
-    {% if hideFooter is not defined %}
+    {% if not IS_DESIGNER %}
       <div class="sticky-footer-push"></div>
     {% endif %}
   </div>
 
-  {% if hideFooter is not defined %}
+  {% if not IS_DESIGNER %}
     <section id="footer">
       <div class="inner">
         <ul class="icons">

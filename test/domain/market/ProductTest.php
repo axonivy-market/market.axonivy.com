@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use app\domain\market\Market;
 use app\domain\market\MarketInstallCounter;
 use app\Config;
+use app\domain\market\ProductMavenArtifactDownloader;
 
 class ProductTest extends TestCase
 {
@@ -59,19 +60,16 @@ class ProductTest extends TestCase
     Assert::assertEquals('https://www.frox.ch', $product->getVendorUrl());
   }
 
-  public function test_metaUrl()
+  public function test_productJsonUrl()
   {
-    $product = Market::getProductByKey('visualvm-plugin');
-    Assert::assertEquals('/_market/visualvm-plugin/_product.json?version=9.1', $product->getProductJsonUrl('9.1'));
+    $product = Market::getProductByKey('genderize-io-connector');
+    Assert::assertEquals('/market-cache/genderize-io-connector/genderize-io-connector-product/9.1.0/_product.json', $product->getProductJsonUrl('9.1.0'));
   }
 
   public function test_installable()
   {
     $product = Market::getProductByKey('visualvm-plugin');
     Assert::assertFalse($product->isInstallable($product->getVersion()[0]));
-
-    $product = Market::getProductByKey('uipath');
-    Assert::assertTrue($product->isInstallable($product->getVersion()[0]));
   }
 
   public function test_compatibility()
@@ -83,14 +81,19 @@ class ProductTest extends TestCase
     Assert::assertEquals('9.2+', $product->getCompatibility());
   }
 
-  public function test_getReasonWhyNotInstallable()
+  public function test_contactUs()
   {
     $product = Market::getProductByKey('visualvm-plugin');
-    Assert::assertEquals('VisualVM Plugin in version 9.2.0 is not installable.', $product->getReasonWhyNotInstallable(true, '9.2.0'));
+    Assert::assertFalse($product->isContactUs());
 
-    $product = Market::getProductByKey('genderize-io-connector');
-    Assert::assertEquals('', $product->getReasonWhyNotInstallable(true, '9.2.0'));
-    Assert::assertEquals('', $product->getReasonWhyNotInstallable(true, '9.3.0'));
+    $product = Market::getProductByKey('employee-onboarding');
+    Assert::assertTrue($product->isContactUs());
+  }
+
+  public function test_getInTouchLInk()
+  {
+    $product = Market::getProductByKey('employee-onboarding');
+    Assert::assertEquals('https://www.axonivy.com/marketplace/contact/?market_solutions=employee-onboarding', $product->getInTouchLink());
   }
 
   public function test_type()

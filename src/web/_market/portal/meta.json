@@ -10,9 +10,15 @@
 	"industry": "Cross-Industry",
 	"tags": ["workflow-ui"],
 	"versionDisplay": "portal",
-	"installMatcher": "best-match",
 	"validate": false,
 	"mavenArtifacts": [
+		{
+			"repoUrl": "https://maven.axonivy.com",
+			"name": "Portal Product",
+			"groupId": "com.axonivy.portal",
+			"artifactId": "portal-product",
+			"type": "zip"
+		},
 		{
 			"key": "portal",
 			"name": "Portal App",
@@ -56,13 +62,6 @@
 			"name": "Portal User Examples",
 			"groupId": "com.axonivy.portal",
 			"artifactId": "portal-user-examples"
-		},
-		{
-			"__comment": "legacy: prior to 9.1",
-			"key": "portal-examples",
-			"name": "Portal Examples",
-			"groupId": "ch.ivyteam.ivy.project.portal",
-			"artifactId": "portalExamples"
 		},
 		{
 			"name": "Portal Guide",

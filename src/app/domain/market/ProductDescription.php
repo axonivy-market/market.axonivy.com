@@ -26,23 +26,6 @@ class ProductDescription
     if (file_exists($file)) {
       return self::createByFile($file, $assetBaseUrl); 
     }
-
-    // load README from another version
-    $artifactId = $product->getProductArtifactId();
-    if (!empty($artifactId)) {
-      $dir = Config::marketCacheDirectory() . "/" . $product->getKey() . "/$artifactId/*";
-      $dirs = array_filter(glob($dir), 'is_dir');
-      foreach ($dirs as $dir) {
-        $readme = $dir . '/README.md';
-        if (file_exists($readme)) {
-          $assetBaseUrl = $product->assetBaseUrl(basename($dir));
-          $desc = self::createByFile($readme, $assetBaseUrl);
-          $desc->demo = '';
-          $desc->setup = '';
-          return $desc;
-        }
-      }
-    }
     return new ProductDescription('', '', '');
   }
   

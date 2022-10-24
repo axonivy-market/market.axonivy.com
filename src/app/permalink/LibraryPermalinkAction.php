@@ -1,67 +1,47 @@
 <?php
-
 namespace app\permalink;
 
 use app\domain\market\Market;
+use app\domain\market\VersionResolver;
+use app\domain\maven\MavenArtifact;
 use Slim\Exception\HttpNotFoundException;
 use app\domain\util\Redirect;
-use app\domain\maven\MavenArtifactRepository;
-use app\domain\maven\MavenArtifact;
 
 class LibraryPermalinkAction
 {
   public function __invoke($request, $response, $args)
   {
     $key = $args['key'];
-    if (empty($key)) {
-      throw new HttpNotFoundException($request);
-    }
-    
     $product = Market::getProductByKey($key);
     if ($product == null) {
-      throw new HttpNotFoundException($request);
-    }
-
-    $version = $args['version'];
-    if (empty($version)) {
-      throw new HttpNotFoundException($request);
+      throw new HttpNotFoundException($request, "product $key does not exist");
     }
 
     $info = $product->getMavenProductInfo();
     if ($info == null) {
-      throw new HttpNotFoundException($request);
+      throw new HttpNotFoundException($request, "no maven artifacts");
     }
-    
+
+    $version = $args['version'];
+    $versionToShow = VersionResolver::get($info, $version);
+    if ($versionToShow == null) {
+      throw new HttpNotFoundException($request, "version $version does not exist");
+    }
+
     $name = $args['name'] ?? ''; // e.g demo-app.zip
     $type = pathinfo($name, PATHINFO_EXTENSION); // e.g. zip 
     $filename = pathinfo($name, PATHINFO_FILENAME); // e.g. demo-app
 
-    $foundArtifact = null;
-    foreach($info->getMavenArtifacts() as $artifact) {
-      if ($artifact->getKey() == $filename && $artifact->getType() == $type) {
-        $foundArtifact = $artifact;
-      }
+    $artifacts = array_filter($info->getMavenArtifacts(), fn (MavenArtifact $artifact) => $this->isMatching($artifact, $filename, $type));
+    if (empty($artifacts)) {
+      throw new HttpNotFoundException($request, "no maven artifact for $name");
     }
-
-    if ($foundArtifact == null) {
-      throw new HttpNotFoundException($request);
-    }
-
-    $url = self::getUrl($foundArtifact, $version, $request);
+    $url = array_values($artifacts)[0]->getUrl($versionToShow);
     return Redirect::to($response, $url);
   }
 
-  private static function getUrl(MavenArtifact $mavenArtifact, string $version, $request)
+  private function isMatching(MavenArtifact $artifact, string $filename, string $type): bool
   {
-    if ($version == 'dev') {
-      return $mavenArtifact->getDevUrl();
-    } else {
-      foreach ($mavenArtifact->getVersions() as $v) {
-        if (str_starts_with($v, $version)) {
-          return $mavenArtifact->getUrl($v);
-        }
-      }
-    }
-    throw new HttpNotFoundException($request, "Version $version not found");
+    return $artifact->getKey() == $filename && $artifact->getType() == $type;
   }
 }

@@ -3,6 +3,7 @@ namespace app\pages\market;
 
 use Slim\Views\Twig;
 use app\domain\market\Market;
+use app\domain\market\Type;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
@@ -30,7 +31,7 @@ class MarketAction
 
     $listedProducts = Market::listed();
 
-    $types = Market::types();
+    $types = Type::all();
     $tags = Market::tags($listedProducts);
     array_unshift($tags);
 
