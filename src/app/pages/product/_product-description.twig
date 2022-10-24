@@ -128,40 +128,39 @@
 <section id="one">
   <div class="inner product-description p-grid">
     <article class="p-col">
-      <a class="product-tabs-anchor" id="tabs"></a>
-
       <span class="tab-button selected">
-        <a href="#tabs" class="product-description-tab" onclick="openTab('description');">Description</a>
+        <a href="javascript:void(0);" class="product-description-tab" onclick="openTab('description');">Description</a>
       </span>
-      {% if productDescription.demo is not empty %}
+      {% if view.description.demo is not empty %}
         <span class="tab-button">
-          <a href="#tabs" class="product-demo-tab" onclick="openTab('demo');">Demo</a>
+          <a href="javascript:void(0);" class="product-demo-tab" onclick="openTab('demo');">Demo</a>
         </span>
       {% endif %}
-      {% if productDescription.setup is not empty %}
+      {% if view.description.setup is not empty %}
         <span class="tab-button">
-          <a href="#tabs" class="product-setup-tab" onclick="openTab('setup');">Setup</a>
+          <a href="javascript:void(0);" class="product-setup-tab" onclick="openTab('setup');">Setup</a>
         </span>
       {% endif %}
-      {% if mavenArtifactsAsDependency is not empty %}
+
+      {% if view.mavenArtifactsAsDependency is not empty %}
         <span class="tab-button">
-          <a href="#tabs" class="product-maven-tab" onclick="openTab('maven');">Maven</a>
+          <a href="javascript:void(0);" class="product-maven-tab" onclick="openTab('maven');">Maven</a>
         </span>
       {% endif %}
 
       <div id="description" class="readme-content">
-        {{ productDescription.description|raw }}
+        {{ view.description.description|raw }}
       </div>
       <div id="demo" class="readme-content" style="display: none;">
-        {{ productDescription.demo|raw }}
+        {{ view.description.demo|raw }}
       </div>
       <div id="setup" class="readme-content" style="display: none;">
-        {{ productDescription.setup|raw }}
+        {{ view.description.setup|raw }}
       </div>
       <div id="maven" class="readme-content" style="display: none;">
         <div class="meta-content">
           <p>You can consume it as maven artifact in your <i>pom.xml</i></p>
-          <pre><code>{% for artifact in mavenArtifactsAsDependency %}&lt;!-- {{ artifact.name }} --&gt;
+          <pre><code>{% for artifact in view.mavenArtifactsAsDependency %}&lt;!-- {{ artifact.name }} --&gt;
 &lt;dependency&gt;
   &lt;groupId&gt;{{ artifact.groupId }}&lt;/groupId&gt;
   &lt;artifactId&gt;{{ artifact.artifactId }}&lt;/artifactId&gt;
@@ -187,7 +186,7 @@
         </div>
         <div class="product-meta-info">
           <span class="meta-type">Version</span>
-          <span class="meta-data">{{ version }}</span>
+          <span class="meta-data">{{ view.productVersion }}</span>
         </div>
         {% if product.compatibility is not empty %}
           <div class="product-meta-info">
@@ -225,16 +224,16 @@
 
         <div class="product-meta-spaceer"></div>
 
-        {% if docUrl is not empty %}
+        {% if view.docUrl is not empty %}
           <div class="product-meta-info">
             <span class="meta-type">Documentation</span>
-            <span class="meta-data"><a href="{{ docUrl }}">External Link</a></span>
+            <span class="meta-data"><a href="{{ view.docUrl }}">External Link</a></span>
           </div>
         {% endif %}
-        {% if openApiUrl is not empty %}
+        {% if view.openApiUrl is not empty %}
           <div class="product-meta-info">
             <span class="meta-type">Public API</span>
-            <span class="meta-data"><a href="/api-browser?url={{ openApiUrl }}">Browse API</a></span>
+            <span class="meta-data"><a href="/api-browser?url={{ view.openApiUrl }}">Browse API</a></span>
           </div>
         {% endif %}
         {% if product.sourceUrl is not empty %}
@@ -254,7 +253,7 @@
 
         <div class="product-meta-info">
           <span class="meta-type">More Information</span>
-          <span class="meta-data"><a href="{{ getInTouchLink }}">Contact us</a></span>
+          <span class="meta-data"><a href="{{ product.inTouchLink }}">Contact us</a></span>
         </div>
       </div>
     </article>
