@@ -8,10 +8,10 @@ use app\domain\Version;
 class MavenProductInfo
 {
   private Product $product;
-  private MavenArtifact $productMavenArtifact;
+  private ?MavenArtifact $productMavenArtifact;
   private array $additionalMavenArtifacts;
 
-  public function __construct(Product $product, MavenArtifact $productMavenArtifact, array $additionalMavenArtifacts)
+  public function __construct(Product $product, ?MavenArtifact $productMavenArtifact, array $additionalMavenArtifacts)
   {
     $this->product = $product;
     $this->productMavenArtifact = $productMavenArtifact;
@@ -86,7 +86,10 @@ class MavenProductInfo
 
   public function getVersions(): array
   { 
-    $versions = $this->productMavenArtifact->getVersions();
+    $versions = [];
+    if ($this->productMavenArtifact != null) {
+      $versions = $this->productMavenArtifact->getVersions();
+    }
     foreach ($this->additionalMavenArtifacts as $m) {
       $vs = $m->getVersions();
       $versions = array_merge($versions, $vs);
