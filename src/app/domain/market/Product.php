@@ -277,9 +277,6 @@ class Product
 
   public function getMavenProductInfo(): ?MavenProductInfo
   {
-    if ($this->mavenArtifact == null) {
-      return null;
-    }
     return new MavenProductInfo($this, $this->mavenArtifact, $this->additionalArtifacts);
   }
 }

@@ -12,7 +12,6 @@
 	"tags": ["demo"],
 	"mavenArtifacts": [
 		{
-			"key": "processing-valve",
 			"name": "Processing Valve Demo",
 			"groupId": "com.axonivy.demo.extensions",
 			"artifactId": "processing-valve",

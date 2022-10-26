@@ -24,10 +24,10 @@ class LibraryPermalinkAction
 
     $version = $args['version'];
     $versionToShow = VersionResolver::get($info, $version);
+
     if ($versionToShow == null) {
       throw new HttpNotFoundException($request, "version $version does not exist");
     }
-
     $name = $args['name'] ?? ''; // e.g demo-app.zip
     $type = pathinfo($name, PATHINFO_EXTENSION); // e.g. zip 
     $filename = pathinfo($name, PATHINFO_FILENAME); // e.g. demo-app
