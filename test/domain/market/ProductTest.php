@@ -6,7 +6,6 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use app\domain\market\Market;
 use app\domain\market\MarketInstallCounter;
-use app\Config;
 
 class ProductTest extends TestCase
 {
@@ -59,19 +58,16 @@ class ProductTest extends TestCase
     Assert::assertEquals('https://www.frox.ch', $product->getVendorUrl());
   }
 
-  public function test_metaUrl()
+  public function test_productJsonUrl()
   {
-    $product = Market::getProductByKey('visualvm-plugin');
-    Assert::assertEquals('/_market/visualvm-plugin/_product.json?version=9.1', $product->getProductJsonUrl('9.1'));
+    $product = Market::getProductByKey('genderize-io-connector');
+    Assert::assertEquals('/market-cache/genderize-io-connector/genderize-io-connector-product/9.1.0/_product.json', $product->getProductJsonUrl('9.1.0'));
   }
 
   public function test_installable()
   {
     $product = Market::getProductByKey('visualvm-plugin');
     Assert::assertFalse($product->isInstallable($product->getVersion()[0]));
-
-    $product = Market::getProductByKey('uipath');
-    Assert::assertTrue($product->isInstallable($product->getVersion()[0]));
   }
 
   public function test_compatibility()
@@ -83,14 +79,19 @@ class ProductTest extends TestCase
     Assert::assertEquals('9.2+', $product->getCompatibility());
   }
 
-  public function test_getReasonWhyNotInstallable()
+  public function test_contactUs()
   {
     $product = Market::getProductByKey('visualvm-plugin');
-    Assert::assertEquals('VisualVM Plugin in version 9.2.0 is not installable.', $product->getReasonWhyNotInstallable(true, '9.2.0'));
+    Assert::assertFalse($product->isContactUs());
 
-    $product = Market::getProductByKey('genderize-io-connector');
-    Assert::assertEquals('', $product->getReasonWhyNotInstallable(true, '9.2.0'));
-    Assert::assertEquals('', $product->getReasonWhyNotInstallable(true, '9.3.0'));
+    $product = Market::getProductByKey('employee-onboarding');
+    Assert::assertTrue($product->isContactUs());
+  }
+
+  public function test_getInTouchLInk()
+  {
+    $product = Market::getProductByKey('employee-onboarding');
+    Assert::assertEquals('https://www.axonivy.com/marketplace/contact/?market_solutions=employee-onboarding', $product->getInTouchLink());
   }
 
   public function test_type()
@@ -101,7 +102,7 @@ class ProductTest extends TestCase
     $product = Market::getProductByKey('demos-app');
     Assert::assertEquals('solution', $product->getType());
 
-    $product = Market::getProductByKey('ms-todo');
+    $product = Market::getProductByKey('msgraph-todo');
     Assert::assertEquals('connector', $product->getType());
   }
 
@@ -110,7 +111,7 @@ class ProductTest extends TestCase
     $product = Market::getProductByKey('visualvm-plugin');
     Assert::assertEquals(['monitoring'], $product->getTags());
 
-    $product = Market::getProductByKey('ms-todo');
+    $product = Market::getProductByKey('msgraph-todo');
     Assert::assertEquals(['office'], $product->getTags());
 
     $product = Market::getProductByKey('demos-app');
@@ -125,15 +126,15 @@ class ProductTest extends TestCase
 
   public function test_meta()
   {
-    $product = Market::getProductByKey('ms-todo');
+    $product = Market::getProductByKey('msgraph-todo');
     Assert::assertEquals('Axon Ivy AG', $product->getVendor());
     Assert::assertEquals('Free', $product->getCost());
-    Assert::assertEquals('https://github.com/axonivy/market', $product->getSourceUrl());
+    Assert::assertEquals('https://github.com/axonivy-market/msgraph-connector', $product->getSourceUrl());
     Assert::assertEquals('github.com', $product->getSourceUrlDomain());
     Assert::assertEquals('English', $product->getLanguage());
     Assert::assertEquals('Cross-Industry', $product->getIndustry());
     Assert::assertEquals('4.5', $product->getPlatformReview());
-    Assert::assertEquals('1.0', $product->getVersion());
+    Assert::assertEquals('10.0.0', $product->getVersion());
   }
 
   public function test_load_version_from_maven()
@@ -152,16 +153,16 @@ class ProductTest extends TestCase
 
   public function test_installationCount()
   {
-    $product = Market::getProductByKey('ms-todo');
+    $product = Market::getProductByKey('msgraph-todo');
     $count = $product->getInstallationCount();
     Assert::assertIsInt($count);
     Assert::assertGreaterThanOrEqual(20, $count);
     Assert::assertLessThanOrEqual(1000, $count);
-    MarketInstallCounter::incrementInstallCount('ms-todo');
+    MarketInstallCounter::incrementInstallCount('msgraph-todo');
     //cached value
     Assert::assertEquals($count, $product->getInstallationCount());
     //reload with incremented value
-    $product = Market::getProductByKey('ms-todo');
+    $product = Market::getProductByKey('msgraph-todo');
     Assert::assertEquals($count + 1, $product->getInstallationCount());
   }
 }

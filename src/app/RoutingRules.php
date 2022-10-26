@@ -3,15 +3,15 @@
 namespace app;
 
 use app\pages\market\MarketAction;
-use app\pages\market\ProductAction;
+use app\pages\product\ProductAction;
 use app\pages\sitemap\SitemapAction;
 use app\permalink\LibraryPermalinkAction;
-use app\pages\market\ProductJsonFromMarketRepoAction;
-use app\pages\market\ProductJsonFromProductRepoAction;
-use app\pages\market\OpenApiAction;
+use app\permalink\DocPermalinkAction;
+use app\pages\product\json\ProductJsonAction;
 use app\pages\internal\MarketRCPTTAction;
-use app\pages\market\MarketProductLogoRedirector;
+use app\pages\permalink\ProductLogoPermalinkAction;
 use app\api\StatusApi;
+use app\pages\apibrowser\ApiBrowserAction;
 
 class RoutingRules
 {
@@ -19,18 +19,17 @@ class RoutingRules
   {
     $app->get('/', MarketAction::class);
 
-    $app->get('/_market/{key}/_product.json', ProductJsonFromMarketRepoAction::class);
-    $app->get('/market-cache/{key}/{artifactId}/{version}/logo.png', MarketProductLogoRedirector::class);
-    $app->get('/market-cache/{key}/{artifactId}/{version}/_product.json', ProductJsonFromProductRepoAction::class);
-    $app->get('/_market/{key}/{version}/openapi', OpenApiAction::class);
-    $app->get('/_market/{key}/openapi', OpenApiAction::class);
+    $app->get('/api/status', StatusApi::class);
+    $app->get('/sitemap.xml', SitemapAction::class);
+    $app->get('/api-browser', ApiBrowserAction::class);
+
     $app->get('/internal/market-rcptt', MarketRCPTTAction::class);
     
-    $app->get('/sitemap.xml', SitemapAction::class);
-    
-    $app->get('/api/status', StatusApi::class);
-    
-    $app->get('/{key}/{version}/lib/{name}', LibraryPermalinkAction::class);
-    $app->get('/{key}[/{version}[/{topic}[/{path:.*}]]]', ProductAction::class);
+    $app->get('/market-cache/{key}/{artifactId}/{version}/logo.png', ProductLogoPermalinkAction::class);
+    $app->get('/market-cache/{key}/{artifactId}/{version}/_product.json', ProductJsonAction::class);    
+
+    $app->get('/{key}/{version}/doc[/{path:.*}]', DocPermalinkAction::class);
+    $app->get('/{key}/{version}/lib/{name}', LibraryPermalinkAction::class);    
+    $app->get('/{key}[/{version}]', ProductAction::class);
   }
 }

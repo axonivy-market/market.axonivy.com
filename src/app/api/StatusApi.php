@@ -4,6 +4,10 @@ namespace app\api;
 
 use app\domain\market\Market;
 
+/**
+ * Simple API for debugging purpose.
+ * This is no official API for the outside world.
+ */
 class StatusApi
 {
   public function __invoke($request, $response, $args)
@@ -35,17 +39,10 @@ class StatusApi
         'name' => $product->getName(),
         'url' => $product->getUrl()
       ];
-      $mavenProductInfo = $product->getMavenProductInfo();
-      if ($mavenProductInfo != null) {
-        
-        $latestVersionToDisplay = 'unavailable';
-        $latestVersionAvailable = 'unavailable';
-        try {
-          $latestVersionToDisplay = $mavenProductInfo->getLatestVersionToDisplay(false, null);
-          $latestVersionAvailable = $mavenProductInfo->getLatestVersion();
-        } catch (\Exception $ex) { }
-        $p['latest-version-to-display'] = $latestVersionToDisplay;
-        $p['latest-version-available'] = $latestVersionAvailable;
+      $info = $product->getMavenProductInfo();
+      if ($info != null) {        
+        $p['newest-version'] = $info->getNewestVersion();
+        $p['oldest-version'] = $info->getOldestVersion();
       }
       $products[] = $p;
     }

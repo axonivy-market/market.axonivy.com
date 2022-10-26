@@ -5,7 +5,6 @@ namespace test\domain\market;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use app\domain\market\Market;
-use app\domain\market\Type;
 use app\domain\market\Product;
 
 class MarketTest extends TestCase
@@ -71,18 +70,6 @@ class MarketTest extends TestCase
   {
     $products = Market::all();
     Assert::assertEquals('a-trust', $products[0]->getKey());
-  }
-
-  public function test_types()
-  {
-    $types = Market::types();
-    $expectedTypes = [
-      new Type('All Types', '', 'si-types'), 
-      new Type('Connectors', 'connector', 'si-connector'), 
-      //new Type('Process Models', 'process', 'si-diagram'),
-      new Type('Solutions', 'solution', 'si-lab-flask'), 
-      new Type('Utils', 'util', 'si-util')];
-    Assert::assertEquals($expectedTypes, $types);
   }
 
   public function test_searchByType()

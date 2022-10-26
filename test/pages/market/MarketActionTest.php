@@ -41,7 +41,7 @@ class MarketActionTest extends TestCase
   {
     AppTester::assertThatGet('/?type=CONNECTOR&search=uipath')
       ->ok()
-      ->bodyContains('uipath')
+      ->bodyContains('ui-path')
       ->bodyContains('id="main"');
   }
   
@@ -49,7 +49,7 @@ class MarketActionTest extends TestCase
   {
     AppTester::assertThatGet('/?resultsOnly&type=CONNECTOR&search=uipath') // stable URI since Designer 9.2!
       ->ok()
-      ->bodyContains('uipath')
+      ->bodyContains('ui-path')
       ->bodyDoesNotContain('id="main"'); // no search input!
   }
 }
