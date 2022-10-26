@@ -62,7 +62,7 @@ class ProductAction
 
   private function resolveVersionToShow($request, ?MavenProductInfo $mavenProductInfo, bool $showDevVersions, string $version, string $designerVersion): ?string
   {
-    if ($mavenProductInfo == null) {
+    if ($mavenProductInfo == null || $mavenProductInfo->getProductArtifact() == null) {
       return $version;
     }
   
