@@ -7,9 +7,6 @@ use app\domain\util\StringUtil;
 
 class Market
 {
-
-  private static $types = null;
-
   public static function all(): array
   {
     $dirs = array_filter(glob(Config::marketDirectory() . '/*'), 'is_dir');
@@ -18,11 +15,10 @@ class Market
       $metaFile = $dir . '/meta.json';
       if (file_exists($metaFile)) {
         $key = basename($dir);
-        $products[] = ProductFactory::create($key, $dir, $metaFile);
+        $products[] = ProductFactory::create($key, $metaFile);
       }
     }
-    $products = ProductSorter::sort($products);
-    return $products;
+    return ProductSorter::sort($products);
   }
 
   public static function getProductByKey($key): ?Product
@@ -90,19 +86,7 @@ class Market
     return array_filter(self::all(), fn (Product $product) => $product->isListed());
   }
 
-  public static function types(): array
-  {
-    if (self::$types == null)
-    {
-      self::$types = [
-        new Type('All Types', '', 'si-types'), 
-        new Type('Connectors', 'connector', 'si-connector'), 
-        //new Type('Process Models', 'process', 'si-diagram'),
-        new Type('Solutions', 'solution', 'si-lab-flask'), 
-        new Type('Utils', 'util', 'si-util')];
-    }
-    return self::$types;
-  }
+  
 
   public static function tags(array $products): array
   {

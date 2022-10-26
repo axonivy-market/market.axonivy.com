@@ -4,7 +4,6 @@
 	"name": "Demos Application",
 	"description": "Demos Application",
 	"type": "solution",
-	"vendor": "Axon Ivy AG",
 	"platformReview": "4.5",
 	"sourceUrl": "https://github.com/axonivy-market/demo-projects",
 	"statusBadgeUrl": "https://github.com/axonivy-market/demo-projects/actions/workflows/ci.yml/badge.svg",
@@ -15,14 +14,14 @@
 	"mavenArtifacts": [
 		{
 			"name": "Demo App Product",
-			"groupId": "ch.ivyteam.demo",
+			"groupId": "com.axonivy.demo",
 			"artifactId": "ivy-demos-app-product",
 			"type": "zip"
 		},
 		{
 			"key": "demos",
 			"name": "Demo App",
-			"groupId": "ch.ivyteam.demo",
+			"groupId": "com.axonivy.demo",
 			"artifactId": "ivy-demos-app",
 			"type": "zip"
 		}

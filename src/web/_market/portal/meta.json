@@ -3,7 +3,6 @@
 	"name": "Axon Ivy Portal",
 	"description": "The Axon Ivy Portal is the single point of contact for any end-user using the Axon Ivy platform.",
 	"type": "util",
-	"vendor": "Axon Ivy AG",
 	"platformReview": "5",
 	"sourceUrl": "https://bitbucket.org/axonivy-prod/axonivyportal/src/master/",
 	"language": "EN/DE/FR/ES",
@@ -11,7 +10,6 @@
 	"tags": ["workflow-ui"],
 	"versionDisplay": "portal",
 	"installMatcher": "best-match",
-	"validate": false,
 	"mavenArtifacts": [
 		{
 			"key": "portal",
@@ -70,6 +68,12 @@
 			"artifactId": "portal-guide",
 			"type" : "zip",
 			"doc": true
+		},
+		{
+			"name": "Portal Product",
+			"groupId": "com.axonivy.portal",
+			"artifactId": "portal-product",
+			"type" : "zip"
 		}
 	]	
 }

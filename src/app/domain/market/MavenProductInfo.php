@@ -7,38 +7,71 @@ use app\domain\Version;
 
 class MavenProductInfo
 {
-  private array $mavenArtifacts;
-  private VersionDisplayFilter $versionDisplayFilter;
-  private InstallMatcher $installMatcher;
+  private Product $product;
+  private MavenArtifact $productMavenArtifact;
+  private array $additionalMavenArtifacts;
 
-  public function __construct(array $mavenArtifacts, VersionDisplayFilter $versionDisplayFilter, InstallMatcher $installMatcher)
+  public function __construct(Product $product, MavenArtifact $productMavenArtifact, array $additionalMavenArtifacts)
   {
-    $this->mavenArtifacts = $mavenArtifacts;
-    $this->versionDisplayFilter = $versionDisplayFilter;
-    $this->installMatcher = $installMatcher;
+    $this->product = $product;
+    $this->productMavenArtifact = $productMavenArtifact;
+    $this->additionalMavenArtifacts = $additionalMavenArtifacts;
   }
 
-  public function getMavenArtifacts(): array
+  public function getMavenArtifacts(string $version): array
   {
-    return $this->mavenArtifacts;
-  }
+    $json = json_decode($this->product->getProductJsonContent($version));
 
-  public function getMavenArtifactsForVersion($version): array
-  {
     $artifacts = [];
-    foreach ($this->mavenArtifacts as $mavenArtifact) {
-      foreach ($mavenArtifact->getVersions() as $v) {
-        if ($version == $v) {
-          $artifacts[] = $mavenArtifact;
+    if (isset($json->installers)) {
+      foreach ($json->installers as $installer) {
+        $id = $installer->id ?? "";
+        if ($id == 'maven-import') {
+          $data = $installer->data ?? "";
+          if (!empty($data)) {
+            if (isset($data->projects)) {
+              foreach ($data->projects as $project) {
+                $artifacts[] = MavenArtifact::create($project->artifactId)
+                  //->repoUrl($mavenArtifact->repoUrl ?? Config::MAVEN_ARTIFACTORY_URL)
+                  ->groupId($project->groupId)
+                  ->artifactId($project->artifactId)
+                  ->type($project->type ?? 'iar')
+                  ->makesSenseAsMavenDependency(false)
+                  ->doc(false)
+                  ->build();
+              }
+            }
+          }
+        }
+        if ($id == 'maven-dependency') {
+          $data = $installer->data ?? "";
+          if (!empty($data)) {
+            if (isset($data->dependencies)) {
+              foreach ($data->dependencies as $dependency) {
+                $artifacts[] = MavenArtifact::create($dependency->artifactId)
+                  //->repoUrl($mavenArtifact->repoUrl ?? Config::MAVEN_ARTIFACTORY_URL)
+                  ->groupId($dependency->groupId)
+                  ->artifactId($dependency->artifactId)
+                  ->type($dependency->type ?? 'iar')
+                  ->makesSenseAsMavenDependency(true)
+                  ->doc(false)
+                  ->build();
+              }
+            }
+          }
         }
       }
     }
+
+    foreach ($this->additionalMavenArtifacts as $m) {
+      $artifacts[] = $m;
+    }
     return $artifacts;
   }
-  
-  public function getFirstDocArtifact(): ?MavenArtifact
+
+  public function getDocArtifact(): ?MavenArtifact
   {
-    foreach ($this->mavenArtifacts as $mavenArtifact) {
+    foreach ($this->additionalMavenArtifacts as $mavenArtifact) {
       if ($mavenArtifact->isDocumentation()) {
         return $mavenArtifact;
       }
@@ -48,85 +81,34 @@ class MavenProductInfo
   
   public function getProductArtifact(): ?MavenArtifact
   {
-    foreach ($this->getMavenArtifacts() as $mavenArtifact) {
-      if ($mavenArtifact->isProductArtifact()) {
-        return $mavenArtifact;
-      }
-    }
-    return null;
-  }
-
-  public function getLatestReleaseVersion(string $version): ?string
-  {
-    $v = new Version($version);
-    if ($v->isMinor() || $v->isMajor()) {
-      $versions = $this->getVersionsToDisplay(false, null);
-      foreach ($versions as $ver) {
-        if (str_starts_with($ver, $version)) {
-          return $ver;
-        }
-      }
-      return null;
-    }
-    return $version;
+    return $this->productMavenArtifact;
   }
 
   public function getVersions(): array
-  {
-    $versions = [];
-    foreach ($this->mavenArtifacts as $mavenArtifact) {
-      $versions = array_merge($mavenArtifact->getVersions(), $versions);
+  { 
+    $versions = $this->productMavenArtifact->getVersions();
+    foreach ($this->additionalMavenArtifacts as $m) {
+      $vs = $m->getVersions();
+      $versions = array_merge($versions, $vs);
     }
-    $versions = MavenArtifact::filterSnapshotsWhichAreRealesed($versions);
+    $versions = array_values($versions);
     $versions = array_unique($versions);
     usort($versions, 'version_compare');
     $versions = array_reverse($versions);
+    $versions = MavenArtifact::filterSnapshotsWhichAreRealesed($versions);
     return $versions;
   }
 
-  public function getVersionsToDisplay(bool $showDevVersions, ?String $requestVersion): array
-  {
-    $versions = $this->versionDisplayFilter->versionsToDisplay($this);
-    if (!$showDevVersions) {
-      if (empty($requestVersion)) {
-        $versions = array_filter($versions, fn(string $v) => !str_contains($v, '-SNAPSHOT'));
-      } else {
-        if (Version::isValidVersionNumber($requestVersion)) {
-          $requestVersion = (new Version($requestVersion))->getMinorVersion();
-        }
-        $versions = array_filter($versions, fn(string $v) => str_starts_with($v, $requestVersion) || !str_contains($v, '-SNAPSHOT'));  
-      }
-
-      $versions = array_values($versions);
-    }
-    return $versions;
-  }
-
-  public function getLatestVersion(): ?string
+  public function getNewestVersion(): ?string
   {
     $versions = $this->getVersions();
-    if (empty($versions)) {
-      return null;
-    }
-    return $versions[0];
+    return reset($versions);
   }
 
   public function getOldestVersion(): ?string
   {
     $versions = $this->getVersions();
-    if (empty($versions)) {
-      return null;
-    }
-    return $versions[count($versions) - 1];
-  }
-
-  public function getLatestVersionToDisplay(bool $showDevVersion, ?String $requestedVersion): ?string
-  {
-    $versions = $this->getVersionsToDisplay($showDevVersion, $requestedVersion);
-    if (empty($versions)) {
-      return null;
-    }
-    return $versions[0];
+    return end($versions);
   }
 
   public function hasVersion(string $v): bool
@@ -140,8 +122,44 @@ class MavenProductInfo
     return false;
   }
 
-  public function findBestMatchingVersion(string $v): ?string
+  public function getVersionsReleased(): array
   {
-    return $this->installMatcher->match($this, $v);    
+    return $this->getVersionsToDisplay(false, null);
+  }
+
+  public function getVersionsToDisplay(bool $showDevVersions, ?String $designerVersion): array
+  {
+    $versions = $this->getVersions();
+    if ($showDevVersions) {
+      return $versions;
+    }
+
+    if (empty($designerVersion)) {
+      $versions = array_filter($versions, fn(string $v) => !str_contains($v, '-SNAPSHOT') && !str_contains($v, "-m"));
+      return array_values($versions);
+    }
+    
+    if (Version::isValidVersionNumber($designerVersion)) {
+      $designerVersion = (new Version($designerVersion))->getMinorVersion();
+    }
+    $versions = array_filter($versions, fn(string $v) => str_starts_with($v, $designerVersion) || (!str_contains($v, '-SNAPSHOT') && !str_contains($v, '-m')));
+    return array_values($versions);
+  }
+
+  public function getBestMatchVersion(bool $showDevVersions, ?String $designerVersion): ?string
+  {
+    $versions = $this->getVersionsToDisplay($showDevVersions, $designerVersion);
+    if (empty($designerVersion)) {
+      return reset($versions);
+    }
+    if (Version::isValidVersionNumber($designerVersion)) {
+      $designerVersion = (new Version($designerVersion))->getMinorVersion();
+      foreach ($versions as $v) {
+        if (str_starts_with($v, $designerVersion)) {
+          return $v;
+        }
+      }
+    }
+    return reset($versions);
   }
 }

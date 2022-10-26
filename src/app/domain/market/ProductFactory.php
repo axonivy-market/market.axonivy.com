@@ -7,16 +7,12 @@ use app\Config;
 
 class ProductFactory
 {
-  public static function create(string $key, string $path, string $pathMetaFile): Product
+  public static function create(string $key, string $pathMetaFile): Product
   {
     $content = file_get_contents($pathMetaFile);
     $json = json_decode($content);
 
     $listed = $json->listed ?? true;
-    $info = null;
-    if (isset($json->mavenArtifacts)) {
-      $info = self::createMavenProductInfo($json);
-    }
     $type = $json->type ?? [];
     $tags = $json->tags ?? [];
     $version = $json->version ?? '';
@@ -34,33 +30,55 @@ class ProductFactory
     $industry = $json->industry ?? '';
     $compatibility = $json->compatibility ?? '';
     $validate = $json->validate ?? false;
-    $contactUs = $json->contactUs ?? false;    
-    return new Product($key, $path, $json->name, $version, $shortDesc, $listed, $type, $tags, 
-      $vendor, $vendorImage, $vendorUrl, $platformReview, $cost, $sourceUrl, $statusBadgeUrl, $language, $industry, $compatibility, $info, $validate, $contactUs);
+    $contactUs = $json->contactUs ?? false;
+
+    $mavenArtifact = self::createMavenArtifact($json);
+    $additionalArtifacts = self::createMavenArtifacts($json);
+
+    return new Product($key, $json->name, $version, $shortDesc, $listed, $type, $tags, 
+      $vendor, $vendorImage, $vendorUrl, $platformReview, $cost, $sourceUrl, $statusBadgeUrl, $language, $industry, $compatibility, $validate, $contactUs, $mavenArtifact, $additionalArtifacts);
   }
 
-  private static function createMavenProductInfo($json): MavenProductInfo
+  private static function createMavenArtifact($json): ?MavenArtifact
   {
-    $mavenArtifacts = self::createMavenArtifacts($json);
-    $versionDisplayFilter = VersionDisplayFilterFactory::create($json->versionDisplay ?? '');
-    $installMatcher = InstallMatcherFactory::create($json->installMatcher ?? '');
-    return new MavenProductInfo($mavenArtifacts, $versionDisplayFilter, $installMatcher);
+    if (!isset($json->mavenArtifacts)) {
+      return null;
+    }
+    foreach ($json->mavenArtifacts as $mavenArtifact) {
+      if (str_ends_with($mavenArtifact->artifactId, "-product")) {
+        return MavenArtifact::create($mavenArtifact->key ?? $mavenArtifact->artifactId)
+          ->name($mavenArtifact->name)
+          ->repoUrl($mavenArtifact->repoUrl ?? Config::MAVEN_ARTIFACTORY_URL)
+          ->groupId($mavenArtifact->groupId)
+          ->artifactId($mavenArtifact->artifactId)
+          ->type($mavenArtifact->type ?? 'iar')
+          ->makesSenseAsMavenDependency($mavenArtifact->makesSenseAsMavenDependency ?? false)
+          ->doc($mavenArtifact->doc ?? false)
+          ->build();
+      }
+    }
+    return null;
   }
 
   private static function createMavenArtifacts($json): array
   {
-    $mavenArtifacts = [];
-    foreach ($json->mavenArtifacts as $mavenArtifact) {
-      $mavenArtifacts[] = MavenArtifact::create($mavenArtifact->key ?? $mavenArtifact->artifactId)
-        ->name($mavenArtifact->name)
-        ->repoUrl($mavenArtifact->repoUrl ?? Config::MAVEN_ARTIFACTORY_URL)
-        ->groupId($mavenArtifact->groupId)
-        ->artifactId($mavenArtifact->artifactId)
-        ->type($mavenArtifact->type ?? 'iar')
-        ->makesSenseAsMavenDependency($mavenArtifact->makesSenseAsMavenDependency ?? false)
-        ->doc($mavenArtifact->doc ?? false)
-        ->build();
+    if (!isset($json->mavenArtifacts)) {
+      return [];
     }
-    return $mavenArtifacts;
+    $a= [];
+    foreach ($json->mavenArtifacts as $mavenArtifact) {
+      if (!str_ends_with($mavenArtifact->artifactId, "-product")) {
+        $a[] = MavenArtifact::create($mavenArtifact->key ?? $mavenArtifact->artifactId)
+          ->name($mavenArtifact->name)
+          ->repoUrl($mavenArtifact->repoUrl ?? Config::MAVEN_ARTIFACTORY_URL)
+          ->groupId($mavenArtifact->groupId)
+          ->artifactId($mavenArtifact->artifactId)
+          ->type($mavenArtifact->type ?? 'iar')
+          ->makesSenseAsMavenDependency($mavenArtifact->makesSenseAsMavenDependency ?? false)
+          ->doc($mavenArtifact->doc ?? false)
+          ->build();
+      }
+    }
+    return $a;
   }
 }
