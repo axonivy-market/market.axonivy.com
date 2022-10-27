@@ -10,32 +10,34 @@ class VersionResolver
   {
     // redirect to latest version at all
     if ($requestedVersion == 'dev' || $requestedVersion == 'nightly' || $requestedVersion == 'sprint') {
-     $v = $info->getNewestVersion();
-     if ($v == null) {
-       return null;
-     }
-     return $v;
-   }
+      $v = $info->getNewestVersion();
+      if ($v == null) {
+        return null;
+      }
+      return $v;
+    }
 
-   // redirect latest
-   if ($requestedVersion == 'latest') {
-     $v = reset($info->getVersionsReleased());
-     if ($v == null) {
-       return null;
-     }
-     return $v;
-   }
+    // e.g. 10.0-dev
+    if (str_ends_with($requestedVersion, '-dev')) {
+      $requestedVersion = str_replace('-dev', '', $requestedVersion);
+      return self::findNewestDevVersion($info, $requestedVersion);
+    }
 
-   // redirect to real version if major e.g (9), minor (9.1) version is given 
-   $v = self::findNewestVersion($info, $requestedVersion);
-   if ($v == null) {
-     return null;
-   }
-   return $v;
- }
+    // redirect latest
+    if ($requestedVersion == 'latest') {
+      $v = reset($info->getVersionsReleased());
+      if ($v == null) {
+        return null;
+      }
+      return $v;
+    }
 
- public static function findNewestVersion(MavenProductInfo $info, string $version): ?string
- {
+    // redirect to real version if major e.g (9), minor (9.1) version is given 
+    return self::findNewestVersion($info, $requestedVersion);
+  }
+
+  public static function findNewestVersion(MavenProductInfo $info, string $version): ?string
+  {
     $v = new Version($version);
     if ($v->isMinor() || $v->isMajor()) {
       $versions = $info->getVersionsReleased();
@@ -47,5 +49,16 @@ class VersionResolver
       return null;
     }
     return $version;
+  }
+
+  public static function findNewestDevVersion(MavenProductInfo $info, string $version): ?string
+  {  
+    $versions = $info->getVersions();
+    foreach ($versions as $ver) {
+      if (str_starts_with($ver, $version)) {
+        return $ver;
+      }
+    }
+    return null;
   }
 }
