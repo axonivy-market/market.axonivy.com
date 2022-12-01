@@ -191,7 +191,7 @@
        <span class="dropdown">
           <label>Version</label>
           <select name="installVersion" id="installVersion" onchange="updateInstallArtifact(this);">
-          {% for version in view.versionsToDisplay %}            
+          {% for version in view.versionsToDisplay %}
             <a href="#">
               <option value="{{ product.url }}/{{ version }}" data-meta-json-url="{{ view.getProductJsonUrl(version)|raw }}" {{ (version == view.selectedVersion) ? 'selected' : '' }}>Version {{ version }}</option>
             </a>
@@ -234,12 +234,12 @@
     }
   }
   function toggleDownloadPanel() {
-    $('.product-download').slideToggle();
-    if (window.location.hash === '') {
-      window.location.hash = '#download';
-    } else {
+    if ($('.product-download').is(':visible')) {
       window.location.hash = '';
+    } else {
+      window.location.hash = '#download';
     }
+    $('.product-download').slideToggle();
   }
   if (window.location.hash === '#download') {
     $('.product-download').show();

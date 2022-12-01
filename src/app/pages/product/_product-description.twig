@@ -1,23 +1,9 @@
-<script>
-  function openTab(tab) {
-    $('.readme-content').each(function() {
-      $(this).hide();
-    });
-    $('.tab-button.selected').removeClass('selected');
-    $('#' + tab).show();
-    $('.product-' + tab + '-tab').parent().addClass('selected');
-  }
-</script>
-
 <style>
   .product-description {
-    gap: 2em;
+    gap: 1rem;
   }
-  .product-tabs-anchor {
-    display: block;
-    position: relative;
-    top: -100px;
-    visibility: hidden;
+  .product-description-content {
+    max-width: calc(100% - 16rem)
   }
   .tab-button {
     height: 2em;
@@ -34,7 +20,7 @@
     padding: 1em;
   }
   .product-meta {
-    width: 12em;
+    width: 13rem;
   }
   .product-meta-title {
     font-weight: 700;
@@ -106,6 +92,9 @@
     .product-description {
       flex-direction: column;
     }
+    .product-description-content {
+      max-width: 100%;
+    }
     /*IE11 fix*/
     .product-description .p-col {
       flex: 0 0 auto;
@@ -127,7 +116,7 @@
 
 <section id="one">
   <div class="inner product-description p-grid">
-    <article class="p-col">
+    <article class="p-col product-description-content">
       <span class="tab-button selected">
         <a href="javascript:void(0);" class="product-description-tab" onclick="openTab('description');">Description</a>
       </span>
@@ -259,3 +248,19 @@
     </article>
   </div>
 </section>
+
+<script>
+  function openTab(tab) {
+    $('.readme-content').each(function() {
+      $(this).hide();
+    });
+    $('.tab-button.selected').removeClass('selected');
+    $('#' + tab).show();
+    $('.product-' + tab + '-tab').parent().addClass('selected');
+    window.location.hash = '#tab-' + tab;
+  }
+  const tab = ['description', 'demo', 'setup', 'maven'].find(tab => window.location.hash === '#tab-' + tab);
+  if (tab) {
+    openTab(tab);
+  }
+</script>
