@@ -134,7 +134,10 @@ class ProductTest extends TestCase
     Assert::assertEquals('English', $product->getLanguage());
     Assert::assertEquals('Cross-Industry', $product->getIndustry());
     Assert::assertEquals('4.5', $product->getPlatformReview());
-    Assert::assertEquals('10.0.0', $product->getVersion());
+
+    $info = $product->getMavenProductInfo();
+    $v = $info->getNewestVersion();
+    Assert::assertEquals($v, $product->getVersion());
   }
 
   public function test_load_version_from_maven()
