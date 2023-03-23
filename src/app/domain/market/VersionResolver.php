@@ -32,15 +32,23 @@ class VersionResolver
       return $v;
     }
 
-    // redirect to real version if major e.g (9), minor (9.1) version is given 
-    $newVersion = self::findNewestVersion($info, $requestedVersion);
-    if ($newVersion == $requestedVersion) {
-      $v = self::findNewestDevVersion($info, $requestedVersion);
-      if ($v != null) {
-        return $v;
+    $v = new Version($requestedVersion);
+    if ($v->isMinor() || $v->isMajor()) {
+      $versions = $info->getVersionsReleased();
+      foreach ($versions as $ver) {
+        if (str_starts_with($ver, $requestedVersion)) {
+          return $ver;
+        }
+      }
+
+      $versions = $info->getVersions();
+      foreach ($versions as $ver) {
+        if (str_starts_with($ver, $requestedVersion)) {
+          return $ver;
+        }
       }
     }
-    return $newVersion;
+    return self::findNewestVersion($info, $requestedVersion);
   }
 
   public static function findNewestVersion(MavenProductInfo $info, string $version): ?string
