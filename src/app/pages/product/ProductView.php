@@ -48,11 +48,11 @@ class ProductView
     if ($this->mavenProductInfo == null) {
       return "";
     }
-    $docArtifact = $this->mavenProductInfo->getDocArtifact();
-    if ($docArtifact == null) {
+    $docArtifacts = $this->mavenProductInfo->getDocArtifacts();
+    if (empty($docArtifacts)) {
       return "";
     }
-    if (!in_array($this->version, $docArtifact->getVersions())) {
+    if (!in_array($this->version, $docArtifacts[0]->getVersions())) {
       return "";
     }
     return $this->product->getDocUrl($this->version);

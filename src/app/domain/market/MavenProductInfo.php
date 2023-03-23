@@ -69,14 +69,15 @@ class MavenProductInfo
     return $artifacts;
   }
 
-  public function getDocArtifact(): ?MavenArtifact
+  public function getDocArtifacts(): array
   {
+    $artifacts = [];
     foreach ($this->additionalMavenArtifacts as $mavenArtifact) {
       if ($mavenArtifact->isDocumentation()) {
-        return $mavenArtifact;
+        $artifacts[] = $mavenArtifact;
       }
     }
-    return null;
+    return $artifacts;
   }
   
   public function getProductArtifact(): ?MavenArtifact
