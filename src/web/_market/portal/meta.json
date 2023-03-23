@@ -4,7 +4,7 @@
 	"description": "The Axon Ivy Portal is the single point of contact for any end-user using the Axon Ivy platform.",
 	"type": "util",
 	"platformReview": "5",
-	"sourceUrl": "https://bitbucket.org/axonivy-prod/axonivyportal/src/master/",
+	"sourceUrl": "https://github.com/axonivy-market/portal",
 	"language": "EN/DE/FR/ES",
 	"industry": "Cross-Industry",
 	"tags": ["workflow-ui"],
@@ -12,59 +12,29 @@
 	"installMatcher": "best-match",
 	"mavenArtifacts": [
 		{
-			"key": "portal",
-			"name": "Portal App",
+			"key": "portal-10",
+			"name": "Portal App (10.0)",
 			"groupId": "ch.ivyteam.ivy.project.portal",
 			"artifactId": "portal-app",
 			"type": "zip"
 		},
 		{
-			"key": "portal-template",
-			"name": "Portal Template",
+			"name": "Portal Guide (10.0)",
 			"groupId": "ch.ivyteam.ivy.project.portal",
-			"artifactId": "portalTemplate",
-			"makesSenseAsMavenDependency": true
+			"artifactId": "portal-guide",
+			"type" : "zip",
+			"doc": true
 		},
 		{
-			"key": "portal-style",
-			"name": "Portal Style",
-			"groupId": "ch.ivyteam.ivy.project.portal",
-			"artifactId": "portalStyle"
-		},
-		{
-			"key": "portal-kit",
-			"name": "Portal Kit",
-			"groupId": "ch.ivyteam.ivy.project.portal",
-			"artifactId": "portalKit"
-		},
-		{
-			"key": "axonivy-express",
-			"name": "Axon Ivy Express",
-			"groupId": "ch.ivyteam.ivy.project.portal",
-			"artifactId": "axonIvyExpress"
-		},
-		{
-			"__comment": "since 9.1",
-			"name": "Portal Developer Examples",
+			"key": "portal",
+			"name": "Portal App",
 			"groupId": "com.axonivy.portal",
-			"artifactId": "portal-developer-examples"
-		},
-		{
-			"__comment": "since 9.1",
-			"name": "Portal User Examples",
-			"groupId": "com.axonivy.portal",
-			"artifactId": "portal-user-examples"
-		},
-		{
-			"__comment": "legacy: prior to 9.1",
-			"key": "portal-examples",
-			"name": "Portal Examples",
-			"groupId": "ch.ivyteam.ivy.project.portal",
-			"artifactId": "portalExamples"
+			"artifactId": "portal-app",
+			"type": "zip"
 		},
 		{
 			"name": "Portal Guide",
-			"groupId": "ch.ivyteam.ivy.project.portal",
+			"groupId": "com.axonivy.portal",
 			"artifactId": "portal-guide",
 			"type" : "zip",
 			"doc": true

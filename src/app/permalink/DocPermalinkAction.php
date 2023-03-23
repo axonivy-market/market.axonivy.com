@@ -29,20 +29,22 @@ class DocPermalinkAction
       throw new HttpNotFoundException($request, "version $version does not exist");
     }
 
-    $docArtifact = $info->getDocArtifact();
-    if ($docArtifact == null) {
+    $docArtifacts = $info->getDocArtifacts();
+    if (empty($docArtifacts)) {
       throw new HttpNotFoundException($request, 'no doc artifact');
     }
 
-    $exists = (new ProductMavenArtifactDownloader())->downloadArtifact($product, $docArtifact, $versionToShow);
-    if (!$exists) {        
-      throw new HttpNotFoundException($request, "doc artifact does not exist for version $versionToShow");
+    foreach ($docArtifacts as $docArtifact) {
+      $exists = (new ProductMavenArtifactDownloader())->downloadArtifact($product, $docArtifact, $versionToShow);
+      if ($exists) {        
+        $docUrl = $docArtifact->getDocUrl($product, $versionToShow);
+        $path = $args['path'] ?? '';
+        if (!empty($path)) {
+          $path = "/$path";
+        }
+        return Redirect::to($response, $docUrl . $path);
+      }
     }
-    $docUrl = $docArtifact->getDocUrl($product, $versionToShow);
-    $path = $args['path'] ?? '';
-    if (!empty($path)) {
-      $path = "/$path";
-    }
-    return Redirect::to($response, $docUrl . $path);
+    throw new HttpNotFoundException($request, "doc artifact does not exist for version $versionToShow");
   }
 }
