@@ -3,7 +3,7 @@
     "slim/slim": "^4.9",
     "slim/twig-view": "^3.2",
     "slim/psr7": "^1.5",
-    "php-di/php-di": "^6.3",
+    "php-di/php-di": "*",
     "middlewares/trailing-slash": "^2.0",
     "erusev/parsedown": "^1.7",
     "erusev/parsedown-extra": "^0.8.1",
