@@ -1,7 +1,14 @@
 <?php
 namespace app\domain\market;
 
-use app\Config;
+use League\CommonMark\MarkdownConverter;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
+use League\CommonMark\Node\Node;
+use League\CommonMark\Renderer\ChildNodeRendererInterface;
+use League\CommonMark\Renderer\NodeRendererInterface;
+use League\CommonMark\Util\HtmlElement;
 
 class ProductDescription
 {
@@ -61,13 +68,17 @@ class ProductDescription
     if (empty($markdownContent)) {
       return '';
     }
-    return (new ParsedownCustom($assetBaseUrl))->text($markdownContent);
+
+    $environment = new Environment();
+    $environment->addExtension(new CommonMarkCoreExtension());
+    $environment->addRenderer(Image::class, new MakeImageUrlsAbsolute($assetBaseUrl));
+    $converter = new MarkdownConverter($environment);
+    return $converter->convert($markdownContent);
   }
 }
 
-class ParsedownCustom extends \ParsedownExtra
+class MakeImageUrlsAbsolute implements NodeRendererInterface
 {
-
   private string $baseUrl;
 
   public function __construct(string $baseUrl)
@@ -75,42 +86,21 @@ class ParsedownCustom extends \ParsedownExtra
     $this->baseUrl = $baseUrl;
   }
 
-  protected function inlineImage($Excerpt)
+  public function render(Node $node, ChildNodeRendererInterface $childRenderer)
   {
-    if (! isset($Excerpt['text'][1]) or $Excerpt['text'][1] !== '[') {
-      return;
+    if ($node instanceof Image) {
+      $image = $node;
+
+      $imageUrl = $image->getUrl();
+      if (! self::isAbsolute($imageUrl)) {
+        $imageUrl = $this->baseUrl . "/$imageUrl";
+      }
+      return new HtmlElement('img', [
+          'src' => $imageUrl,            
+          'class' => 'image fit'],
+          '', true);
     }
-
-    $Excerpt['text'] = substr($Excerpt['text'], 1);
-
-    $Link = $this->inlineLink($Excerpt);
-
-    if ($Link === null) {
-      return;
-    }
-
-    $imageUrl = $Link['element']['attributes']['href'];
-    if (! self::isAbsolute($imageUrl)) {
-      $imageUrl = $this->baseUrl . "/$imageUrl";
-    }
-
-    $Inline = array(
-      'extent' => $Link['extent'] + 1,
-      'element' => array(
-        'name' => 'img',
-        'attributes' => array(
-          'src' => $imageUrl,
-          'alt' => $Link['element']['text'],
-          'class' => 'image fit'
-        )
-      )
-    );
-
-    $Inline['element']['attributes'] += $Link['element']['attributes'];
-
-    unset($Inline['element']['attributes']['href']);
-
-    return $Inline;
+    return "not an image";
   }
 
   private static function isAbsolute($uri)
@@ -118,4 +108,3 @@ class ParsedownCustom extends \ParsedownExtra
     return strpos($uri, '://') !== false;
   }
 }
-

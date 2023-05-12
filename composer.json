@@ -5,9 +5,8 @@
     "slim/psr7": "^1.5",
     "php-di/php-di": "*",
     "middlewares/trailing-slash": "^2.0",
-    "erusev/parsedown": "^1.7",
-    "erusev/parsedown-extra": "^0.8.1",
-    "guzzlehttp/guzzle": "^7.0"
+    "guzzlehttp/guzzle": "^7.0",
+    "league/commonmark": "^2.4"
   },
   "require-dev": {
     "phpunit/phpunit": "*"
