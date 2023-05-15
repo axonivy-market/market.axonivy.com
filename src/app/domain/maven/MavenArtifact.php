@@ -159,13 +159,6 @@ class MavenArtifact
         }
       }
     }
-    /*
-    if (str_contains($v, '-m')) {
-      $relasedVersion = substr($v, 0, strpos($v, "-m"));
-      if (in_array($relasedVersion, $versions)) {
-        return false;
-      }
-    }*/
     return true;
   }
 
