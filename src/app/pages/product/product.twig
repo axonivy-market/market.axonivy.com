@@ -205,8 +205,15 @@
       </a>
     </article>
 
+    {% if not view.showMinimumIvyVersionBanner %}
+      <br />
+      <div class="alt p-grid p-justify-end p-align-center">
+        This version requires a minimum version of Axon Ivy {{ view.minimumIvyVersion }}, but your are running Axon Ivy Designer {{ view.designerVersion }}
+      </div>
+    {% endif %}
+
     {% if not view.versionInstallable %}
-    <br />
+      <br />
       <div class="alt p-grid p-justify-end p-align-center">
         No installer available for this version
       </div>

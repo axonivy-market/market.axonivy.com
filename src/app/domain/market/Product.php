@@ -177,6 +177,15 @@ class Product
     return $this->industry;
   }
 
+  public function getMinimumIvyVersion(string $version): ?string
+  {
+    $productJson = $this->getProductJsonContent($version);
+    if (empty($productJson)) {
+      return "";
+    }
+    return json_decode($productJson)->minimumIvyVersion ?? '';
+  }
+
   public function getCompatibility(): string
   {
     if (empty($this->compatibility)) {

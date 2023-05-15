@@ -112,7 +112,26 @@ class ProductView
     $mavenArtifacts = $this->mavenProductInfo->getMavenArtifacts($this->version);
     return array_filter($mavenArtifacts, fn(MavenArtifact $a) => !$a->isProduct());;
   }
+
+  public function getShowMinimumIvyVersionBanner(): bool
+  {
+    $v = $this->getMinimumIvyVersion();
+    if (empty($v)) {
+      return true;
+    }
+    return version_compare($this->designerVersion, $v) != -1;
+  }
+
+  public function getMinimumIvyVersion(): string
+  {
+    return $this->product->getMinimumIvyVersion($this->version);
+  }
  
+  public function getDesignerVersion(): string
+  {
+    return $this->designerVersion;
+  }
+
   public function getVersionsToDisplay(): array
   {
     if ($this->mavenProductInfo == null) {
