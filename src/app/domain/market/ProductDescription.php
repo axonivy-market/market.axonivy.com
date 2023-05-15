@@ -4,6 +4,7 @@ namespace app\domain\market;
 use League\CommonMark\MarkdownConverter;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Renderer\ChildNodeRendererInterface;
@@ -71,6 +72,7 @@ class ProductDescription
 
     $environment = new Environment();
     $environment->addExtension(new CommonMarkCoreExtension());
+    $environment->addExtension(new GithubFlavoredMarkdownExtension());
     $environment->addRenderer(Image::class, new MakeImageUrlsAbsolute($assetBaseUrl));
     $converter = new MarkdownConverter($environment);
     return $converter->convert($markdownContent);

@@ -147,6 +147,7 @@ class MavenProductInfo
       $designerVersion = (new Version($designerVersion))->getMinorVersion();
     }
     $versions = array_filter($versions, fn(string $v) => str_starts_with($v, $designerVersion) || (!str_contains($v, '-SNAPSHOT') && !str_contains($v, '-m')));
+    $versions = MavenArtifact::filterSnapshotsBetweenReleasedVersions($versions);
     return array_values($versions);
   }
 
@@ -157,10 +158,21 @@ class MavenProductInfo
       return reset($versions);
     }
     if (Version::isValidVersionNumber($designerVersion)) {
-      $designerVersion = (new Version($designerVersion))->getMinorVersion();
+
+      // favor exact match
       foreach ($versions as $v) {
-        if (str_starts_with($v, $designerVersion)) {
+        if ($v == $designerVersion) {
           return $v;
+        }
+      }
+
+      // use version before exact match. because the version in the market defines the minimum version of the product
+      $designerMinorVersion = (new Version($designerVersion))->getMinorVersion();
+      foreach ($versions as $v) {
+        if (version_compare($v, $designerVersion) == -1) {
+          if (str_starts_with($v, $designerMinorVersion)) {
+            return $v;
+          }
         }
       }
     }
