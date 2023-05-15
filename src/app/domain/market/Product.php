@@ -28,7 +28,6 @@ class Product
   private string $compatibility;
   private bool $validate;
   private bool $contactUs;
-  private string $minimumIvyVersion;
 
   private int $installationCount;
 
@@ -38,7 +37,7 @@ class Product
 
   public function __construct(string $key, string $name, string $version, string $shortDesc, bool $listed, 
     string $type, array $tags, string $vendor, string $vendorImage, string $vendorUrl, string $platformReview, string $cost, string $sourceUrl, string $statusBadgeUrl, string $language, string $industry,
-    string $compatibility, bool $validate, bool $contactUs, string $minimumIvyVersion, ?MavenArtifact $mavenArtifact, array $additionalArtifacts)
+    string $compatibility, bool $validate, bool $contactUs, ?MavenArtifact $mavenArtifact, array $additionalArtifacts)
   {
     $this->key = $key;
     $this->name = $name;
@@ -62,7 +61,6 @@ class Product
     $this->fileResolver = new ProductFileResolver($this);
     $this->mavenArtifact = $mavenArtifact;
     $this->additionalArtifacts = $additionalArtifacts;
-    $this->minimumIvyVersion = $minimumIvyVersion;
   }
 
   public function getKey(): string
@@ -179,9 +177,13 @@ class Product
     return $this->industry;
   }
 
-  public function getMinimumIvyVersion(): ?string
+  public function getMinimumIvyVersion(string $version): ?string
   {
-    return $this->minimumIvyVersion;
+    $productJson = $this->getProductJsonContent($version);
+    if (empty($productJson)) {
+      return "";
+    }
+    return json_decode($productJson)->minimumIvyVersion ?? '';
   }
 
   public function getCompatibility(): string

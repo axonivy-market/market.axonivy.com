@@ -177,10 +177,10 @@
           <span class="meta-type">Version</span>
           <span class="meta-data">{{ view.productVersion }}</span>
         </div>
-        {% if product.minimumIvyVersion is not empty %}
+        {% if view.minimumIvyVersion is not empty %}
           <div class="product-meta-info">
             <span class="meta-type">Minimum Ivy Version</span>
-            <span class="meta-data">{{ product.minimumIvyVersion }}</span>
+            <span class="meta-data">{{ view.minimumIvyVersion }}</span>
           </div>
         {% endif %}
         {% if product.compatibility is not empty %}

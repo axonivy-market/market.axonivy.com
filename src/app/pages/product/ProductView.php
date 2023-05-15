@@ -115,7 +115,7 @@ class ProductView
 
   public function getShowMinimumIvyVersionBanner(): bool
   {
-    $v = $this->product->getMinimumIvyVersion();
+    $v = $this->getMinimumIvyVersion();
     if (empty($v)) {
       return true;
     }
@@ -124,7 +124,7 @@ class ProductView
 
   public function getMinimumIvyVersion(): string
   {
-    return $this->product->getMinimumIvyVersion();
+    return $this->product->getMinimumIvyVersion($this->version);
   }
  
   public function getDesignerVersion(): string
