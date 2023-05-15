@@ -24,6 +24,21 @@ class MavenArtifactTest extends TestCase
     Assert::assertEquals('9.1.0', $result[2]);
   }
   
+  public function testFilterSnapshotsBetweenReleasedVersions()
+  {
+    $versions = [
+      '10.0.0', '9.2.2-SNAPSHOT', '9.2.1', '9.2.0', '9.2.0-SNAPSHOT', '9.1.0'
+    ];
+    $result = MavenArtifact::filterSnapshotsBetweenReleasedVersions($versions);
+    
+    Assert::assertCount(5, $result);
+    Assert::assertEquals('10.0.0', $result[0]);
+    Assert::assertEquals('9.2.2-SNAPSHOT', $result[1]);
+    Assert::assertEquals('9.2.1', $result[2]);
+    Assert::assertEquals('9.2.0', $result[3]);
+    Assert::assertEquals('9.1.0', $result[4]);
+  }
+
   public function testGetMavenArtifact()
   {
     (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('workflow-demo'), "10.0.0");
