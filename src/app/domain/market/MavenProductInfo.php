@@ -147,6 +147,7 @@ class MavenProductInfo
       $designerVersion = (new Version($designerVersion))->getMinorVersion();
     }
     $versions = array_filter($versions, fn(string $v) => str_starts_with($v, $designerVersion) || (!str_contains($v, '-SNAPSHOT') && !str_contains($v, '-m')));
+    $versions = MavenArtifact::filterSnapshotsBetweenReleasedVersions($versions);
     return array_values($versions);
   }
 

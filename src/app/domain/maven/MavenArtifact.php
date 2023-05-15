@@ -3,6 +3,7 @@
 namespace app\domain\maven;
 
 use app\domain\market\Product;
+use app\domain\Version;
 
 class MavenArtifact
 {
@@ -140,6 +141,34 @@ class MavenArtifact
     return $this->versionCache;
   }
   
+  public static function filterSnapshotsBetweenReleasedVersions(array $versions): array
+  {
+    return array_values(array_filter($versions, fn($version) => self::filterBetweenSnapshots($versions, $version)));
+  }
+
+  private static function filterBetweenSnapshots(array $versions, string $version): bool
+  {
+    if (str_ends_with($version, '-SNAPSHOT')) {
+      $bugFixVersion = str_replace('-SNAPSHOT', '', $version);
+      $minorVersion = (new Version($bugFixVersion))->getMinorNumber();
+      foreach ($versions as $v) {
+        if ((new Version($v))->getMinorNumber() == $minorVersion) {
+          if (version_compare($bugFixVersion, $v) == -1) {
+            return false;
+          }
+        }
+      }
+    }
+    /*
+    if (str_contains($v, '-m')) {
+      $relasedVersion = substr($v, 0, strpos($v, "-m"));
+      if (in_array($relasedVersion, $versions)) {
+        return false;
+      }
+    }*/
+    return true;
+  }
+
   public static function filterSnapshotsWhichAreRealesed(array $versions): array
   {
     return array_values(array_filter($versions, fn($version) => self::filterReleasedSnapshots($versions, $version)));
