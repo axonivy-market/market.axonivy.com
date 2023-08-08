@@ -52,7 +52,7 @@ class ProductView
     if (empty($docArtifacts)) {
       return "";
     }
-    foreach ($docArtifacts[0] as $docArtifact) {
+    foreach ($docArtifacts as $docArtifact) {
       if (in_array($this->version, $docArtifact->getVersions())) {
         return $this->product->getDocUrl($this->version);
       }  
