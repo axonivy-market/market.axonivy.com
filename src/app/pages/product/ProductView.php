@@ -52,10 +52,12 @@ class ProductView
     if (empty($docArtifacts)) {
       return "";
     }
-    if (!in_array($this->version, $docArtifacts[0]->getVersions())) {
-      return "";
+    foreach ($docArtifacts as $docArtifact) {
+      if (in_array($this->version, $docArtifact->getVersions())) {
+        return $this->product->getDocUrl($this->version);
+      }  
     }
-    return $this->product->getDocUrl($this->version);
+    return "";
   }
 
   public function getOpenApiUrl(): string
