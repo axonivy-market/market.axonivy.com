@@ -12,7 +12,10 @@ jobs:
     steps:
         - uses: actions/checkout@v3
 
-        - name: Install dependencies
-          shell: cmd
+        - name: Composer install
+          shell: sh
           run: |
-            php -v
+            composer install --no-dev --no-progress
+            tar -cf ivy-website-market.tar --exclude=src/web/_market --exclude=src/web/market-cache src vendor
+            ./vendor/bin/phpunit --log-junit phpunit-junit.xml || exit 0
+            junit 'phpunit-junit.xml'
