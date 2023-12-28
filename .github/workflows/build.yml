@@ -13,7 +13,5 @@ jobs:
         - name: Checkout current branch
           uses: actions/checkout@v3
         - name: Composer install
-          shell: sh
           run: |
-            ls -l
             composer install --no-dev --no-progress
