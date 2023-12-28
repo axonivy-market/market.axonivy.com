@@ -17,6 +17,9 @@ jobs:
           run: |
             composer install --no-dev --no-progress
             tar -cf ivy-website-market.tar --exclude=src/web/_market --exclude=src/web/market-cache src vendor
-            composer install --no-dev
-            ./vendor/bin/phpunit --log-junit phpunit-junit.xml || exit 0
-            junit 'phpunit-junit.xml'
+        - name: Archive build artifact
+          uses: actions/upload-artifact@v3
+          with:
+            name: aws-ttt-artifacts
+            path: |
+              ivy-website-market.tar
