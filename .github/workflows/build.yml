@@ -15,4 +15,4 @@ jobs:
         - name: Composer install
           shell: sh
           run: |
-            composer isntall --no-dev --no-progress
+            composer install --no-dev --no-progress
