@@ -15,4 +15,5 @@ jobs:
         - name: Composer install
           shell: sh
           run: |
-            sh composer install --no-dev --no-progress
+            ls -l
+            composer install --no-dev --no-progress
