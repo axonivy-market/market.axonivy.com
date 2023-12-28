@@ -20,6 +20,6 @@ jobs:
         - name: Archive build artifact
           uses: actions/upload-artifact@v3
           with:
-            name: aws-ttt-artifacts
+            name: ivy-website-market.tar
             path: |
               ivy-website-market.tar
