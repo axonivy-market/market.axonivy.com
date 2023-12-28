@@ -13,7 +13,8 @@ jobs:
         - name: Checkout current branch
           uses: actions/checkout@v3
 
+        - uses: php-actions/composer@v6
+
         - name: Composer install
-          shell: sh
           run: |
-            echo mvn -v
+            composer install --no-dev --no-progress 
