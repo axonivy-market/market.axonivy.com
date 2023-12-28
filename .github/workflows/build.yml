@@ -18,10 +18,8 @@ jobs:
           with:
             php-version: '8.2'
         - name: Composer install
-          shell: sh
+          shell: pwsh
           run: |
             composer install --no-dev --no-progress
-            tar -cf ivy-website-market.tar --exclude=src/web/_market --exclude=src/web/market-cache src vendor
-            composer install --no-progress
             ./vendor/bin/phpunit --log-juni phpunit-junit.xml || exit 0
             junit 'phpunit-junit.xml'
