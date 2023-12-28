@@ -17,5 +17,3 @@ jobs:
           shell: pwsh
           run: |
             composer install --no-dev --no-progress
-            ./vendor/bin/phpunit --log-juni phpunit-junit.xml || exit 0
-            junit 'phpunit-junit.xml'
