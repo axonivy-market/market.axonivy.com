@@ -19,4 +19,4 @@ jobs:
             tools: composer:v2
         - name: Composer install
           run: |
-            php -v
+            xml -v
