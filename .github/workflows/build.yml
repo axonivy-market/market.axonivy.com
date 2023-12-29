@@ -24,6 +24,7 @@ jobs:
             path: |
               ivy-website-market.tar
         - name: Run test
+          shell: sh
           run: |
             composer install --no-progress
             ./vendor/bin/phpunit --log-phpunit-junit.xml || exit 0
