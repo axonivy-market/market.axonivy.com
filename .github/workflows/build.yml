@@ -23,3 +23,10 @@ jobs:
             name: ivy-website-market.tar
             path: |
               ivy-website-market.tar
+        - run: |
+            composer install --no-progress
+        - name: Public test report
+          uses: mikepenz/action-junit-report@v4
+          if: success() || failure() # always run even if the previous step fails
+          with:
+            report_paths: '**/phpunit-junit.xml'
