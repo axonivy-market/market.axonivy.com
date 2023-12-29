@@ -34,3 +34,8 @@ jobs:
           if: success() || failure() # always run even if the previous step fails
           with:
             report_paths: '**/phpunit-junit.xml'
+
+        - name: Editor checker
+          uses: editorconfig-checker/action-editorconfig-checker@main
+          
+        - run: editorconfig-checker
