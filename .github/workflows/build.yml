@@ -37,6 +37,10 @@ jobs:
 
       # - name: Editor checker
       #   uses: editorconfig-checker/action-editorconfig-checker@main
+      - name: Install ssh-agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - uses: appleboy/ssh-action@v1.0.3
         with:
