@@ -39,3 +39,13 @@ jobs:
           uses: editorconfig-checker/action-editorconfig-checker@main
           
         - run: editorconfig-checker
+
+        
+        - uses: appleboy/ssh-action@v1.0.3
+          with:
+            host: 10.193.8.78
+            username: ${{ secrets.SSH_USERNAME }}
+            key: ${{ secrets.SSH_KEY }}
+            script: |
+              whoami
+              ls -al
