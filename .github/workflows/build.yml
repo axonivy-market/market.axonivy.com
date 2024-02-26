@@ -49,5 +49,5 @@ jobs:
       #       whoami
       #       ls -al
       
-      - run: ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USERNAME }}@${{ secrets.HOST }}
+      - run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.HOST }} whoami
         
