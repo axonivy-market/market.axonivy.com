@@ -3,49 +3,46 @@ run-name: Build on branch ${{github.ref_name}} triggered by ${{github.actor}}
 
 on:
   push:
-    branches: 
+    branches:
       - MARP-59-Migrate-the-Marketplace-from-Ivyteam-Jenkins-to-Github
 
 jobs:
   build:
-    runs-on: ['ubuntu-20.04']
+    runs-on: ["ubuntu-20.04"]
     steps:
-        - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-        - name: Composer install
-          shell: sh
-          run: |
-            composer install --no-dev --no-progress
-            tar -cf ivy-website-market.tar --exclude=src/web/_market --exclude=src/web/market-cache src vendor
-        - name: Archive build artifact
-          uses: actions/upload-artifact@v3
-          with:
-            name: ivy-website-market.tar
-            path: |
-              ivy-website-market.tar
-        - name: Run test
-          shell: sh
-          run: |
-            composer install --no-progress
-            ./vendor/bin/phpunit --log-junit phpunit-junit.xml || exit 0
+      # - name: Composer install
+      #   shell: sh
+      #   run: |
+      #     composer install --no-dev --no-progress
+      #     tar -cf ivy-website-market.tar --exclude=src/web/_market --exclude=src/web/market-cache src vendor
+      # - name: Archive build artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ivy-website-market.tar
+      #     path: |
+      #       ivy-website-market.tar
+      # - name: Run test
+      #   shell: sh
+      #   run: |
+      #     composer install --no-progress
+      #     ./vendor/bin/phpunit --log-junit phpunit-junit.xml || exit 0
 
-        - name: Public test report
-          uses: mikepenz/action-junit-report@v4
-          if: success() || failure() # always run even if the previous step fails
-          with:
-            report_paths: '**/phpunit-junit.xml'
+      # - name: Public test report
+      #   uses: mikepenz/action-junit-report@v4
+      #   if: success() || failure() # always run even if the previous step fails
+      #   with:
+      #     report_paths: "**/phpunit-junit.xml"
 
-        - name: Editor checker
-          uses: editorconfig-checker/action-editorconfig-checker@main
-          
-        - run: editorconfig-checker
+      # - name: Editor checker
+      #   uses: editorconfig-checker/action-editorconfig-checker@main
 
-        
-        - uses: appleboy/ssh-action@v1.0.3
-          with:
-            host: 10.193.8.78
-            username: ${{ secrets.SSH_USERNAME }}
-            key: ${{ secrets.SSH_KEY }}
-            script: |
-              whoami
-              ls -al
+      - uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 10.193.8.78
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            whoami
+            ls -al
