@@ -38,13 +38,16 @@ jobs:
       # - name: Editor checker
       #   uses: editorconfig-checker/action-editorconfig-checker@main
 
-      - uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          command_timeout: 200m
-          script: |
-            whoami
-            ls -al
+      # - uses: appleboy/ssh-action@v1.0.3
+      #   with:
+      #     host: ${{ secrets.HOST }}
+      #     username: ${{ secrets.SSH_USERNAME }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     port: 22
+      #     command_timeout: 200m
+      #     script: |
+      #       whoami
+      #       ls -al
+      
+      - run: ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USERNAME }}@${{ secrets.HOST }}
+        
