@@ -60,3 +60,22 @@ jobs:
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
+      
+      - name: Untar
+        shell: sh
+        run: |
+          targetFolder = "/home/axonivya/deployment/ivy-website-market-$(date +'%Y-%m-%d_%H-%M-%S')" ;
+          targetFile =  $targetFolder.tar
+          mkdir $targetFolder
+          tar -xf $targetFile -C $targetFolder
+          rm -f $targetFile
+
+          mkdir deployment
+
+          ln -fns /deployment $targetFolder/src/web
+          
+          cd deployment
+
+
+          
+        
