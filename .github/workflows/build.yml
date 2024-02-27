@@ -45,5 +45,20 @@ jobs:
         with:
           report_paths: "**/phpunit-junit.xml"
 
+    
+  check-editorconfig:
+    needs: build
+    runs-on: ["marketplace.axonivy.com"]
+    steps: 
       - name: Editor checker
         uses: editorconfig-checker/action-editorconfig-checker@main
+
+  deploy:
+    needs: check-editorconfig
+    runs-on: ["marketplace.axonivy.com"]
+    if: ${{github.ref_name}} == 'MARP-59-Migrate-the-Marketplace-from-Ivyteam-Jenkins-to-Github'
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ivy-website-market.tar
+          path: Downloads
