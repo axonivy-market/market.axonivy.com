@@ -8,41 +8,36 @@ on:
 
 jobs:
   build:
-    runs-on: ["ubuntu-latest"]
+    runs-on: ["marketplace.axonivy.com"]
     steps:
-      # - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      # - name: Composer install
-      #   shell: sh
-      #   run: |
-      #     composer install --no-dev --no-progress
-      #     tar -cf ivy-website-market.tar --exclude=src/web/_market --exclude=src/web/market-cache src vendor
-      # - name: Archive build artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: ivy-website-market.tar
-      #     path: |
-      #       ivy-website-market.tar
-      # - name: Run test
-      #   shell: sh
-      #   run: |
-      #     composer install --no-progress
-      #     ./vendor/bin/phpunit --log-junit phpunit-junit.xml || exit 0
+      - name: Build composer image
+        run: |
+          docker build . -t composer -f docker/apache/Dockerfile
 
-      # - name: Public test report
-      #   uses: mikepenz/action-junit-report@v4
-      #   if: success() || failure() # always run even if the previous step fails
-      #   with:
-      #     report_paths: "**/phpunit-junit.xml"
-
-      # - name: Editor checker
-      #   uses: editorconfig-checker/action-editorconfig-checker@main
-
-      - uses: appleboy/ssh-action@v1.0.3
+      - name: Composer install
+        shell: sh
+        run: |
+          composer install --no-dev --no-progress
+          tar -cf ivy-website-market.tar --exclude=src/web/_market --exclude=src/web/market-cache src vendor
+      - name: Archive build artifact
+        uses: actions/upload-artifact@v3
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 80
-          script: |
-            whoami
+          name: ivy-website-market.tar
+          path: |
+            ivy-website-market.tar
+      - name: Run test
+        shell: sh
+        run: |
+          composer install --no-progress
+          ./vendor/bin/phpunit --log-junit phpunit-junit.xml || exit 0
+
+      - name: Public test report
+        uses: mikepenz/action-junit-report@v4
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: "**/phpunit-junit.xml"
+
+      - name: Editor checker
+        uses: editorconfig-checker/action-editorconfig-checker@main
