@@ -12,21 +12,27 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build composer image
-        run: |
-          docker build . -t composer -f docker/apache/Dockerfile
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: |
+            gd
+            zip
 
       - name: Composer install
         shell: sh
         run: |
           composer install --no-dev --no-progress
           tar -cf ivy-website-market.tar --exclude=src/web/_market --exclude=src/web/market-cache src vendor
+
       - name: Archive build artifact
         uses: actions/upload-artifact@v3
         with:
           name: ivy-website-market.tar
           path: |
             ivy-website-market.tar
+
       - name: Run test
         shell: sh
         run: |
