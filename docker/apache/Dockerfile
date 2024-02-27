@@ -9,7 +9,7 @@ RUN apt-get update && \
     apt-get install -y wget
 
 # install php composer
-ADD install-composer.sh ./install-composer.sh
+ADD install-composer.sh ./docker/apache/install-composer.sh
 RUN chmod ugo+x ./install-composer.sh
 RUN ./install-composer.sh
 
