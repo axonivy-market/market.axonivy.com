@@ -68,8 +68,8 @@ jobs:
           targetFolder="build/ivy-website-market-$(date +'%Y-%m-%d_%H-%M-%S')" ;
           targetFile=$targetFolder.tar
           mkdir $targetFolder
-          tar -xf $targetFile -C $targetFolder
-          rm -f $targetFile
+          tar -xf ivy-website-market.tar -C $targetFolder
+          rm -f ivy-website-market.tar
           mkdir deployment
           ln -fns /deployment $targetFolder/src/web
           
