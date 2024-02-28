@@ -61,19 +61,10 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
       
-      - name: Untar
+      - name: Deploy
         shell: sh
         run: |
-          mkdir build
-          targetFolder="build/ivy-website-market-$(date +'%Y-%m-%d_%H-%M-%S')" ;
-          targetFile=$targetFolder.tar
-          mkdir $targetFolder
-          tar -xf ivy-website-market.tar -C $targetFolder
-          rm -f ivy-website-market.tar
-          mkdir deployment
-          ln -fns /deployment $targetFolder/src/web
-          
-          cd deployment
+          ./dev.sh
 
 
           
