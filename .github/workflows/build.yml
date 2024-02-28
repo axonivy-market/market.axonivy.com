@@ -61,6 +61,7 @@ jobs:
       - name: Deploy
         shell: sh
         run: |
+          composer update
           ./dev.sh
 
 
