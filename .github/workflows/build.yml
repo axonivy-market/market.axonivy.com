@@ -6,6 +6,9 @@ on:
     branches:
       - MARP-59-Migrate-the-Marketplace-from-Ivyteam-Jenkins-to-Github
 
+env:
+  DIST_FILE: ivy-website-market.tar
+
 jobs:
   build:
     runs-on: ["marketplace.axonivy.com"]
@@ -24,14 +27,14 @@ jobs:
         shell: sh
         run: |
           composer install --no-dev --no-progress
-          tar -cf ivy-website-market.tar --exclude=src/web/_market --exclude=src/web/market-cache src vendor
+          tar -cf ${{ env.DIST_FILE }} --exclude=src/web/_market --exclude=src/web/market-cache src vendor
 
       - name: Archive build artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ivy-website-market.tar
+          name: ${{ env.DIST_FILE }}
           path: |
-            ivy-website-market.tar
+            ${{ env.DIST_FILE }}
 
       - name: Run test
         shell: sh
@@ -45,13 +48,13 @@ jobs:
         with:
           report_paths: "**/phpunit-junit.xml"
 
-    
   check-editorconfig:
     needs: build
     runs-on: ["marketplace.axonivy.com"]
-    steps: 
+    steps:
       - name: Editor checker
         uses: editorconfig-checker/action-editorconfig-checker@main
+      - run: editor-chekcer
 
   deploy:
     needs: check-editorconfig
@@ -63,7 +66,3 @@ jobs:
         run: |
           composer update
           ./dev.sh
-
-
-          
-        
