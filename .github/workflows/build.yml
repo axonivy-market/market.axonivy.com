@@ -64,6 +64,7 @@ jobs:
       - name: Deploy
         shell: sh
         run: |
-          ln -fns /home/axonivya/data/market src/web/_market
-          ln -fns /home/axonivya/data/market-cache src/web/market-cache
-          ln -fns /home/nttu/actions-runner/workspace/market.axonivy.com/market.axonivy.com/src/web /var/www/market.axonivy-dev.com
+          targetFoler="/home/nttu/actions-runner/workspace/market.axonivy.com/market.axonivy.com"
+          ln -fns /home/axonivya/data/market $targetFoler/src/web/_market
+          ln -fns /home/axonivya/data/market-cache $targetFolder/src/web/market-cache
+          ln -fns $targetFolder/src/web /var/www/market.axonivy-dev.com
