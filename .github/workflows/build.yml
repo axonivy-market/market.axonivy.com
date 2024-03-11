@@ -44,7 +44,7 @@ jobs:
 
       - name: Public test report
         uses: mikepenz/action-junit-report@v4
-        if: success() || failure() # always run even if the previous step fails
+        if: success()
         with:
           report_paths: "**/phpunit-junit.xml"
 
@@ -65,6 +65,6 @@ jobs:
         shell: sh
         run: |
           targetFoler="/home/nttu/actions-runner/workspace/market.axonivy.com/market.axonivy.com"
-          ln -fns /home/axonivya/data/market $targetFoler/src/web/_market
+          ln -fns /home/axonivya/data/market $targetFolder/src/web/_market
           ln -fns /home/axonivya/data/market-cache $targetFolder/src/web/market-cache
           ln -fns $targetFolder/src/web /var/www/market.axonivy-dev.com
