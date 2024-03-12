@@ -39,7 +39,7 @@ jobs:
 
   run-test:
     needs: build
-    runs-on: ["marketplace.aoxnivy.com"]
+    runs-on: ["marketplace.axonivy.com"]
     steps:
       - name: Run test
         shell: sh
