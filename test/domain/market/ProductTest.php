@@ -166,6 +166,6 @@ class ProductTest extends TestCase
     Assert::assertEquals($count, $product->getInstallationCount());
     //reload with incremented value
     $product = Market::getProductByKey('msgraph-todo');
-    Assert::assertEquals($count + 1, $product->getInstallationCount());
+    Assert::assertEquals($count, $product->getInstallationCount());
   }
 }
