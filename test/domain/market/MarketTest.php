@@ -40,7 +40,7 @@ class MarketTest extends TestCase
   public function test_search_emptyDoNotFilter()
   {
     $products = Market::search(Market::all(), '');
-    
+
     $path = __DIR__ . '/../../../src/web/_market';
     $total_items  = count(glob("$path/*", GLOB_ONLYDIR));
     Assert::assertEquals($total_items, count($products));
@@ -75,7 +75,7 @@ class MarketTest extends TestCase
   public function test_searchByType()
   {
     $products = Market::searchByType(Market::listed(), 'util');
-    $keys = array_map(fn(Product $p) => $p->getKey(), $products);
+    $keys = array_map(fn (Product $p) => $p->getKey(), $products);
     Assert::assertContains('portal', $keys);
     Assert::assertContains('visualvm-plugin', $keys);
   }
@@ -92,14 +92,14 @@ class MarketTest extends TestCase
   public function test_searchByTag()
   {
     $products = Market::searchByTag(Market::listed(), ['DEMO']);
-    $keys = array_map(fn(Product $p) => $p->getKey(), $products);
+    $keys = array_map(fn (Product $p) => $p->getKey(), $products);
     Assert::assertContains('connectivity-demo', $keys);
   }
 
   public function test_searchByMultipleTags()
   {
     $products = Market::searchByTag(Market::listed(), ['DEMO', 'WORKFLOW-UI']);
-    $keys = array_map(fn(Product $p) => $p->getKey(), $products);
+    $keys = array_map(fn (Product $p) => $p->getKey(), $products);
     Assert::assertContains('connectivity-demo', $keys);
     Assert::assertContains('portal', $keys);
   }

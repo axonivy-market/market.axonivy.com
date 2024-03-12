@@ -1,4 +1,5 @@
 <?php
+
 namespace app\pages\permalink;
 
 use Slim\Psr7\Request;

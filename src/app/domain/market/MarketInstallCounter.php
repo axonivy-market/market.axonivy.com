@@ -16,11 +16,11 @@ class MarketInstallCounter
   {
     $json = self::readInstallations();
     if (isset($json[$key])) {
-      $json[$key] ++;
+      $json[$key]++;
     }
     self::writeInstallations($json);
   }
-  
+
   private static function readInstallations()
   {
     $installFile = Config::marketInstallationsFile();
@@ -28,10 +28,10 @@ class MarketInstallCounter
     if (file_exists($installFile)) {
       $content = file_get_contents($installFile);
       $json = json_decode($content, true);
-    } 
+    }
     return $json;
   }
-  
+
   private static function writeInitialInstallations($json, string $key): int
   {
     $initialCount = rand(20, 50);

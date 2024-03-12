@@ -24,12 +24,12 @@ class RoutingRules
     $app->get('/api-browser', ApiBrowserAction::class);
 
     $app->get('/internal/market-rcptt', MarketRCPTTAction::class);
-    
+
     $app->get('/market-cache/{key}/{artifactId}/{version}/logo.png', ProductLogoPermalinkAction::class);
-    $app->get('/market-cache/{key}/{artifactId}/{version}/_product.json', ProductJsonAction::class);    
+    $app->get('/market-cache/{key}/{artifactId}/{version}/_product.json', ProductJsonAction::class);
 
     $app->get('/{key}/{version}/doc[/{path:.*}]', DocPermalinkAction::class);
-    $app->get('/{key}/{version}/lib/{name}', LibraryPermalinkAction::class);    
+    $app->get('/{key}/{version}/lib/{name}', LibraryPermalinkAction::class);
     $app->get('/{key}[/{version}]', ProductAction::class);
   }
 }

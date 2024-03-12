@@ -117,7 +117,7 @@ class ProductTest extends TestCase
     $product = Market::getProductByKey('demos-app');
     Assert::assertEquals(['demo'], $product->getTags());
   }
-  
+
   public function test_firstTag()
   {
     $product = Market::getProductByKey('visualvm-plugin');

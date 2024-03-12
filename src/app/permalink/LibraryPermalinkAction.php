@@ -1,4 +1,5 @@
 <?php
+
 namespace app\permalink;
 
 use app\domain\market\Market;

@@ -36,7 +36,7 @@ class MarketActionTest extends TestCase
       ->bodyDoesNotContain('VisualVM Plugin')
       ->bodyDoesNotContain('Basic Workflow'); // not listed
   }
-  
+
   public function testMarketPage_querySearch()
   {
     AppTester::assertThatGet('/?type=CONNECTOR&search=uipath')
@@ -44,7 +44,7 @@ class MarketActionTest extends TestCase
       ->bodyContains('ui-path')
       ->bodyContains('id="main"');
   }
-  
+
   public function testMarketPage_querySearchOnly()
   {
     AppTester::assertThatGet('/?resultsOnly&type=CONNECTOR&search=uipath') // stable URI since Designer 9.2!

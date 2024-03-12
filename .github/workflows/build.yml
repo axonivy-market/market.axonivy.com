@@ -54,7 +54,7 @@ jobs:
     steps:
       - name: Editor checker
         uses: editorconfig-checker/action-editorconfig-checker@main
-      # - run: editorconfig-checker
+      - run: editorconfig-checker
 
   deploy:
     needs: check-editorconfig

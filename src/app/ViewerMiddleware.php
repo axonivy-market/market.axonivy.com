@@ -33,7 +33,8 @@ class ViewerMiddleware implements MiddlewareInterface
     return $handler->handle($request);
   }
 
-  private static function readWriteCookie(ServerRequestInterface $request, string $name): string {
+  private static function readWriteCookie(ServerRequestInterface $request, string $name): string
+  {
     $value = $request->getQueryParams()[$name] ?? '';
     if (!empty($value)) {
       setcookie($name, $value);

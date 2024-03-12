@@ -6,7 +6,7 @@ use app\domain\Version;
 
 class VersionResolver
 {
-  public static function get(MavenProductInfo $info, string $requestedVersion) : ?string
+  public static function get(MavenProductInfo $info, string $requestedVersion): ?string
   {
     // redirect to latest version at all
     if ($requestedVersion == 'dev' || $requestedVersion == 'nightly' || $requestedVersion == 'sprint') {
@@ -67,7 +67,7 @@ class VersionResolver
   }
 
   public static function findNewestDevVersion(MavenProductInfo $info, string $version): ?string
-  {  
+  {
     $versions = $info->getVersions();
     foreach ($versions as $ver) {
       if (str_starts_with($ver, $version)) {

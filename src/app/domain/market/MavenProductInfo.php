@@ -79,14 +79,14 @@ class MavenProductInfo
     }
     return $artifacts;
   }
-  
+
   public function getProductArtifact(): ?MavenArtifact
   {
     return $this->productMavenArtifact;
   }
 
   public function getVersions(): array
-  { 
+  {
     $versions = [];
     if ($this->productMavenArtifact != null) {
       $versions = $this->productMavenArtifact->getVersions();
@@ -139,14 +139,14 @@ class MavenProductInfo
     }
 
     if (empty($designerVersion)) {
-      $versions = array_filter($versions, fn(string $v) => !str_contains($v, '-SNAPSHOT') && !str_contains($v, "-m"));
+      $versions = array_filter($versions, fn (string $v) => !str_contains($v, '-SNAPSHOT') && !str_contains($v, "-m"));
       return array_values($versions);
     }
-    
+
     if (Version::isValidVersionNumber($designerVersion)) {
       $designerVersion = (new Version($designerVersion))->getMinorVersion();
     }
-    $versions = array_filter($versions, fn(string $v) => str_starts_with($v, $designerVersion) || (!str_contains($v, '-SNAPSHOT') && !str_contains($v, '-m')));
+    $versions = array_filter($versions, fn (string $v) => str_starts_with($v, $designerVersion) || (!str_contains($v, '-SNAPSHOT') && !str_contains($v, '-m')));
     $versions = MavenArtifact::filterSnapshotsBetweenReleasedVersions($versions);
     return array_values($versions);
   }
