@@ -37,11 +37,15 @@ jobs:
           path: |
             ${{ env.DIST_FILE }}
 
+  run-test:
+    needs: build
+    runs-on: ["marketplace.aoxnivy.com"]
+    steps:
       - name: Run test
         shell: sh
         run: |
           composer install --no-progress
-          ./vendor/bin/phpunit --log-junit phpunit-junit.xml || exit 0
+          ./vendor/bin/phpunit --log-junit phpunit-junit.xml
 
       - name: Public test report
         uses: mikepenz/action-junit-report@v4
@@ -50,7 +54,7 @@ jobs:
           report_paths: "**/phpunit-junit.xml"
 
   check-editorconfig:
-    needs: build
+    needs: run-test
     runs-on: ["marketplace.axonivy.com"]
     steps:
       - name: Editor checker
