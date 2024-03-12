@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - MARP-59-Migrate-the-Marketplace-from-Ivyteam-Jenkins-to-Github
+  workflow_dispatch:
 
 env:
   DIST_FILE: ivy-website-market.tar
