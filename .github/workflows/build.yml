@@ -14,7 +14,7 @@ jobs:
   build:
     runs-on: ["marketplace.axonivy.com"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up PHP
 
         uses: shivammathur/setup-php@v2
@@ -31,7 +31,7 @@ jobs:
           tar -cf ${{ env.DIST_FILE }} --exclude=src/web/_market --exclude=src/web/market-cache src vendor
 
       - name: Archive build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.DIST_FILE }}
           path: |
@@ -69,7 +69,14 @@ jobs:
       - name: Deploy
         shell: sh
         run: |
-          targetFolder="/home/nttu/actions-runner/workspace/market.axonivy.com/market.axonivy.com"
+          repoCheckOutFolder="/home/nttu/actions-runner/workspace/market.axonivy.com/market.axonivy.com"
+          targetFolder="/home/axonivy/deployment/ivy-website-market"
+
+          cp -r $repoCheckOutFolder/src $repoCheckOutFolder/vendor $targetFolder
+          
+          rm -rf $targetFolder/src/web/_market
+          rm -rf $targetFolder/src/web/market-cache
+
           ln -fns /home/axonivya/data/market $targetFolder/src/web/_market
           ln -fns /home/axonivya/data/market-cache $targetFolder/src/web/market-cache
           ln -fns $targetFolder/src/web /var/www/market.axonivy-dev.com
