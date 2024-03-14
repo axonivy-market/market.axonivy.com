@@ -72,10 +72,8 @@ jobs:
           repoCheckOutFolder="/home/nttu/actions-runner/workspace/market.axonivy.com/market.axonivy.com"
           targetFolder="/home/axonivy/deployment/ivy-website-market"
 
+          rm -rf $targetFolder/*
           cp -r $repoCheckOutFolder/src $repoCheckOutFolder/vendor $targetFolder
-          
-          rm -rf $targetFolder/src/web/_market
-          rm -rf $targetFolder/src/web/market-cache
 
           ln -fns /home/axonivya/data/market $targetFolder/src/web/_market
           ln -fns /home/axonivya/data/market-cache $targetFolder/src/web/market-cache
