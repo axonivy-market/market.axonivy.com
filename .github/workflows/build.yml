@@ -45,7 +45,6 @@ jobs:
         shell: sh
         run: |
           composer install --no-progress
-          rm -rf Jenkinsfile
           ./vendor/bin/phpunit --log-junit phpunit-junit.xml
 
       - name: Public test report
