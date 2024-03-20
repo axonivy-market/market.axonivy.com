@@ -37,24 +37,24 @@ jobs:
           path: |
             ${{ env.DIST_FILE }}
 
-  # run-test:
-  #   needs: build
-  #   runs-on: ["marketplace.axonivy.com"]
-  #   steps:
-  #     - name: Run test
-  #       shell: sh
-  #       run: |
-  #         composer install --no-progress
-  #         ./vendor/bin/phpunit --log-junit phpunit-junit.xml
+  run-test:
+    needs: build
+    runs-on: ["marketplace.axonivy.com"]
+    steps:
+      - name: Run test
+        shell: sh
+        run: |
+          composer install --no-progress
+          ./vendor/bin/phpunit --log-junit phpunit-junit.xml
 
-  #     - name: Public test report
-  #       uses: mikepenz/action-junit-report@v4
-  #       if: success()
-  #       with:
-  #         report_paths: "**/phpunit-junit.xml"
+      - name: Public test report
+        uses: mikepenz/action-junit-report@v4
+        if: success()
+        with:
+          report_paths: "**/phpunit-junit.xml"
 
   check-editorconfig:
-    # needs: run-test
+    needs: run-test
     runs-on: ["marketplace.axonivy.com"]
     steps:
       - name: Editor checker
