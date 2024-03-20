@@ -71,11 +71,14 @@ jobs:
         shell: sh
         run: |
           repoCheckOutFolder="/home/nttu/actions-runner/workspace/market.axonivy.com/market.axonivy.com"
-          targetFolder="/home/axonivy/deployment/ivy-website-market"
+          targetFolder="/home/axonivya/deployment/ivy-website-market"
 
           rm -rf $targetFolder/*
           cp -r $repoCheckOutFolder/src $repoCheckOutFolder/vendor $targetFolder
 
+          rm -rf $targetFolder/_market
           ln -fns /home/axonivya/data/market $targetFolder/src/web/_market
+          rm -rf $targetFolder/market-cache
           ln -fns /home/axonivya/data/market-cache $targetFolder/src/web/market-cache
+          rm -rf /var/www/market.axonivy-dev.com/web
           ln -fns $targetFolder/src/web /var/www/market.axonivy-dev.com
