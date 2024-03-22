@@ -37,10 +37,6 @@ jobs:
           path: |
             ${{ env.DIST_FILE }}
 
-  run-test:
-    needs: build
-    runs-on: ["marketplace.axonivy.com"]
-    steps:
       - name: Run test
         shell: sh
         run: |
@@ -48,15 +44,19 @@ jobs:
           ./vendor/bin/phpunit --log-junit phpunit-junit.xml
 
       - name: Public test report
-        uses: mikepenz/action-junit-report@v4
-        if: success()
+        uses: EnricoMi/publish-unit-test-result-action/linux@v2
+        if: success() || failure()
         with:
-          report_paths: "**/phpunit-junit.xml"
+          files: "**/phpunit-junit.xml"
 
-  check-editorconfig:
-    needs: run-test
-    runs-on: ["marketplace.axonivy.com"]
-    steps:
       - name: Editor checker
         uses: editorconfig-checker/action-editorconfig-checker@main
       - run: editorconfig-checker
+
+      - name: Editor checker
+        uses: editorconfig-checker/action-editorconfig-checker@main
+      - run: editorconfig-checker
+
+      - name: Clean up
+        run: |
+          rm -rf *
