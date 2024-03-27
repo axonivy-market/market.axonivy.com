@@ -8,7 +8,9 @@
     "statusBadgeUrl": "https://github.com/axonivy-market/a-trust-connector/actions/workflows/ci.yml/badge.svg",
     "language": "English",
     "industry": "Cross-Industry",
-    "tags": [ "e-signature" ],
+    "tags": [
+        "e-signature"
+    ],
     "mavenArtifacts": [
         {
             "repoUrl": "https://maven.axonivy.com",
@@ -19,4 +21,3 @@
         }
     ]
 }
-
