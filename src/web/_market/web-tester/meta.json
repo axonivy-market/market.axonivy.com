@@ -1,26 +1,26 @@
 {
-	"id": "web-tester",
-	"name": "Web Tester",
-	"description": "Easy Web-Integration tests for your process automation projects (PrimeFaces widgets + Selenium)",
-	"type": "util",
-	"sourceUrl": "https://github.com/axonivy/web-tester",
-	"language": "English",
-	"industry": "Cross-Industry",
-	"tags": ["testing"],
-	"mavenArtifacts": [
-		{
-			"name": "Web Tester Product",
-			"groupId": "com.axonivy.ivy.webtest",
-			"artifactId": "web-tester-product",
-			"type": "zip",
-			"repoUrl": "https://oss.sonatype.org/content/repositories/releases"
-		},
-		{
-			"name": "Web Tester",
-			"groupId": "com.axonivy.ivy.webtest",
-			"artifactId": "web-tester",
-			"type": "jar",
-			"repoUrl": "https://oss.sonatype.org/content/repositories/releases"
-		}
-	]
+  "id": "web-tester",
+  "name": "Web Tester",
+  "description": "Easy Web-Integration tests for your process automation projects (PrimeFaces widgets + Selenium)",
+  "type": "util",
+  "sourceUrl": "https://github.com/axonivy/web-tester",
+  "language": "English",
+  "industry": "Cross-Industry",
+  "tags": ["testing"],
+  "mavenArtifacts": [
+    {
+      "name": "Web Tester Product",
+      "groupId": "com.axonivy.ivy.webtest",
+      "artifactId": "web-tester-product",
+      "type": "zip",
+      "repoUrl": "https://oss.sonatype.org/content/repositories/releases"
+    },
+    {
+      "name": "Web Tester",
+      "groupId": "com.axonivy.ivy.webtest",
+      "artifactId": "web-tester",
+      "type": "jar",
+      "repoUrl": "https://oss.sonatype.org/content/repositories/releases"
+    }
+  ]
 }

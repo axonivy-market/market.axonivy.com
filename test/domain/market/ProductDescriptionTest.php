@@ -1,4 +1,5 @@
 <?php
+
 namespace test\domain\market;
 
 use PHPUnit\Framework\Assert;
@@ -37,7 +38,7 @@ class ProductDescriptionTest extends TestCase
   {
     $desc = self::desc('portal');
     Assert::assertEmpty('', $desc->getSetup());
-    
+
     $desc = self::desc('ms-todo');
     Assert::assertStringContainsString('Follow the generic', $desc->getSetup());
   }

@@ -21,12 +21,12 @@ class ProductJsonAction
     if (empty($version)) {
       throw new HttpNotFoundException($request, 'version is empty');
     }
-    
+
     $info = $product->getMavenProductInfo();
     if ($info == null) {
       throw new HttpNotFoundException($request, 'product is not versionized');
     }
-    
+
     if (!in_array($version, $info->getVersions())) {
       throw new HttpNotFoundException($request, 'version does not exist');
     }
@@ -34,7 +34,7 @@ class ProductJsonAction
     MarketInstallCounter::incrementInstallCount($product->getKey());
     $content = $product->getProductJsonContent($version);
     $content = str_replace('${version}', $version, $content);
-    
+
     if (empty($content)) {
       $content = "{}";
     }

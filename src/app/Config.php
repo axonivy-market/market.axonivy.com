@@ -15,19 +15,19 @@ class Config
   {
     return self::isProductionEnvironment() ? '/home/axonivya/data/market' : __DIR__ . '/../../src/web/_market';
   }
-  
+
   public static function marketCacheDirectory(): string
   {
     return self::isProductionEnvironment() ? '/home/axonivya/data/market-cache' : __DIR__ . '/../../src/web/market-cache';
   }
-  
+
   public static function marketInstallationsFile(): string
   {
     return self::isProductionEnvironment() ? '/home/axonivya/data/market-installations.json' : '/tmp/market-installations.json';
   }
-  
+
   public static function unzipper(): string
   {
-    return __DIR__ . '/download-zip.sh';    
+    return __DIR__ . '/download-zip.sh';
   }
 }
