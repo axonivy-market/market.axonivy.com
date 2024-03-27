@@ -339,7 +339,6 @@ class ProductFileResolver
   {
     $key = $this->product->getKey();
     $artifactId = $this->product->getProductArtifactId();
-    echo "/market-cache/$key/$artifactId/$version";
     return "/market-cache/$key/$artifactId/$version";
   }
   
