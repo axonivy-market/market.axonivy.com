@@ -96,11 +96,11 @@ class MavenArtifactBuilder
 
   private function createArchivedArtifact(): array
   {
-    if (!isset($$this->archivedArtifact)) {
+    if (!isset($this->archivedArtifact)) {
       return [];
     }
     $a = [];
-    foreach ($$this->archivedArtifact as $archivedArtifact) {
+    foreach ($this->archivedArtifact as $archivedArtifact) {
       $a[] = new ArchivedArtifact($archivedArtifact->version, $archivedArtifact->groupId);
     }
     usort($a, fn($artifactA, $artifactB) => version_compare($artifactA->version, $artifactB->version));
