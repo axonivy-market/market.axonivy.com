@@ -35,29 +35,8 @@ class ProductFactory
     $mavenArtifact = self::createMavenArtifact($json);
     $additionalArtifacts = self::createMavenArtifacts($json);
 
-    return new Product(
-      $key,
-      $json->name,
-      $version,
-      $shortDesc,
-      $listed,
-      $type,
-      $tags,
-      $vendor,
-      $vendorImage,
-      $vendorUrl,
-      $platformReview,
-      $cost,
-      $sourceUrl,
-      $statusBadgeUrl,
-      $language,
-      $industry,
-      $compatibility,
-      $validate,
-      $contactUs,
-      $mavenArtifact,
-      $additionalArtifacts
-    );
+    return new Product($key, $json->name, $version, $shortDesc, $listed, $type, $tags,
+      $vendor, $vendorImage, $vendorUrl, $platformReview, $cost, $sourceUrl, $statusBadgeUrl, $language, $industry, $compatibility, $validate, $contactUs, $mavenArtifact, $additionalArtifacts);
   }
 
   private static function createMavenArtifact($json): ?MavenArtifact

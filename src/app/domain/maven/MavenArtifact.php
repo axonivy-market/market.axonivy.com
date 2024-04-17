@@ -105,11 +105,11 @@ class MavenArtifact
   public function getUrl($version)
   {
     $concretVersion = $this->getConcreteVersion($version);
-    $baseUrl = $this->getTargetBaseUrlFromVersion($version);
+    $baseUrl = $this->getBaseUrlFromVersion($version);
     return $baseUrl . '/' . $version . '/' . $this->artifactId . '-' . $concretVersion . '.' . $this->type;
   }
 
-  private function getTargetGroupId($version)
+  private function getTargetGroupIdFromVersion($version)
   {
     if (version_compare($version, $this->archivedGroupIdLatestVersion) > 0) {
       return $this->groupId;
@@ -120,7 +120,7 @@ class MavenArtifact
   public function getConcreteVersion($version)
   {
     if (str_contains($version, 'SNAPSHOT')) {
-      $baseUrl = $this->getTargetBaseUrlFromVersion($version);
+      $baseUrl = $this->getBaseUrlFromVersion($version);
       $xml = HttpRequester::request("$baseUrl/$version/maven-metadata.xml");
       if (empty($xml)) {
         return "";
@@ -142,11 +142,10 @@ class MavenArtifact
     return $this->getBaseUrlFromGroupId($this->groupId);
   }
 
-  private function getTargetBaseUrlFromVersion($version)
+  private function getBaseUrlFromVersion($version)
   {
-    $targetGroupId = $this->getTargetGroupId($version);
-    $groupId = str_replace('.', '/', $targetGroupId);
-    return $this->repoUrl . "$groupId/" . $this->artifactId;
+    $targetGroupId = $this->getTargetGroupIdFromVersion($version);
+    return $this->getBaseUrlFromGroupId($targetGroupId);
   }
 
   private function getBaseUrlFromGroupId($targetGroupId)
