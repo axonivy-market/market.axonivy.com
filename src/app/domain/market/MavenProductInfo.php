@@ -39,7 +39,7 @@ class MavenProductInfo
                   ->makesSenseAsMavenDependency(false)
                   ->doc(false)
                   ->archivedGroupId($project->archivedGroupId ?? $project->groupId)
-                  ->archivedGroupIdLatestVersion($project->archivedGroupIdLatestVersion ?? '0.0.1')
+                  ->latestArchivedArtifactVersion($project->latestArchivedArtifactVersion ?? '0.0.1')
                   ->build();
               }
             }
@@ -58,7 +58,7 @@ class MavenProductInfo
                   ->makesSenseAsMavenDependency(true)
                   ->doc(false)
                   ->archivedGroupId($dependency->archivedGroupId ?? $dependency->groupId)
-                  ->archivedGroupIdLatestVersion($project->archivedGroupIdLatestVersion ?? '0.0.1')
+                  ->latestArchivedArtifactVersion($project->latestArchivedArtifactVersion ?? '0.0.1')
                   ->build();
               }
             }

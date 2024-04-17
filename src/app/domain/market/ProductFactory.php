@@ -55,7 +55,7 @@ class ProductFactory
           ->makesSenseAsMavenDependency($mavenArtifact->makesSenseAsMavenDependency ?? false)
           ->doc($mavenArtifact->doc ?? false)
           ->archivedGroupId($mavenArtifact->archivedGroupId ?? $mavenArtifact->groupId)
-          ->archivedGroupIdLatestVersion($mavenArtifact->archivedGroupIdLatestVersion ?? '0.0.1')
+          ->latestArchivedArtifactVersion($mavenArtifact->latestArchivedArtifactVersion ?? '0.0.1')
           ->build();
       }
     }
@@ -79,7 +79,7 @@ class ProductFactory
           ->makesSenseAsMavenDependency($mavenArtifact->makesSenseAsMavenDependency ?? false)
           ->doc($mavenArtifact->doc ?? false)
           ->archivedGroupId($mavenArtifact->archivedGroupId ?? $mavenArtifact->groupId)
-          ->archivedGroupIdLatestVersion($mavenArtifact->archivedGroupIdLatestVersion ?? '0.0.1')
+          ->latestArchivedArtifactVersion($mavenArtifact->latestArchivedArtifactVersion ?? '0.0.1')
           ->build();
       }
     }

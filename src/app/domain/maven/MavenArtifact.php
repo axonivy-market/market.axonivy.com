@@ -26,9 +26,9 @@ class MavenArtifact
 
   private $archivedGroupId;
 
-  private $archivedGroupIdLatestVersion;
+  private $latestArchivedArtifactVersion;
 
-  function __construct($name, string $repoUrl, $groupId, $artifactId, $type, bool $makesSenseAsMavenDependency, bool $isDocumentation, $archivedGroupId, $archivedGroupIdLatestVersion)
+  function __construct($name, string $repoUrl, $groupId, $artifactId, $type, bool $makesSenseAsMavenDependency, bool $isDocumentation, $archivedGroupId, $latestArchivedArtifactVersion)
   {
     $this->name = $name;
     $this->repoUrl = $repoUrl;
@@ -38,7 +38,7 @@ class MavenArtifact
     $this->makesSenseAsMavenDependency = $makesSenseAsMavenDependency;
     $this->isDocumentation = $isDocumentation;
     $this->archivedGroupId = $archivedGroupId;
-    $this->archivedGroupIdLatestVersion = $archivedGroupIdLatestVersion;
+    $this->latestArchivedArtifactVersion = $latestArchivedArtifactVersion;
   }
 
   public static function create(): MavenArtifactBuilder
@@ -92,9 +92,9 @@ class MavenArtifact
     return $this->archivedGroupId;
   }
 
-  public function getarchivedGroupIdLatestVersion(): string
+  public function getlatestArchivedArtifactVersion(): string
   {
-    return $this->archivedGroupIdLatestVersion;
+    return $this->latestArchivedArtifactVersion;
   }
 
   public function getDocUrl(Product $product, string $version)
@@ -111,7 +111,7 @@ class MavenArtifact
 
   private function getTargetGroupIdFromVersion($version)
   {
-    if (version_compare($version, $this->archivedGroupIdLatestVersion) > 0) {
+    if (version_compare($version, $this->latestArchivedArtifactVersion) > 0) {
       return $this->groupId;
     }
     return $this->archivedGroupId;

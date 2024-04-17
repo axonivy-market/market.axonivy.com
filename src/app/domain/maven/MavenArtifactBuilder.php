@@ -16,7 +16,7 @@ class MavenArtifactBuilder
 
   private $archivedGroupId;
 
-  private $archivedGroupIdLatestVersion;
+  private $latestArchivedArtifactVersion;
 
   public function __construct()
   {
@@ -73,9 +73,9 @@ class MavenArtifactBuilder
     return $this;
   }
 
-  public function archivedGroupIdLatestVersion(string $archivedGroupIdLatestVersion): MavenArtifactBuilder
+  public function latestArchivedArtifactVersion(string $latestArchivedArtifactVersion): MavenArtifactBuilder
   {
-    $this->archivedGroupIdLatestVersion = $archivedGroupIdLatestVersion;
+    $this->latestArchivedArtifactVersion = $latestArchivedArtifactVersion;
     return $this;
   }
   public function build(): MavenArtifact
@@ -95,7 +95,7 @@ class MavenArtifactBuilder
       $this->makesSenseAsMavenDependency,
       $this->isDocumentation,
       $this->archivedGroupId,
-      $this->archivedGroupIdLatestVersion
+      $this->latestArchivedArtifactVersion
     );
   }
 

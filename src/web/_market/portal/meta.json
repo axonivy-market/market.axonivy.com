@@ -16,7 +16,7 @@
       "name": "Portal App",
       "groupId": "com.axonivy.portal",
       "archivedGroupId": "ch.ivyteam.ivy.project.portal",
-      "archivedGroupIdLatestVersion": "10.0.19",
+      "latestArchivedArtifactVersion": "10.0.19",
       "artifactId": "portal-app",
       "type": "zip"
     },
@@ -24,7 +24,7 @@
       "name": "Portal Guide",
       "groupId": "com.axonivy.portal",
       "archivedGroupId": "ch.ivyteam.ivy.project.portal",
-      "archivedGroupIdLatestVersion": "10.0.19",
+      "latestArchivedArtifactVersion": "10.0.19",
       "artifactId": "portal-guide",
       "type": "zip",
       "doc": true
