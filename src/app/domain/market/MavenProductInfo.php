@@ -38,8 +38,7 @@ class MavenProductInfo
                   ->type($project->type ?? 'iar')
                   ->makesSenseAsMavenDependency(false)
                   ->doc(false)
-                  ->archivedGroupId($project->archivedGroupId ?? $project->groupId)
-                  ->latestArchivedArtifactVersion($project->latestArchivedArtifactVersion ?? '0.0.1')
+                  ->archivedArtifact($project->archivedArtifact)
                   ->build();
               }
             }
@@ -57,8 +56,7 @@ class MavenProductInfo
                   ->type($dependency->type ?? 'iar')
                   ->makesSenseAsMavenDependency(true)
                   ->doc(false)
-                  ->archivedGroupId($dependency->archivedGroupId ?? $dependency->groupId)
-                  ->latestArchivedArtifactVersion($project->latestArchivedArtifactVersion ?? '0.0.1')
+                  ->archivedArtifact($dependency->archivedArtifact)
                   ->build();
               }
             }

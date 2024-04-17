@@ -15,16 +15,24 @@
       "key": "portal",
       "name": "Portal App",
       "groupId": "com.axonivy.portal",
-      "archivedGroupId": "ch.ivyteam.ivy.project.portal",
-      "latestArchivedArtifactVersion": "10.0.19",
+      "archivedArtifact": [
+        {
+          "groupId": "ch.ivyteam.ivy.project.portal",
+          "version": "10.0.19"
+        }
+      ],
       "artifactId": "portal-app",
       "type": "zip"
     },
     {
       "name": "Portal Guide",
       "groupId": "com.axonivy.portal",
-      "archivedGroupId": "ch.ivyteam.ivy.project.portal",
-      "latestArchivedArtifactVersion": "10.0.19",
+      "archivedArtifact": [
+        {
+          "groupId": "ch.ivyteam.ivy.project.portal",
+          "version": "10.0.19"
+        }
+      ],
       "artifactId": "portal-guide",
       "type": "zip",
       "doc": true

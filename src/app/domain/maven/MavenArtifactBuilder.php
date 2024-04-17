@@ -14,9 +14,7 @@ class MavenArtifactBuilder
   private $makesSenseAsMavenDependency = false;
   private $isDocumentation = false;
 
-  private $archivedGroupId;
-
-  private $latestArchivedArtifactVersion;
+  private $archivedArtifact;
 
   public function __construct()
   {
@@ -67,17 +65,13 @@ class MavenArtifactBuilder
     return $this;
   }
 
-  public function archivedGroupId(string $archivedGroupId): MavenArtifactBuilder
+  public function archivedArtifact(array $archivedArtifact): MavenArtifactBuilder
   {
-    $this->archivedGroupId = $archivedGroupId;
+    $this->archivedArtifact = $archivedArtifact;
     return $this;
   }
 
-  public function latestArchivedArtifactVersion(string $latestArchivedArtifactVersion): MavenArtifactBuilder
-  {
-    $this->latestArchivedArtifactVersion = $latestArchivedArtifactVersion;
-    return $this;
-  }
+
   public function build(): MavenArtifact
   {
     if (empty($this->name)) {
@@ -85,6 +79,8 @@ class MavenArtifactBuilder
         $this->name = self::toName($this->artifactId);
       }
     }
+
+    $this->archivedArtifact = $this->createArchivedArtifact();
 
     return new MavenArtifact(
       $this->name,
@@ -94,9 +90,21 @@ class MavenArtifactBuilder
       $this->type,
       $this->makesSenseAsMavenDependency,
       $this->isDocumentation,
-      $this->archivedGroupId,
-      $this->latestArchivedArtifactVersion
+      $this->archivedArtifact
     );
+  }
+
+  private function createArchivedArtifact(): array
+  {
+    if (!isset($$this->archivedArtifact)) {
+      return [];
+    }
+    $a = [];
+    foreach ($$this->archivedArtifact as $archivedArtifact) {
+      $a[] = new ArchivedArtifact($archivedArtifact->version, $archivedArtifact->groupId);
+    }
+    usort($a, fn($artifactA, $artifactB) => version_compare($artifactA->version, $artifactB->version));
+    return $a;
   }
 
   private static function toName(string $artifactId): string

@@ -5,6 +5,8 @@ namespace app\domain\maven;
 use app\domain\market\Product;
 use app\domain\Version;
 
+use function PHPUnit\Framework\isEmpty;
+
 class MavenArtifact
 {
 
@@ -24,11 +26,9 @@ class MavenArtifact
 
   private $isDocumentation;
 
-  private $archivedGroupId;
+  private $archivedArtifact;
 
-  private $latestArchivedArtifactVersion;
-
-  function __construct($name, string $repoUrl, $groupId, $artifactId, $type, bool $makesSenseAsMavenDependency, bool $isDocumentation, $archivedGroupId, $latestArchivedArtifactVersion)
+  function __construct($name, string $repoUrl, $groupId, $artifactId, $type, bool $makesSenseAsMavenDependency, bool $isDocumentation, array $archivedArtifact)
   {
     $this->name = $name;
     $this->repoUrl = $repoUrl;
@@ -37,8 +37,7 @@ class MavenArtifact
     $this->type = $type;
     $this->makesSenseAsMavenDependency = $makesSenseAsMavenDependency;
     $this->isDocumentation = $isDocumentation;
-    $this->archivedGroupId = $archivedGroupId;
-    $this->latestArchivedArtifactVersion = $latestArchivedArtifactVersion;
+    $this->archivedArtifact = $archivedArtifact;
   }
 
   public static function create(): MavenArtifactBuilder
@@ -87,14 +86,9 @@ class MavenArtifact
     return $this->isDocumentation;
   }
 
-  public function getDeprecateGroupId(): string
+  public function getArchivedArtifact(): array
   {
-    return $this->archivedGroupId;
-  }
-
-  public function getlatestArchivedArtifactVersion(): string
-  {
-    return $this->latestArchivedArtifactVersion;
+    return $this->archivedArtifact;
   }
 
   public function getDocUrl(Product $product, string $version)
@@ -111,10 +105,22 @@ class MavenArtifact
 
   private function getTargetGroupIdFromVersion($version)
   {
-    if (version_compare($version, $this->latestArchivedArtifactVersion) > 0) {
+    if (isEmpty($this->archivedArtifact)) {
       return $this->groupId;
     }
-    return $this->archivedGroupId;
+
+    foreach ($this->archivedArtifact as $artifact) {
+      if (version_compare($artifact->version, $version, 'le')) {
+        return $artifact->groupId;
+      }
+    }
+    return $this->groupId;
+  }
+
+  private function getBaseUrlFromVersion($version)
+  {
+    $targetGroupId = $this->getTargetGroupIdFromVersion($version);
+    return $this->getBaseUrlFromGroupId($targetGroupId);
   }
 
   public function getConcreteVersion($version)
@@ -140,12 +146,6 @@ class MavenArtifact
   private function getBaseUrl()
   {
     return $this->getBaseUrlFromGroupId($this->groupId);
-  }
-
-  private function getBaseUrlFromVersion($version)
-  {
-    $targetGroupId = $this->getTargetGroupIdFromVersion($version);
-    return $this->getBaseUrlFromGroupId($targetGroupId);
   }
 
   private function getBaseUrlFromGroupId($targetGroupId)

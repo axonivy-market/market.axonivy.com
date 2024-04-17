@@ -2,6 +2,7 @@
 
 namespace app\domain\market;
 
+use app\domain\maven\ArchivedArtifact;
 use app\domain\maven\MavenArtifact;
 use app\Config;
 
@@ -54,8 +55,7 @@ class ProductFactory
           ->type($mavenArtifact->type ?? 'iar')
           ->makesSenseAsMavenDependency($mavenArtifact->makesSenseAsMavenDependency ?? false)
           ->doc($mavenArtifact->doc ?? false)
-          ->archivedGroupId($mavenArtifact->archivedGroupId ?? $mavenArtifact->groupId)
-          ->latestArchivedArtifactVersion($mavenArtifact->latestArchivedArtifactVersion ?? '0.0.1')
+          ->archivedArtifact(self::createArchivedArtifact($mavenArtifact))
           ->build();
       }
     }
@@ -78,11 +78,23 @@ class ProductFactory
           ->type($mavenArtifact->type ?? 'iar')
           ->makesSenseAsMavenDependency($mavenArtifact->makesSenseAsMavenDependency ?? false)
           ->doc($mavenArtifact->doc ?? false)
-          ->archivedGroupId($mavenArtifact->archivedGroupId ?? $mavenArtifact->groupId)
-          ->latestArchivedArtifactVersion($mavenArtifact->latestArchivedArtifactVersion ?? '0.0.1')
+          ->archivedArtifact(self::createArchivedArtifact($mavenArtifact))
           ->build();
       }
     }
+    return $a;
+  }
+
+  private static function createArchivedArtifact($mavenArtifact): array
+  {
+    if (!isset($mavenArtifact->archivedArtifact)) {
+      return [];
+    }
+    $a = [];
+    foreach ($mavenArtifact->archivedArtifact as $archivedArtifact) {
+      $a[] = new ArchivedArtifact($archivedArtifact->version, $archivedArtifact->groupId);
+    }
+    usort($a, fn($artifactA, $artifactB) => version_compare($artifactA->version, $artifactB->version));
     return $a;
   }
 }
