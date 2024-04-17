@@ -14,14 +14,17 @@ class MavenArtifactBuilder
   private $makesSenseAsMavenDependency = false;
   private $isDocumentation = false;
 
+  private $deprecatedGroupId;
+
+  private $deprecatedGroupIdLatestVersion;
+
   public function __construct()
   {
   }
-  
+
   public function repoUrl(string $repoUrl): MavenArtifactBuilder
   {
-    if (!str_ends_with($repoUrl, '/'))
-    {
+    if (!str_ends_with($repoUrl, '/')) {
       $repoUrl = $repoUrl . '/';
     }
     $this->repoUrl = $repoUrl;
@@ -64,6 +67,17 @@ class MavenArtifactBuilder
     return $this;
   }
 
+  public function deprecatedGroupId(string $deprecatedGroupId): MavenArtifactBuilder
+  {
+    $this->deprecatedGroupId = $deprecatedGroupId;
+    return $this;
+  }
+
+  public function deprecatedGroupIdVersion(string $deprecatedGroupIdLatestVersion): MavenArtifactBuilder
+  {
+    $this->deprecatedGroupIdLatestVersion = $deprecatedGroupIdLatestVersion;
+    return $this;
+  }
   public function build(): MavenArtifact
   {
     if (empty($this->name)) {
@@ -79,11 +93,14 @@ class MavenArtifactBuilder
       $this->artifactId,
       $this->type,
       $this->makesSenseAsMavenDependency,
-      $this->isDocumentation
+      $this->isDocumentation,
+      $this->deprecatedGroupId,
+      $this->deprecatedGroupIdLatestVersion
     );
   }
 
-  private static function toName(string $artifactId): string {
+  private static function toName(string $artifactId): string
+  {
     $names = explode("-", $artifactId);
     $name = implode(" ", $names);
     $name = ucwords($name);

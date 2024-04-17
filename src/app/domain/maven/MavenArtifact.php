@@ -11,7 +11,7 @@ class MavenArtifact
   private $name;
 
   private string $repoUrl;
-  
+
   private $groupId;
 
   private $artifactId;
@@ -23,8 +23,12 @@ class MavenArtifact
   private $makesSenseAsMavenDependency;
 
   private $isDocumentation;
-  
-  function __construct($name, string $repoUrl, $groupId, $artifactId, $type, bool $makesSenseAsMavenDependency, bool $isDocumentation)
+
+  private $deprecatedGroupId;
+
+  private $deprecatedGroupIdLatestVersion;
+
+  function __construct($name, string $repoUrl, $groupId, $artifactId, $type, bool $makesSenseAsMavenDependency, bool $isDocumentation, $deprecatedGroupId, $deprecatedGroupIdLatestVersion)
   {
     $this->name = $name;
     $this->repoUrl = $repoUrl;
@@ -33,6 +37,8 @@ class MavenArtifact
     $this->type = $type;
     $this->makesSenseAsMavenDependency = $makesSenseAsMavenDependency;
     $this->isDocumentation = $isDocumentation;
+    $this->deprecatedGroupId = $deprecatedGroupId;
+    $this->deprecatedGroupIdLatestVersion = $deprecatedGroupIdLatestVersion;
   }
 
   public static function create(): MavenArtifactBuilder
@@ -40,12 +46,12 @@ class MavenArtifact
     return new MavenArtifactBuilder();
   }
 
-  
+
   public function getRepoUrl(): string
   {
     return $this->repoUrl;
   }
-  
+
   public function getGroupId(): string
   {
     return $this->groupId;
@@ -55,7 +61,7 @@ class MavenArtifact
   {
     return $this->artifactId;
   }
-  
+
   public function isProduct(): bool
   {
     return str_ends_with($this->getArtifactId(), '-product');
@@ -81,6 +87,16 @@ class MavenArtifact
     return $this->isDocumentation;
   }
 
+  public function getDeprecateGroupId(): string
+  {
+    return $this->deprecatedGroupId;
+  }
+
+  public function getDeprecatedGroupIdLatestVersion(): string
+  {
+    return $this->deprecatedGroupIdLatestVersion;
+  }
+
   public function getDocUrl(Product $product, string $version)
   {
     return '/market-cache/' . $product->getKey() . '/' . $this->artifactId . '/' . $version;
@@ -91,6 +107,14 @@ class MavenArtifact
     $concretVersion = $this->getConcreteVersion($version);
     $baseUrl = $this->getBaseUrl();
     return $baseUrl . '/' . $version . '/' . $this->artifactId . '-' . $concretVersion . '.' . $this->type;
+  }
+
+  private function getTargetGroupId($version)
+  {
+    if (version_compare($this->deprecatedGroupIdLatestVersion, $version) > 0) {
+      return $this->deprecatedGroupId;
+    }
+    return $this->groupId;
   }
 
   public function getConcreteVersion($version)
@@ -115,7 +139,19 @@ class MavenArtifact
 
   private function getBaseUrl()
   {
-    $groupId = str_replace('.', '/', $this->groupId);
+    return $this->getBaseUrlFromGroupId($this->groupId);
+  }
+
+  private function getTargetBaseUrlFromVersion($version)
+  {
+    $targetGroupId = $this->getTargetGroupId($version);
+    $groupId = str_replace('.', '/', $targetGroupId);
+    return $this->repoUrl . "$groupId/" . $this->artifactId;
+  }
+
+  private function getBaseUrlFromGroupId($targetGroupId)
+  {
+    $groupId = str_replace('.', '/', $targetGroupId);
     return $this->repoUrl . "$groupId/" . $this->artifactId;
   }
 
@@ -135,12 +171,12 @@ class MavenArtifact
 
       usort($v, 'version_compare');
       $v = array_reverse($v);
-      $v = self::filterSnapshotsWhichAreRealesed($v);      
+      $v = self::filterSnapshotsWhichAreRealesed($v);
       $this->versionCache = $v;
     }
     return $this->versionCache;
   }
-  
+
   public static function filterSnapshotsBetweenReleasedVersions(array $versions): array
   {
     return array_values(array_filter($versions, fn($version) => self::filterBetweenSnapshots($versions, $version)));
@@ -166,7 +202,7 @@ class MavenArtifact
   {
     return array_values(array_filter($versions, fn($version) => self::filterReleasedSnapshots($versions, $version)));
   }
-  
+
   private static function filterReleasedSnapshots(array $versions, string $v): bool
   {
     if (str_ends_with($v, '-SNAPSHOT')) {
