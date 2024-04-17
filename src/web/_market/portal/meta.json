@@ -12,38 +12,28 @@
   "installMatcher": "best-match",
   "mavenArtifacts": [
     {
-      "key": "portal-10",
-      "name": "Portal App (10.0)",
-      "groupId": "ch.ivyteam.ivy.project.portal",
-      "artifactId": "portal-app",
-      "type": "zip"
-    },
-    {
-      "name": "Portal Guide (10.0)",
-      "groupId": "ch.ivyteam.ivy.project.portal",
-      "artifactId": "portal-guide",
-      "type" : "zip",
-      "doc": true
-    },
-    {
       "key": "portal",
       "name": "Portal App",
       "groupId": "com.axonivy.portal",
+      "archivedGroupId": "ch.ivyteam.ivy.project.portal",
+      "archivedGroupIdLatestVersion": "10.0.19",
       "artifactId": "portal-app",
       "type": "zip"
     },
     {
       "name": "Portal Guide",
       "groupId": "com.axonivy.portal",
+      "archivedGroupId": "ch.ivyteam.ivy.project.portal",
+      "archivedGroupIdLatestVersion": "10.0.19",
       "artifactId": "portal-guide",
-      "type" : "zip",
+      "type": "zip",
       "doc": true
     },
     {
       "name": "Portal Product",
       "groupId": "com.axonivy.portal",
       "artifactId": "portal-product",
-      "type" : "zip"
+      "type": "zip"
     }
   ]	
 }

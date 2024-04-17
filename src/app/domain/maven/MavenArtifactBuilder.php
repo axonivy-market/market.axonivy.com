@@ -14,9 +14,9 @@ class MavenArtifactBuilder
   private $makesSenseAsMavenDependency = false;
   private $isDocumentation = false;
 
-  private $deprecatedGroupId;
+  private $archivedGroupId;
 
-  private $deprecatedGroupIdLatestVersion;
+  private $archivedGroupIdLatestVersion;
 
   public function __construct()
   {
@@ -67,15 +67,15 @@ class MavenArtifactBuilder
     return $this;
   }
 
-  public function deprecatedGroupId(string $deprecatedGroupId): MavenArtifactBuilder
+  public function archivedGroupId(string $archivedGroupId): MavenArtifactBuilder
   {
-    $this->deprecatedGroupId = $deprecatedGroupId;
+    $this->archivedGroupId = $archivedGroupId;
     return $this;
   }
 
-  public function deprecatedGroupIdVersion(string $deprecatedGroupIdLatestVersion): MavenArtifactBuilder
+  public function archivedGroupIdLatestVersion(string $archivedGroupIdLatestVersion): MavenArtifactBuilder
   {
-    $this->deprecatedGroupIdLatestVersion = $deprecatedGroupIdLatestVersion;
+    $this->archivedGroupIdLatestVersion = $archivedGroupIdLatestVersion;
     return $this;
   }
   public function build(): MavenArtifact
@@ -94,8 +94,8 @@ class MavenArtifactBuilder
       $this->type,
       $this->makesSenseAsMavenDependency,
       $this->isDocumentation,
-      $this->deprecatedGroupId,
-      $this->deprecatedGroupIdLatestVersion
+      $this->archivedGroupId,
+      $this->archivedGroupIdLatestVersion
     );
   }
 

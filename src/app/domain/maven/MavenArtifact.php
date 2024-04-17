@@ -24,11 +24,11 @@ class MavenArtifact
 
   private $isDocumentation;
 
-  private $deprecatedGroupId;
+  private $archivedGroupId;
 
-  private $deprecatedGroupIdLatestVersion;
+  private $archivedGroupIdLatestVersion;
 
-  function __construct($name, string $repoUrl, $groupId, $artifactId, $type, bool $makesSenseAsMavenDependency, bool $isDocumentation, $deprecatedGroupId, $deprecatedGroupIdLatestVersion)
+  function __construct($name, string $repoUrl, $groupId, $artifactId, $type, bool $makesSenseAsMavenDependency, bool $isDocumentation, $archivedGroupId, $archivedGroupIdLatestVersion)
   {
     $this->name = $name;
     $this->repoUrl = $repoUrl;
@@ -37,8 +37,8 @@ class MavenArtifact
     $this->type = $type;
     $this->makesSenseAsMavenDependency = $makesSenseAsMavenDependency;
     $this->isDocumentation = $isDocumentation;
-    $this->deprecatedGroupId = $deprecatedGroupId;
-    $this->deprecatedGroupIdLatestVersion = $deprecatedGroupIdLatestVersion;
+    $this->archivedGroupId = $archivedGroupId;
+    $this->archivedGroupIdLatestVersion = $archivedGroupIdLatestVersion;
   }
 
   public static function create(): MavenArtifactBuilder
@@ -89,12 +89,12 @@ class MavenArtifact
 
   public function getDeprecateGroupId(): string
   {
-    return $this->deprecatedGroupId;
+    return $this->archivedGroupId;
   }
 
-  public function getDeprecatedGroupIdLatestVersion(): string
+  public function getarchivedGroupIdLatestVersion(): string
   {
-    return $this->deprecatedGroupIdLatestVersion;
+    return $this->archivedGroupIdLatestVersion;
   }
 
   public function getDocUrl(Product $product, string $version)
@@ -105,22 +105,22 @@ class MavenArtifact
   public function getUrl($version)
   {
     $concretVersion = $this->getConcreteVersion($version);
-    $baseUrl = $this->getBaseUrl();
+    $baseUrl = $this->getTargetBaseUrlFromVersion($version);
     return $baseUrl . '/' . $version . '/' . $this->artifactId . '-' . $concretVersion . '.' . $this->type;
   }
 
   private function getTargetGroupId($version)
   {
-    if (version_compare($this->deprecatedGroupIdLatestVersion, $version) > 0) {
-      return $this->deprecatedGroupId;
+    if (version_compare($version, $this->archivedGroupIdLatestVersion) > 0) {
+      return $this->groupId;
     }
-    return $this->groupId;
+    return $this->archivedGroupId;
   }
 
   public function getConcreteVersion($version)
   {
     if (str_contains($version, 'SNAPSHOT')) {
-      $baseUrl = $this->getBaseUrl();
+      $baseUrl = $this->getTargetBaseUrlFromVersion($version);
       $xml = HttpRequester::request("$baseUrl/$version/maven-metadata.xml");
       if (empty($xml)) {
         return "";

@@ -75,8 +75,8 @@ class ProductFactory
           ->type($mavenArtifact->type ?? 'iar')
           ->makesSenseAsMavenDependency($mavenArtifact->makesSenseAsMavenDependency ?? false)
           ->doc($mavenArtifact->doc ?? false)
-          ->deprecatedGroupId($mavenArtifact->deprecatedGroupId ?? $mavenArtifact->groupId)
-          ->deprecatedGroupIdVersion($mavenArtifact->deprecatedGroupIdVersion ?? '0.0.1')
+          ->archivedGroupId($mavenArtifact->archivedGroupId ?? $mavenArtifact->groupId)
+          ->archivedGroupIdLatestVersion($mavenArtifact->archivedGroupIdLatestVersion ?? '0.0.1')
           ->build();
       }
     }
@@ -99,8 +99,8 @@ class ProductFactory
           ->type($mavenArtifact->type ?? 'iar')
           ->makesSenseAsMavenDependency($mavenArtifact->makesSenseAsMavenDependency ?? false)
           ->doc($mavenArtifact->doc ?? false)
-          ->deprecatedGroupId($mavenArtifact->deprecatedGroupId ?? $mavenArtifact->groupId)
-          ->deprecatedGroupIdVersion($mavenArtifact->deprecatedGroupIdVersion ?? '0.0.1')
+          ->archivedGroupId($mavenArtifact->archivedGroupId ?? $mavenArtifact->groupId)
+          ->archivedGroupIdLatestVersion($mavenArtifact->archivedGroupIdLatestVersion ?? '0.0.1')
           ->build();
       }
     }

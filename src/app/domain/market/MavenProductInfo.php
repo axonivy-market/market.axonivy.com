@@ -38,8 +38,8 @@ class MavenProductInfo
                   ->type($project->type ?? 'iar')
                   ->makesSenseAsMavenDependency(false)
                   ->doc(false)
-                  ->deprecatedGroupId($project->deprecatedGroupId ?? $project->groupId)
-                  ->deprecatedGroupIdVersion($project->deprecatedGroupIdVersion ?? '0.0.1')
+                  ->archivedGroupId($project->archivedGroupId ?? $project->groupId)
+                  ->archivedGroupIdLatestVersion($project->archivedGroupIdLatestVersion ?? '0.0.1')
                   ->build();
               }
             }
@@ -57,8 +57,8 @@ class MavenProductInfo
                   ->type($dependency->type ?? 'iar')
                   ->makesSenseAsMavenDependency(true)
                   ->doc(false)
-                  ->deprecatedGroupId($project->deprecatedGroupId ?? $project->groupId)
-                  ->deprecatedGroupIdVersion($project->deprecatedGroupIdVersion ?? '0.0.1')
+                  ->archivedGroupId($dependency->archivedGroupId ?? $dependency->groupId)
+                  ->archivedGroupIdLatestVersion($project->archivedGroupIdLatestVersion ?? '0.0.1')
                   ->build();
               }
             }
