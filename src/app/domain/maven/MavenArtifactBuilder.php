@@ -13,7 +13,6 @@ class MavenArtifactBuilder
   private $type = 'iar';
   private $makesSenseAsMavenDependency = false;
   private $isDocumentation = false;
-
   private array $archivedArtifact;
 
   public function __construct()
