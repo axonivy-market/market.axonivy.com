@@ -105,13 +105,13 @@ class MavenArtifact
 
   private function getTargetGroupIdFromVersion($version)
   {
-    if (isEmpty($this->archivedArtifact)) {
+    if ($this->archivedArtifact === []) {
       return $this->groupId;
     }
 
     foreach ($this->archivedArtifact as $artifact) {
-      if (version_compare($artifact->version, $version, 'le')) {
-        return $artifact->groupId;
+      if (version_compare($artifact->getVersion(), $version, 'ge')) {
+        return $artifact->getgroupId();
       }
     }
     return $this->groupId;
