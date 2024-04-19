@@ -111,6 +111,7 @@ class MavenArtifact
 
     foreach ($this->archivedArtifact as $artifact) {
       if (version_compare($artifact->getVersion(), $version, 'ge')) {
+        error_log($artifact->getVersion());
         return $artifact->getgroupId();
       }
     }

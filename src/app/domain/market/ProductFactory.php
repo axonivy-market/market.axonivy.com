@@ -92,9 +92,10 @@ class ProductFactory
     }
     $a = [];
     foreach ($mavenArtifact->archivedArtifact as $archivedArtifact) {
+      error_log($archivedArtifact->version);
       $a[] = new ArchivedArtifact($archivedArtifact->version, $archivedArtifact->groupId);
     }
-    usort($a, fn($artifactA, $artifactB) => version_compare($artifactA->version, $artifactB->version));
+    usort($a, fn ($artifactA, $artifactB) => version_compare($artifactA->getVersion(), $artifactB->getVersion()));
     return $a;
   }
 }

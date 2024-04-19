@@ -71,7 +71,6 @@ class MavenArtifactBuilder
     return $this;
   }
 
-
   public function build(): MavenArtifact
   {
     if (empty($this->name)) {
@@ -103,7 +102,7 @@ class MavenArtifactBuilder
     foreach ($archivedArtifact as $artifact) {
       $a[] = new ArchivedArtifact($artifact->getVersion(), $artifact->getGroupId());
     }
-    usort($a, fn($artifactA, $artifactB) => version_compare($artifactA->getVersion(), $artifactB->getVersion()));
+    usort($a, fn ($artifactA, $artifactB) => version_compare($artifactA->getVersion(), $artifactB->getVersion()));
     return $a;
   }
 
