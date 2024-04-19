@@ -14,7 +14,7 @@ class MavenArtifactBuilder
   private $makesSenseAsMavenDependency = false;
   private $isDocumentation = false;
 
-  private $archivedArtifact;
+  private array $archivedArtifact;
 
   public function __construct()
   {
@@ -80,7 +80,7 @@ class MavenArtifactBuilder
       }
     }
 
-    $this->archivedArtifact = $this->createArchivedArtifact();
+    $this->archivedArtifact = self::createArchivedArtifact($this->archivedArtifact);
 
     return new MavenArtifact(
       $this->name,
@@ -94,14 +94,14 @@ class MavenArtifactBuilder
     );
   }
 
-  private function createArchivedArtifact(): array
+  private static function createArchivedArtifact($archivedArtifact): array
   {
-    if (!isset($this->archivedArtifact)) {
+    if (!isset($archivedArtifact)) {
       return [];
     }
     $a = [];
-    foreach ($this->archivedArtifact as $archivedArtifact) {
-      $a[] = new ArchivedArtifact($archivedArtifact->version, $archivedArtifact->groupId);
+    foreach ($archivedArtifact as $artifact) {
+      $a[] = new ArchivedArtifact($artifact->version, $artifact->groupId);
     }
     usort($a, fn($artifactA, $artifactB) => version_compare($artifactA->version, $artifactB->version));
     return $a;
