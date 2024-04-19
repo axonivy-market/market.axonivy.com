@@ -1,4 +1,5 @@
 <?php
+
 namespace app\domain\maven;
 
 class ArchivedArtifact
