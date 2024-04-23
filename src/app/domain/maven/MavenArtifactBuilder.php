@@ -13,7 +13,7 @@ class MavenArtifactBuilder
   private $type = 'iar';
   private $makesSenseAsMavenDependency = false;
   private $isDocumentation = false;
-  private array $archivedArtifact;
+  private array $archivedArtifacts;
 
   public function __construct()
   {
@@ -64,9 +64,9 @@ class MavenArtifactBuilder
     return $this;
   }
 
-  public function archivedArtifact(array $archivedArtifact): MavenArtifactBuilder
+  public function archivedArtifacts(array $archivedArtifacts): MavenArtifactBuilder
   {
-    $this->archivedArtifact = $archivedArtifact;
+    $this->archivedArtifacts = $archivedArtifacts;
     return $this;
   }
 
@@ -78,7 +78,7 @@ class MavenArtifactBuilder
       }
     }
 
-    $this->archivedArtifact = self::createArchivedArtifact($this->archivedArtifact);
+    $this->archivedArtifacts = self::createArchivedArtifacts($this->archivedArtifacts);
 
     return new MavenArtifact(
       $this->name,
@@ -88,18 +88,18 @@ class MavenArtifactBuilder
       $this->type,
       $this->makesSenseAsMavenDependency,
       $this->isDocumentation,
-      $this->archivedArtifact
+      $this->archivedArtifacts
     );
   }
 
-  private static function createArchivedArtifact($archivedArtifact): array
+  private static function createArchivedArtifacts($archivedArtifacts): array
   {
-    if (!isset($archivedArtifact)) {
+    if (!isset($archivedArtifacts)) {
       return [];
     }
     $a = [];
-    foreach ($archivedArtifact as $artifact) {
-      $a[] = new ArchivedArtifact($artifact->getVersion(), $artifact->getGroupId());
+    foreach ($archivedArtifacts as $artifact) {
+      $a[] = new ArchivedArtifact($artifact->version, $artifact->groupId, $artifact->artifactId);
     }
     usort($a, fn ($artifactA, $artifactB) => version_compare($artifactA->getVersion(), $artifactB->getVersion()));
     return $a;

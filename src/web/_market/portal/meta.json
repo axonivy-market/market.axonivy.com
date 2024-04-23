@@ -15,10 +15,11 @@
       "key": "portal",
       "name": "Portal App",
       "groupId": "com.axonivy.portal",
-      "archivedArtifact": [
+      "archivedArtifacts": [
         {
           "groupId": "ch.ivyteam.ivy.project.portal",
-          "version": "10.0.19"
+          "version": "10.0.19",
+          "artifactId": "portal-app"
         }
       ],
       "artifactId": "portal-app",
@@ -27,10 +28,11 @@
     {
       "name": "Portal Guide",
       "groupId": "com.axonivy.portal",
-      "archivedArtifact": [
+      "archivedArtifacts": [
         {
           "groupId": "ch.ivyteam.ivy.project.portal",
-          "version": "10.0.19"
+          "version": "10.0.19",
+          "artifactId": "portal-guide"
         }
       ],
       "artifactId": "portal-guide",

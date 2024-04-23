@@ -8,10 +8,13 @@ class ArchivedArtifact
 
     private string $groupId;
 
-    public function __construct(string $version, string $groupId)
+    private string $artifactId;
+
+    public function __construct(string $version, string $groupId, string $artifactId)
     {
         $this->version = $version;
         $this->groupId = $groupId;
+        $this->artifactId = $artifactId;
     }
 
     public function getVersion(): string
@@ -22,5 +25,10 @@ class ArchivedArtifact
     public function getGroupId(): string
     {
         return $this->groupId;
+    }
+
+    public function getArtifactId(): string
+    {
+        return $this->artifactId;
     }
 }

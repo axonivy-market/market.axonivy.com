@@ -38,7 +38,7 @@ class MavenProductInfo
                   ->type($project->type ?? 'iar')
                   ->makesSenseAsMavenDependency(false)
                   ->doc(false)
-                  ->archivedArtifact($project->archivedArtifact ?? [])
+                  ->archivedArtifacts($project->archivedArtifacts ?? [])
                   ->build();
               }
             }
@@ -56,7 +56,7 @@ class MavenProductInfo
                   ->type($dependency->type ?? 'iar')
                   ->makesSenseAsMavenDependency(true)
                   ->doc(false)
-                  ->archivedArtifact($dependency->archivedArtifact ?? [])
+                  ->archivedArtifacts($project->archivedArtifacts ?? [])
                   ->build();
               }
             }

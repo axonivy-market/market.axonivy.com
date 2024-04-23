@@ -55,7 +55,7 @@ class ProductFactory
           ->type($mavenArtifact->type ?? 'iar')
           ->makesSenseAsMavenDependency($mavenArtifact->makesSenseAsMavenDependency ?? false)
           ->doc($mavenArtifact->doc ?? false)
-          ->archivedArtifact(self::createArchivedArtifact($mavenArtifact))
+          ->archivedArtifacts($mavenArtifact->archivedArtifacts ?? [])
           ->build();
       }
     }
@@ -78,23 +78,23 @@ class ProductFactory
           ->type($mavenArtifact->type ?? 'iar')
           ->makesSenseAsMavenDependency($mavenArtifact->makesSenseAsMavenDependency ?? false)
           ->doc($mavenArtifact->doc ?? false)
-          ->archivedArtifact(self::createArchivedArtifact($mavenArtifact))
+          ->archivedArtifacts($mavenArtifact->archivedArtifacts ?? [])
           ->build();
       }
     }
     return $a;
   }
 
-  private static function createArchivedArtifact($mavenArtifact): array
-  {
-    if (!isset($mavenArtifact->archivedArtifact)) {
-      return [];
-    }
-    $a = [];
-    foreach ($mavenArtifact->archivedArtifact as $archivedArtifact) {
-      $a[] = new ArchivedArtifact($archivedArtifact->version, $archivedArtifact->groupId);
-    }
-    usort($a, fn ($artifactA, $artifactB) => version_compare($artifactA->getVersion(), $artifactB->getVersion()));
-    return $a;
-  }
+  // private static function createArchivedArtifacts($mavenArtifacts): array
+  // {
+  //   if (!isset($mavenArtifacts->archivedArtifacts)) {
+  //     return [];
+  //   }
+  //   $a = [];
+  //   foreach ($mavenArtifacts->archivedArtifacts as $archivedArtifact) {
+  //     $a[] = new ArchivedArtifact($archivedArtifact->version, $archivedArtifact->groupId, $archivedArtifact->artifactId);
+  //   }
+  //   usort($a, fn ($artifactA, $artifactB) => version_compare($artifactA->getVersion(), $artifactB->getVersion()));
+  //   return $a;
+  // }
 }
