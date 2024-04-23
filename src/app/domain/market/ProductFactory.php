@@ -84,17 +84,4 @@ class ProductFactory
     }
     return $a;
   }
-
-  // private static function createArchivedArtifacts($mavenArtifacts): array
-  // {
-  //   if (!isset($mavenArtifacts->archivedArtifacts)) {
-  //     return [];
-  //   }
-  //   $a = [];
-  //   foreach ($mavenArtifacts->archivedArtifacts as $archivedArtifact) {
-  //     $a[] = new ArchivedArtifact($archivedArtifact->version, $archivedArtifact->groupId, $archivedArtifact->artifactId);
-  //   }
-  //   usort($a, fn ($artifactA, $artifactB) => version_compare($artifactA->getVersion(), $artifactB->getVersion()));
-  //   return $a;
-  // }
 }
