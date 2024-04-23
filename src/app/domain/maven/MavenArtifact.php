@@ -108,7 +108,7 @@ class MavenArtifact
     }
 
     foreach ($this->archivedArtifacts as $artifact) {
-      if (version_compare($artifact->getVersion(), $version, 'ge')) {
+      if (version_compare($artifact->getLastVersion(), $version, 'ge')) {
         return $artifact->getgroupId();
       }
     }
@@ -122,7 +122,7 @@ class MavenArtifact
     }
 
     foreach ($this->archivedArtifacts as $artifact) {
-      if (version_compare($artifact->getVersion(), $version, 'ge')) {
+      if (version_compare($artifact->getLastVersion(), $version, 'ge')) {
         return $artifact->getArtifactId();
       }
     }

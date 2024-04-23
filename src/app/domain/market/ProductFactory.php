@@ -2,7 +2,6 @@
 
 namespace app\domain\market;
 
-use app\domain\maven\ArchivedArtifact;
 use app\domain\maven\MavenArtifact;
 use app\Config;
 

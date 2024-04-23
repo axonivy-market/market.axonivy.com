@@ -99,9 +99,9 @@ class MavenArtifactBuilder
     }
     $a = [];
     foreach ($archivedArtifacts as $artifact) {
-      $a[] = new ArchivedArtifact($artifact->version, $artifact->groupId, $artifact->artifactId);
+      $a[] = new ArchivedArtifact($artifact->lastVersion, $artifact->groupId, $artifact->artifactId);
     }
-    usort($a, fn ($artifactA, $artifactB) => version_compare($artifactA->getVersion(), $artifactB->getVersion()));
+    usort($a, fn($artifactA, $artifactB) => version_compare($artifactA->getLastVersion(), $artifactB->getLastVersion()));
     return $a;
   }
 
