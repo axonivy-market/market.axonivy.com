@@ -46,6 +46,12 @@ class MavenArtifactTest extends TestCase
     $this->assertEquals('Workflow Demos', $artifact->getName());
   }
 
+  public function testArchivedMavenArtifact()
+  {
+    $artifact = self::getMavenArtifact('portal-app', 'zip');
+    $this->assertEquals('', $artifact->getName());
+  }
+
   public function testGetMavenArtifact_notExisting()
   {
     $artifact = self::getMavenArtifact('does not exist', '');
@@ -132,6 +138,24 @@ class MavenArtifactTest extends TestCase
     (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('doc-factory'), "10.0.0");
     $artifact = self::getMavenArtifact('doc-factory-doc', 'zip');
     Assert::assertEquals('DocFactory Documentation', $artifact->getName());
+  }
+
+  public function test_getTargetGroupIdFromVersion() {
+    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('portal-app'), "10.0.0");
+    $artifact = MavenArtifactTest::getMavenArtifact('portal-app', 'zip');
+    Assert::assertEquals('ch.ivyteam.ivy.project.portal', $artifact->getTargetGroupIdFromVersion("10.0.0"));
+  }
+
+  public function test_getTargetArtifactIdFromVersion() {
+    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('portal-app'), "10.0.0");
+    $artifact = MavenArtifactTest::getMavenArtifact('portal-app', 'zip');
+    Assert::assertEquals('portal-app', $artifact->getTargetArtifactIdFromVersion("10.0.0"));
+  }
+
+  public function test_getBaseUrlFromVersion() {
+    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('portal-app'), "10.0.0");
+    $artifact = MavenArtifactTest::getMavenArtifact('portal-app', 'zip');
+    Assert::assertEquals($artifact->getRepoUrl()."ch/ivyteam/ivy/project/portal/portal-app", $artifact->getBaseUrlFromVersion("10.0.0"));
   }
 
   public static function getMavenArtifact(string $artifactId, string $type): ?MavenArtifact

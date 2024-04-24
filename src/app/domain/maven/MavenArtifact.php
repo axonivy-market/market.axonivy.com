@@ -103,7 +103,7 @@ class MavenArtifact
     return $baseUrl . '/' . $version . '/' . $artifactId . '-' . $concretVersion . '.' . $this->type;
   }
 
-  private function getTargetGroupIdFromVersion($version)
+  public function getTargetGroupIdFromVersion($version)
   {
     if ($this->archivedArtifacts === []) {
       return $this->groupId;
@@ -117,7 +117,7 @@ class MavenArtifact
     return $this->groupId;
   }
 
-  private function getTargetArtifactIdFromVersion($version)
+  public function getTargetArtifactIdFromVersion($version)
   {
     if ($this->archivedArtifacts === []) {
       return $this->artifactId;
@@ -131,7 +131,7 @@ class MavenArtifact
     return $this->artifactId;
   }
 
-  private function getBaseUrlFromVersion($version)
+  public function getBaseUrlFromVersion($version)
   {
     $targetGroupId = $this->getTargetGroupIdFromVersion($version);
     $targetArtifactId = $this->getTargetArtifactIdFromVersion($version);
