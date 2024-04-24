@@ -91,14 +91,16 @@ class MavenArtifact
 
   public function getDocUrl(Product $product, string $version)
   {
-    return '/market-cache/' . $product->getKey() . '/' . $this->artifactId . '/' . $version;
+    $artifactId = $this->getTargetArtifactIdFromVersion($version);
+    return '/market-cache/' . $product->getKey() . '/' . $artifactId . '/' . $version;
   }
 
   public function getUrl($version)
   {
     $concretVersion = $this->getConcreteVersion($version);
     $baseUrl = $this->getBaseUrlFromVersion($version);
-    return $baseUrl . '/' . $version . '/' . $this->artifactId . '-' . $concretVersion . '.' . $this->type;
+    $artifactId = $this->getTargetArtifactIdFromVersion($version);
+    return $baseUrl . '/' . $version . '/' . $artifactId . '-' . $concretVersion . '.' . $this->type;
   }
 
   private function getTargetGroupIdFromVersion($version)
