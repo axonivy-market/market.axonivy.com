@@ -161,7 +161,7 @@ class MavenArtifact
     return $this->repoUrl . "$groupId/" . $artifactId;
   }
 
-  public function getVersionFromTargetGroupIdAndArtifactId($targetGroupId, $targetArtifactId)
+  public function getVersionsFromTargetGroupIdAndArtifactId($targetGroupId, $targetArtifactId)
   {
     $baseUrl = $this->getBaseUrlFromGroupIdAndArtifactId($targetGroupId, $targetArtifactId);
     $xml = HttpRequester::request("$baseUrl/maven-metadata.xml");
@@ -174,7 +174,7 @@ class MavenArtifact
   public function getVersions(): array
   {
     if ($this->versionCache == null) {
-      $v = $this->getVersionFromTargetGroupIdAndArtifactId($this->groupId, $this->artifactId);
+      $v = $this->getVersionsFromTargetGroupIdAndArtifactId($this->groupId, $this->artifactId);
       if (empty($v)) {
 
         $this->versionCache = [];
@@ -183,7 +183,7 @@ class MavenArtifact
 
       if (isset($this->archivedArtifacts)) {
         foreach ($this->archivedArtifacts as $artifact) {
-          $archivedVersions = $this->getVersionFromTargetGroupIdAndArtifactId($artifact->getGroupId(), $artifact->getArtifactId());
+          $archivedVersions = $this->getVersionsFromTargetGroupIdAndArtifactId($artifact->getGroupId(), $artifact->getArtifactId());
           $v = array_merge($v, $archivedVersions);
         }
       }
@@ -241,9 +241,6 @@ class MavenArtifact
 
   public static function parseVersions($xml)
   {
-    if (empty($xml)) {
-      return [];
-    }
     $element = new \SimpleXMLElement($xml);
     $result = $element->xpath('/metadata/versioning/versions');
     $versions = get_object_vars($result[0]->version);
