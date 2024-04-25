@@ -11,7 +11,7 @@ class MavenArtifact
   private $name;
 
   private string $repoUrl;
-  
+
   private $groupId;
 
   private $artifactId;
@@ -23,8 +23,10 @@ class MavenArtifact
   private $makesSenseAsMavenDependency;
 
   private $isDocumentation;
-  
-  function __construct($name, string $repoUrl, $groupId, $artifactId, $type, bool $makesSenseAsMavenDependency, bool $isDocumentation)
+
+  private $archivedArtifacts;
+
+  function __construct($name, string $repoUrl, $groupId, $artifactId, $type, bool $makesSenseAsMavenDependency, bool $isDocumentation, array $archivedArtifacts)
   {
     $this->name = $name;
     $this->repoUrl = $repoUrl;
@@ -33,6 +35,7 @@ class MavenArtifact
     $this->type = $type;
     $this->makesSenseAsMavenDependency = $makesSenseAsMavenDependency;
     $this->isDocumentation = $isDocumentation;
+    $this->archivedArtifacts = $archivedArtifacts;
   }
 
   public static function create(): MavenArtifactBuilder
@@ -40,12 +43,12 @@ class MavenArtifact
     return new MavenArtifactBuilder();
   }
 
-  
+
   public function getRepoUrl(): string
   {
     return $this->repoUrl;
   }
-  
+
   public function getGroupId(): string
   {
     return $this->groupId;
@@ -55,7 +58,7 @@ class MavenArtifact
   {
     return $this->artifactId;
   }
-  
+
   public function isProduct(): bool
   {
     return str_ends_with($this->getArtifactId(), '-product');
@@ -81,22 +84,64 @@ class MavenArtifact
     return $this->isDocumentation;
   }
 
+  public function getArchivedArtifacts(): array
+  {
+    return $this->archivedArtifacts;
+  }
+
   public function getDocUrl(Product $product, string $version)
   {
-    return '/market-cache/' . $product->getKey() . '/' . $this->artifactId . '/' . $version;
+    $artifactId = $this->getTargetArtifactIdFromVersion($version);
+    return '/market-cache/' . $product->getKey() . '/' . $artifactId . '/' . $version;
   }
 
   public function getUrl($version)
   {
     $concretVersion = $this->getConcreteVersion($version);
-    $baseUrl = $this->getBaseUrl();
-    return $baseUrl . '/' . $version . '/' . $this->artifactId . '-' . $concretVersion . '.' . $this->type;
+    $baseUrl = $this->getBaseUrlFromVersion($version);
+    $artifactId = $this->getTargetArtifactIdFromVersion($version);
+    return $baseUrl . '/' . $version . '/' . $artifactId . '-' . $concretVersion . '.' . $this->type;
+  }
+
+  private function getTargetGroupIdFromVersion($version)
+  {
+    if ($this->archivedArtifacts === []) {
+      return $this->groupId;
+    }
+
+    foreach ($this->archivedArtifacts as $artifact) {
+      if (version_compare($artifact->getLastVersion(), $version, 'ge')) {
+        return $artifact->getgroupId();
+      }
+    }
+    return $this->groupId;
+  }
+
+  private function getTargetArtifactIdFromVersion($version)
+  {
+    if ($this->archivedArtifacts === []) {
+      return $this->artifactId;
+    }
+
+    foreach ($this->archivedArtifacts as $artifact) {
+      if (version_compare($artifact->getLastVersion(), $version, 'ge')) {
+        return $artifact->getArtifactId();
+      }
+    }
+    return $this->artifactId;
+  }
+
+  private function getBaseUrlFromVersion($version)
+  {
+    $targetGroupId = $this->getTargetGroupIdFromVersion($version);
+    $targetArtifactId = $this->getTargetArtifactIdFromVersion($version);
+    return $this->getBaseUrlFromGroupIdAndArtifactId($targetGroupId, $targetArtifactId);
   }
 
   public function getConcreteVersion($version)
   {
     if (str_contains($version, 'SNAPSHOT')) {
-      $baseUrl = $this->getBaseUrl();
+      $baseUrl = $this->getBaseUrlFromVersion($version);
       $xml = HttpRequester::request("$baseUrl/$version/maven-metadata.xml");
       if (empty($xml)) {
         return "";
@@ -115,8 +160,13 @@ class MavenArtifact
 
   private function getBaseUrl()
   {
-    $groupId = str_replace('.', '/', $this->groupId);
-    return $this->repoUrl . "$groupId/" . $this->artifactId;
+    return $this->getBaseUrlFromGroupIdAndArtifactId($this->groupId, $this->artifactId);
+  }
+
+  private function getBaseUrlFromGroupIdAndArtifactId($targetGroupId, $artifactId)
+  {
+    $groupId = str_replace('.', '/', $targetGroupId);
+    return $this->repoUrl . "$groupId/" . $artifactId;
   }
 
   public function getVersions(): array
@@ -135,12 +185,12 @@ class MavenArtifact
 
       usort($v, 'version_compare');
       $v = array_reverse($v);
-      $v = self::filterSnapshotsWhichAreRealesed($v);      
+      $v = self::filterSnapshotsWhichAreRealesed($v);
       $this->versionCache = $v;
     }
     return $this->versionCache;
   }
-  
+
   public static function filterSnapshotsBetweenReleasedVersions(array $versions): array
   {
     return array_values(array_filter($versions, fn($version) => self::filterBetweenSnapshots($versions, $version)));
@@ -166,7 +216,7 @@ class MavenArtifact
   {
     return array_values(array_filter($versions, fn($version) => self::filterReleasedSnapshots($versions, $version)));
   }
-  
+
   private static function filterReleasedSnapshots(array $versions, string $v): bool
   {
     if (str_ends_with($v, '-SNAPSHOT')) {

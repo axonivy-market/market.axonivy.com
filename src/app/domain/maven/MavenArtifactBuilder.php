@@ -13,15 +13,15 @@ class MavenArtifactBuilder
   private $type = 'iar';
   private $makesSenseAsMavenDependency = false;
   private $isDocumentation = false;
+  private array $archivedArtifacts = [];
 
   public function __construct()
   {
   }
-  
+
   public function repoUrl(string $repoUrl): MavenArtifactBuilder
   {
-    if (!str_ends_with($repoUrl, '/'))
-    {
+    if (!str_ends_with($repoUrl, '/')) {
       $repoUrl = $repoUrl . '/';
     }
     $this->repoUrl = $repoUrl;
@@ -64,6 +64,12 @@ class MavenArtifactBuilder
     return $this;
   }
 
+  public function archivedArtifacts(array $archivedArtifacts): MavenArtifactBuilder
+  {
+    $this->archivedArtifacts = $archivedArtifacts;
+    return $this;
+  }
+
   public function build(): MavenArtifact
   {
     if (empty($this->name)) {
@@ -72,6 +78,8 @@ class MavenArtifactBuilder
       }
     }
 
+    $this->archivedArtifacts = self::createArchivedArtifacts($this->archivedArtifacts);
+
     return new MavenArtifact(
       $this->name,
       $this->repoUrl,
@@ -79,11 +87,26 @@ class MavenArtifactBuilder
       $this->artifactId,
       $this->type,
       $this->makesSenseAsMavenDependency,
-      $this->isDocumentation
+      $this->isDocumentation,
+      $this->archivedArtifacts
     );
   }
 
-  private static function toName(string $artifactId): string {
+  private static function createArchivedArtifacts($archivedArtifacts): array
+  {
+    if (!isset($archivedArtifacts)) {
+      return [];
+    }
+    $a = [];
+    foreach ($archivedArtifacts as $artifact) {
+      $a[] = new ArchivedArtifact($artifact->lastVersion, $artifact->groupId, $artifact->artifactId);
+    }
+    usort($a, fn($artifactA, $artifactB) => version_compare($artifactA->getLastVersion(), $artifactB->getLastVersion()));
+    return $a;
+  }
+
+  private static function toName(string $artifactId): string
+  {
     $names = explode("-", $artifactId);
     $name = implode(" ", $names);
     $name = ucwords($name);

@@ -131,7 +131,7 @@ class MavenProductInfo
     return $this->getVersionsToDisplay(false, null);
   }
 
-  public function getVersionsToDisplay(bool $showDevVersions, ?String $designerVersion): array
+  public function getVersionsToDisplay(bool $showDevVersions, ?string $designerVersion): array
   {
     $versions = $this->getVersions();
     if ($showDevVersions) {
@@ -139,19 +139,19 @@ class MavenProductInfo
     }
 
     if (empty($designerVersion)) {
-      $versions = array_filter($versions, fn (string $v) => !str_contains($v, '-SNAPSHOT') && !str_contains($v, "-m"));
+      $versions = array_filter($versions, fn(string $v) => !str_contains($v, '-SNAPSHOT') && !str_contains($v, "-m"));
       return array_values($versions);
     }
 
     if (Version::isValidVersionNumber($designerVersion)) {
       $designerVersion = (new Version($designerVersion))->getMinorVersion();
     }
-    $versions = array_filter($versions, fn (string $v) => str_starts_with($v, $designerVersion) || (!str_contains($v, '-SNAPSHOT') && !str_contains($v, '-m')));
+    $versions = array_filter($versions, fn(string $v) => str_starts_with($v, $designerVersion) || (!str_contains($v, '-SNAPSHOT') && !str_contains($v, '-m')));
     $versions = MavenArtifact::filterSnapshotsBetweenReleasedVersions($versions);
     return array_values($versions);
   }
 
-  public function getBestMatchVersion(bool $showDevVersions, ?String $designerVersion): ?string
+  public function getBestMatchVersion(bool $showDevVersions, ?string $designerVersion): ?string
   {
     $versions = $this->getVersionsToDisplay($showDevVersions, $designerVersion);
     if (empty($designerVersion)) {
