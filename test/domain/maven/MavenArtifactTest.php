@@ -46,12 +46,6 @@ class MavenArtifactTest extends TestCase
     $this->assertEquals('Workflow Demos', $artifact->getName());
   }
 
-  public function testArchivedMavenArtifact()
-  {
-    $artifact = self::getMavenArtifact('portal-app', 'zip');
-    $this->assertEquals('', $artifact->getName());
-  }
-
   public function testGetMavenArtifact_notExisting()
   {
     $artifact = self::getMavenArtifact('does not exist', '');

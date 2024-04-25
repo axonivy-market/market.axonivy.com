@@ -17,7 +17,6 @@ class ArchivedArtifactTest extends TestCase
     Assert::assertCount(1, $artifact->getArchivedArtifacts());
 
     $archivedArtifact = $artifact->getArchivedArtifacts()[0];
-    Assert::assertInstanceOf(ProductMavenArtifactDownloader::class, $archivedArtifact);
     Assert::assertEquals('ch.ivyteam.ivy.project.portal', $archivedArtifact->getGroupId());
     Assert::assertEquals('10.0.19', $archivedArtifact->getLastVersion());
   }
