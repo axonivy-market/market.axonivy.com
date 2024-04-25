@@ -19,5 +19,6 @@ class ArchivedArtifactTest extends TestCase
     $archivedArtifact = $artifact->getArchivedArtifacts()[0];
     Assert::assertEquals('ch.ivyteam.ivy.project.portal', $archivedArtifact->getGroupId());
     Assert::assertEquals('10.0.19', $archivedArtifact->getLastVersion());
+    Assert::assertEquals('portal-app', $archivedArtifact->getArtifactId());
   }
 }

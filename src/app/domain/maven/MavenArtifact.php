@@ -105,13 +105,9 @@ class MavenArtifact
 
   public function getTargetGroupIdFromVersion($version)
   {
-    if ($this->archivedArtifacts === []) {
-      return $this->groupId;
-    }
-
     foreach ($this->archivedArtifacts as $artifact) {
       if (version_compare($artifact->getLastVersion(), $version, 'ge')) {
-        return $artifact->getgroupId();
+        return $artifact->getGroupId();
       }
     }
     return $this->groupId;
@@ -119,10 +115,6 @@ class MavenArtifact
 
   public function getTargetArtifactIdFromVersion($version)
   {
-    if ($this->archivedArtifacts === []) {
-      return $this->artifactId;
-    }
-
     foreach ($this->archivedArtifacts as $artifact) {
       if (version_compare($artifact->getLastVersion(), $version, 'ge')) {
         return $artifact->getArtifactId();
