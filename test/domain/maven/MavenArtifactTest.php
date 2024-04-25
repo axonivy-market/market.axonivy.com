@@ -141,19 +141,19 @@ class MavenArtifactTest extends TestCase
   }
 
   public function test_getTargetGroupIdFromVersion() {
-    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('portal-app'), "10.0.0");
+    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('portal'), "10.0.0");
     $artifact = MavenArtifactTest::getMavenArtifact('portal-app', 'zip');
     Assert::assertEquals('ch.ivyteam.ivy.project.portal', $artifact->getTargetGroupIdFromVersion("10.0.0"));
   }
 
   public function test_getTargetArtifactIdFromVersion() {
-    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('portal-app'), "10.0.0");
+    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('portal'), "10.0.0");
     $artifact = MavenArtifactTest::getMavenArtifact('portal-app', 'zip');
     Assert::assertEquals('portal-app', $artifact->getTargetArtifactIdFromVersion("10.0.0"));
   }
 
   public function test_getBaseUrlFromVersion() {
-    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('portal-app'), "10.0.0");
+    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('portal'), "10.0.0");
     $artifact = MavenArtifactTest::getMavenArtifact('portal-app', 'zip');
     Assert::assertEquals($artifact->getRepoUrl()."ch/ivyteam/ivy/project/portal/portal-app", $artifact->getBaseUrlFromVersion("10.0.0"));
   }

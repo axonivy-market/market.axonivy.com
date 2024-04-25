@@ -10,8 +10,8 @@ class ArchivedArtifactTest extends TestCase
 {
 
   public function testArchivedArtifact(){
-    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('portal-app'), "10.0.0");
-    
+    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('portal'), "10.0.0");
+
     $artifact = MavenArtifactTest::getMavenArtifact('portal-app', 'zip');
     Assert::assertIsArray($artifact->getArchivedArtifacts());
     Assert::assertCount(1, $artifact->getArchivedArtifacts());
