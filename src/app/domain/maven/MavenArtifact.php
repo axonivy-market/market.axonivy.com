@@ -164,23 +164,31 @@ class MavenArtifact
   public function getVersions(): array
   {
     if ($this->versionCache == null) {
-      $baseUrl = $this->getBaseUrl();
-
-      $xml = HttpRequester::request("$baseUrl/maven-metadata.xml");
-
-      if (empty($xml)) {
-        $this->versionCache = [];
-        return $this->versionCache;
+      foreach ($this->archivedArtifacts as $archivedArtifact) {
+        $archivedArtifactBaseUrl = $this->getBaseUrlFromGroupIdAndArtifactId($archivedArtifact->getGroupId(), $archivedArtifact->getArtifactId());
+        $this->updateVersionCacheByBaseUrl($archivedArtifactBaseUrl);
       }
 
-      $v = self::parseVersions($xml);
+      $baseUrl = $this->getBaseUrl();
+      $this->updateVersionCacheByBaseUrl($baseUrl);
+    }
+    return $this->versionCache;
+  }
 
+  private function updateVersionCacheByBaseUrl(string $baseUrl)
+  {
+    $xml = HttpRequester::request("$baseUrl/maven-metadata.xml");
+    if (!empty($xml)) {
+      $v = self::parseVersions($xml);
       usort($v, 'version_compare');
       $v = array_reverse($v);
       $v = self::filterSnapshotsWhichAreRealesed($v);
-      $this->versionCache = $v;
+      if ($this->versionCache == null) {
+        $this->versionCache = $v;
+      } else {
+        $this->versionCache = array_merge($this->versionCache, $v);
+      }
     }
-    return $this->versionCache;
   }
 
   public static function filterSnapshotsBetweenReleasedVersions(array $versions): array
