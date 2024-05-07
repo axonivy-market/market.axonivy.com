@@ -164,23 +164,52 @@ class MavenArtifact
   public function getVersions(): array
   {
     if ($this->versionCache == null) {
-      $baseUrl = $this->getBaseUrl();
+      $this->updateVersionCacheFromArchivedArtifacts();
+      $this->updateVersionCache($this->getBaseUrl());
+    }
+    return $this->versionCache;
+  }
 
-      $xml = HttpRequester::request("$baseUrl/maven-metadata.xml");
+  private function updateVersionCacheFromArchivedArtifacts()
+  {
+    foreach ($this->archivedArtifacts as $archivedArtifact) {
+      $archivedArtifactBaseUrl = $this->getBaseUrlFromGroupIdAndArtifactId($archivedArtifact->getGroupId(), $archivedArtifact->getArtifactId());
+      $this->updateVersionCache($archivedArtifactBaseUrl);
+    }
+  }
 
-      if (empty($xml)) {
-        $this->versionCache = [];
-        return $this->versionCache;
-      }
+  private function updateVersionCache(string $baseUrl)
+  {
+    $versions = $this->getVersionsByBaseUrl($baseUrl);
+    $this->mergeWithVersionCache($versions);
+  }
 
+  private function getVersionsByBaseUrl(string $baseUrl): array
+  {
+    $v = null;
+    $xml = HttpRequester::request("$baseUrl/maven-metadata.xml");
+    if (!empty($xml)) {
       $v = self::parseVersions($xml);
-
       usort($v, 'version_compare');
       $v = array_reverse($v);
       $v = self::filterSnapshotsWhichAreRealesed($v);
-      $this->versionCache = $v;
     }
-    return $this->versionCache;
+    return $v;
+  }
+
+  private function mergeWithVersionCache(array $versions)
+  {
+    if ($versions == null) {
+      return;
+    }
+
+    if ($this->versionCache != null) {
+      $versions = array_merge($this->versionCache, $versions);
+    }
+
+    usort($versions, 'version_compare');
+    $versions = array_reverse($versions);
+    $this->versionCache = $versions;
   }
 
   public static function filterSnapshotsBetweenReleasedVersions(array $versions): array
@@ -206,7 +235,7 @@ class MavenArtifact
 
   public static function filterSnapshotsWhichAreRealesed(array $versions): array
   {
-    return array_values(array_filter($versions, fn($version) => self::filterReleasedSnapshots($versions, $version)));
+    return array_values(array_filter($versions, fn ($version) => self::filterReleasedSnapshots($versions, $version)));
   }
 
   private static function filterReleasedSnapshots(array $versions, string $v): bool

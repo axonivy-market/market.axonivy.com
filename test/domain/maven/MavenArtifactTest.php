@@ -5,7 +5,6 @@ namespace test\domain\maven;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use app\domain\market\Market;
-use app\domain\market\Product;
 use app\domain\market\ProductMavenArtifactDownloader;
 use app\domain\maven\MavenArtifact;
 
@@ -151,7 +150,16 @@ class MavenArtifactTest extends TestCase
     (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('portal'), "10.0.0");
     $artifact = MavenArtifactTest::getMavenArtifact('portal-app', 'zip');
     Assert::assertEquals($artifact->getRepoUrl() . "ch/ivyteam/ivy/project/portal/portal-app", $artifact->getBaseUrlFromVersion("10.0.0"));
+    Assert::assertEquals($artifact->getRepoUrl() . "ch/ivyteam/ivy/project/portal/portal-app", $artifact->getBaseUrlFromVersion("8.0.38"));
     Assert::assertEquals($artifact->getRepoUrl() . "com/axonivy/portal/portal-app", $artifact->getBaseUrlFromVersion("11.1.0"));
+  }
+
+  public function test_getVersions() {
+    $artifact = MavenArtifactTest::getMavenArtifact('portal-app', 'zip');
+    $oldVersion = "8.0.38";
+    $newVersion = "11.1.0";
+    Assert::assertContains($oldVersion, $artifact->getVersions(), "This artifact doesn't contains version $oldVersion");
+    Assert::assertContains($newVersion, $artifact->getVersions(), "This artifact doesn't contains version $newVersion");
   }
 
   public static function getMavenArtifact(string $artifactId, string $type): ?MavenArtifact
