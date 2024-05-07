@@ -205,10 +205,10 @@ class MavenArtifact
 
     if ($this->versionCache != null) {
       $versions = array_merge($this->versionCache, $versions);
-      usort($versions, 'version_compare');
-      $versions = array_reverse($versions);
     }
 
+    usort($versions, 'version_compare');
+    $versions = array_reverse($versions);
     $this->versionCache = $versions;
   }
 
