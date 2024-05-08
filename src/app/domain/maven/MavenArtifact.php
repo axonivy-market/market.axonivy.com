@@ -161,16 +161,6 @@ class MavenArtifact
     return $this->repoUrl . "$groupId/" . $artifactId;
   }
 
-  public function getVersionsFromTargetGroupIdAndArtifactId($targetGroupId, $targetArtifactId)
-  {
-    $baseUrl = $this->getBaseUrlFromGroupIdAndArtifactId($targetGroupId, $targetArtifactId);
-    $xml = HttpRequester::request("$baseUrl/maven-metadata.xml");
-    if (empty($xml)) {
-      return [];
-    }
-    return self::parseVersions($xml);
-  }
-
   public function getVersions(): array
   {
     if ($this->versionCache == null) {
