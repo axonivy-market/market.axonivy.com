@@ -55,7 +55,7 @@ class ProductView
     foreach ($docArtifacts as $docArtifact) {
       if (in_array($this->version, $docArtifact->getVersions())) {
         return $this->product->getDocUrl($this->version);
-      }  
+      }
     }
     return "";
   }
@@ -103,7 +103,7 @@ class ProductView
       return [];
     }
     $mavenArtifacts = $this->mavenProductInfo->getMavenArtifacts($this->version);
-    return array_filter($mavenArtifacts, fn(MavenArtifact $artifact) => $artifact->getMakesSenseAsMavenDependency());
+    return array_filter($mavenArtifacts, fn (MavenArtifact $artifact) => $artifact->getMakesSenseAsMavenDependency());
   }
 
   public function getMavenArtifacts(): array
@@ -111,8 +111,22 @@ class ProductView
     if ($this->mavenProductInfo == null) {
       return [];
     }
+
     $mavenArtifacts = $this->mavenProductInfo->getMavenArtifacts($this->version);
-    return array_filter($mavenArtifacts, fn(MavenArtifact $a) => !$a->isProduct());;
+    $uniqueArtifacts = [];
+    $proceededArtifacts = [];
+
+    foreach ($mavenArtifacts as $artifact) {
+      if (!$artifact->isProduct()) {
+        $filteredField = $artifact->getName() . ' ' . $artifact->getType();
+        if (!isset($proceededArtifacts[$filteredField])) {
+          $uniqueArtifacts[] = $artifact;
+          $proceededArtifacts[$filteredField] = true;
+        }
+      }
+    }
+
+    return $uniqueArtifacts;
   }
 
   public function getShowMinimumIvyVersionBanner(): bool
@@ -128,7 +142,7 @@ class ProductView
   {
     return $this->product->getMinimumIvyVersion($this->version);
   }
- 
+
   public function getDesignerVersion(): string
   {
     return $this->designerVersion;
@@ -156,7 +170,7 @@ class ProductView
 
   public function isVersionInstallable(): bool
   {
-    return $this->product->isInstallable($this->version);    
+    return $this->product->isInstallable($this->version);
   }
 
   public function getProductJsonUrl(string $version): string
