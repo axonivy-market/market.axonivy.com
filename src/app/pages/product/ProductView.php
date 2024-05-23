@@ -103,7 +103,7 @@ class ProductView
       return [];
     }
     $mavenArtifacts = $this->mavenProductInfo->getMavenArtifacts($this->version);
-    return array_filter($mavenArtifacts, fn (MavenArtifact $artifact) => $artifact->getMakesSenseAsMavenDependency());
+    return array_filter($mavenArtifacts, fn(MavenArtifact $artifact) => $artifact->getMakesSenseAsMavenDependency());
   }
 
   public function getMavenArtifacts(): array
