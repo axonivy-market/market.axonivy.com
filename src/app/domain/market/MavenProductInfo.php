@@ -99,7 +99,7 @@ class MavenProductInfo
     $versions = array_unique($versions);
     usort($versions, 'version_compare');
     $versions = array_reverse($versions);
-    $versions = MavenArtifact::filterSnapshotsWhichAreRealesed($versions);
+    $versions = MavenArtifact::filterSnapshotsWhichAreReleased($versions);
     return $versions;
   }
 
