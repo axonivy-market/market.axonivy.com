@@ -192,7 +192,7 @@ class MavenArtifact
       $v = self::parseVersions($xml);
       usort($v, 'version_compare');
       $v = array_reverse($v);
-      $v = self::filterSnapshotsWhichAreRealesed($v);
+      $v = self::filterSnapshotsWhichAreReleased($v);
     }
     return $v;
   }
@@ -219,37 +219,34 @@ class MavenArtifact
 
   private static function filterBetweenSnapshots(array $versions, string $version): bool
   {
-    if (str_ends_with($version, '-SNAPSHOT')) {
-      $bugFixVersion = str_replace('-SNAPSHOT', '', $version);
-      $minorVersion = (new Version($bugFixVersion))->getMinorNumber();
+    $ver = new Version($version);
+    if ($ver->isSnapshot()) {
+      $bugfixVersion = $ver->getBugfixVersion();
       foreach ($versions as $v) {
-        if ((new Version($v))->getMinorNumber() == $minorVersion) {
-          if (version_compare($bugFixVersion, $v) == -1) {
-            return false;
-          }
+        $relVer = new Version($v);
+        if ($relVer->isOffical() && $relVer->getBugfixVersion() == $bugfixVersion) {
+          return false;
         }
       }
     }
     return true;
   }
 
-  public static function filterSnapshotsWhichAreRealesed(array $versions): array
+  public static function filterSnapshotsWhichAreReleased(array $versions): array
   {
     return array_values(array_filter($versions, fn ($version) => self::filterReleasedSnapshots($versions, $version)));
   }
 
   private static function filterReleasedSnapshots(array $versions, string $v): bool
   {
-    if (str_ends_with($v, '-SNAPSHOT')) {
-      $relasedVersion = str_replace('-SNAPSHOT', '', $v);
-      if (in_array($relasedVersion, $versions)) {
-        return false;
-      }
-    }
-    if (str_contains($v, '-m')) {
-      $relasedVersion = substr($v, 0, strpos($v, "-m"));
-      if (in_array($relasedVersion, $versions)) {
-        return false;
+    $ver = new Version($v);
+    if ($ver->isSnapshot() || $ver->isSprint()) {
+      $releasedVersion = $ver->getBugfixVersion();
+      foreach ($versions as $v) {
+        $rel = new Version($v);
+        if ($rel->isOffical() && $rel->getBugfixVersion() == $releasedVersion) {
+          return false;
+        }
       }
     }
     return true;

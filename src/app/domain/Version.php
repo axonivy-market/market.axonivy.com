@@ -25,17 +25,32 @@ class Version
 
   public function isMajor(): bool
   {
-    return substr_count($this->versionNumber, '.') == 0;
+    return substr_count($this->getNumbersOnly(), '.') == 0 && $this->isOffical();
   }
 
   public function isMinor(): bool
   {
-    return substr_count($this->versionNumber, '.') == 1;
+    return substr_count($this->getNumbersOnly(), '.') == 1 && $this->isOffical();
   }
 
   public function isBugfix(): bool
   {
-    return substr_count($this->versionNumber, '.') == 2;
+    return substr_count($this->getNumbersOnly(), '.') == 2 && $this->isOffical();
+  }
+
+  public function isSnapshot(): bool
+  {
+    return str_ends_with($this->versionNumber, '-SNAPSHOT');
+  }
+
+  public function isSprint(): bool
+  {
+    return str_contains($this->versionNumber, '-m');
+  }
+
+  public function isOffical(): bool
+  {
+    return !$this->isSnapshot() && !$this->isSprint();
   }
 
   /**
@@ -46,7 +61,7 @@ class Version
    */
   public function getMajorVersion(): string
   {
-    $v = explode('.', $this->versionNumber);
+    $v = explode('.', $this->getNumbersOnly());
     $v = array_slice($v, 0, 1);
     return implode('.', $v);
   }
@@ -59,7 +74,7 @@ class Version
    */
   public function getMinorVersion(): string
   {
-    $v = explode('.', $this->versionNumber);
+    $v = explode('.', $this->getNumbersOnly());
     $v = array_slice($v, 0, 2);
     return implode('.', $v);
   }
@@ -72,7 +87,7 @@ class Version
    */
   public function getBugfixVersion(): string
   {
-    $v = explode('.', $this->versionNumber);
+    $v = explode('.', $this->getNumbersOnly());
     $v = array_slice($v, 0, 3);
     return implode('.', $v);
   }
@@ -84,7 +99,7 @@ class Version
    */
   public function getMinorNumber(): string
   {
-    $v = explode('.', $this->versionNumber);
+    $v = explode('.', $this->getNumbersOnly());
     $v = array_slice($v, 1, 1);
     return implode('.', $v);
   }
@@ -96,8 +111,16 @@ class Version
    */
   public function getBugfixNumber(): string
   {
-    $v = explode('.', $this->versionNumber);
+    $v = explode('.', $this->getNumbersOnly());
     $v = array_slice($v, 2, 1);
     return implode('.', $v);
+  }
+
+  public function getNumbersOnly(): string
+  {
+    if (str_contains($this->versionNumber, '-')) {
+      return substr($this->versionNumber, 0, strpos($this->versionNumber, '-'));
+    }
+    return $this->versionNumber;
   }
 }

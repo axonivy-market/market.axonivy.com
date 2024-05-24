@@ -10,12 +10,12 @@ use app\domain\maven\MavenArtifact;
 
 class MavenArtifactTest extends TestCase
 {
-  public function testFilterSnapshotsWhichAreRealesed()
+  public function testFilterSnapshotsWhichAreReleased()
   {
     $versions = [
       '9.3.0', '9.2.0', '9.2.0-SNAPSHOT', '9.1.0'
     ];
-    $result = MavenArtifact::filterSnapshotsWhichAreRealesed($versions);
+    $result = MavenArtifact::filterSnapshotsWhichAreReleased($versions);
     
     Assert::assertCount(3, $result);
     Assert::assertEquals('9.3.0', $result[0]);
@@ -23,6 +23,32 @@ class MavenArtifactTest extends TestCase
     Assert::assertEquals('9.1.0', $result[2]);
   }
   
+  public function testFilterSprintsWhichAreReleased()
+  {
+    $versions = [
+      '9.3.0', '9.2.0', '9.2.0-m461', '9.2.0-m461.1,', '9.1.0'
+    ];
+    $result = MavenArtifact::filterSnapshotsWhichAreReleased($versions);
+    
+    Assert::assertCount(3, $result);
+    Assert::assertEquals('9.3.0', $result[0]);
+    Assert::assertEquals('9.2.0', $result[1]);
+    Assert::assertEquals('9.1.0', $result[2]);
+  }
+
+  public function testFilterSprintsWhichAreReleased_fourDigits()
+  {
+    $versions = [
+      '9.3.0', '9.2.0.2', '9.2.0-m461', '9.2.0-m461.1,', '9.1.0'
+    ];
+    $result = MavenArtifact::filterSnapshotsWhichAreReleased($versions);
+    
+    Assert::assertCount(3, $result);
+    Assert::assertEquals('9.3.0', $result[0]);
+    Assert::assertEquals('9.2.0.2', $result[1]);
+    Assert::assertEquals('9.1.0', $result[2]);
+  }
+
   public function testFilterSnapshotsBetweenReleasedVersions()
   {
     $versions = [
