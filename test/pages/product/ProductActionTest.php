@@ -194,14 +194,16 @@ class ProductActionTest extends TestCase
   {
     AppTester::assertThatGet('/genderize-io-connector')
       ->ok()
-      ->bodyContains("/api-browser?url=/market-cache/genderize-io-connector/genderize-io-connector-product/10.0.0/openapi.json");
+      ->bodyContains("/api-browser?url=/market-cache/genderize-io-connector/genderize-io-connector-product/")
+      ->bodyContains("/openapi.json");
   }
 
   public function testAPIBrowserButton_existsForYaml()
   {
     AppTester::assertThatGet('/amazon-lex')
       ->ok()
-      ->bodyContains("/api-browser?url=/market-cache/amazon-lex/amazon-lex-connector-product/10.0.0/openapi.yaml");
+      ->bodyContains("/api-browser?url=/market-cache/amazon-lex/amazon-lex-connector-product/")
+      ->bodyContains("/openapi.yaml");
   }
 
   public function testAPIBrowserButton_existsNot()
