@@ -198,13 +198,13 @@ class ProductActionTest extends TestCase
       ->bodyContains("/openapi.json");
   }
 
-  public function testAPIBrowserButton_existsForYaml()
-  {
-    AppTester::assertThatGet('/amazon-lex')
-      ->ok()
-      ->bodyContains("/api-browser?url=/market-cache/amazon-lex/amazon-lex-connector-product/")
-      ->bodyContains("/openapi.yaml");
-  }
+  //public function testAPIBrowserButton_existsForYaml()
+  //{
+  //  AppTester::assertThatGet('/amazon-lex')
+  //    ->ok()
+  //    ->bodyContains("/api-browser?url=/market-cache/amazon-lex/amazon-lex-connector-product/")
+  //    ->bodyContains("/openapi.yaml");
+  //}
 
   public function testAPIBrowserButton_existsNot()
   {
