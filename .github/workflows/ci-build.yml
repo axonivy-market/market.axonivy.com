@@ -52,7 +52,7 @@ jobs:
 
       - name: Editor checker
         uses: editorconfig-checker/action-editorconfig-checker@main
-      - run: editorconfig-checker
+      - run: editorconfig-checker -f github-actions -exclude '\.enricomi-publish-action-venv'
 
       - name: Clean up
         run: |
