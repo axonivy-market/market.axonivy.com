@@ -3,6 +3,7 @@
 namespace test\pages\product;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use test\AppTester;
 use app\domain\market\Market;
 use app\domain\market\VersionResolver;
@@ -11,11 +12,11 @@ use PHPUnit\Framework\Assert;
 class ProductActionTest extends TestCase
 {
 
-  public function testBasicWorkflowUi()
+  public function testWorkflowDemos()
   {
-    AppTester::assertThatGet('/basic-workflow-ui')
+    AppTester::assertThatGet('/workflow')
       ->ok()
-      ->bodyContains('Basic Workflow UI');
+      ->bodyContains('Workflow Demos');
   }
 
   public function testPortal()
@@ -180,8 +181,8 @@ class ProductActionTest extends TestCase
 
   public function testNotFoundWhenVersionDoesNotExistOfMavenBackedArtifact()
   {
-    AppTester::assertThatGet('/basic-workflow-ui')->ok();
-    AppTester::assertThatGet('/basic-workflow-ui/444')->notFound();
+    AppTester::assertThatGet('/workflow')->ok();
+    AppTester::assertThatGet('/workflow/444')->notFound();
   }
 
   public function testNotFoundWhenVersionDoesNotExistOfNonMavenArtifact()
@@ -208,7 +209,7 @@ class ProductActionTest extends TestCase
 
   public function testAPIBrowserButton_existsNot()
   {
-    AppTester::assertThatGet('/basic-workflow-ui')
+    AppTester::assertThatGet('/employee-onboarding')
       ->ok()
       ->bodyDoesNotContain("/api-browser?url");
   }
@@ -234,9 +235,7 @@ class ProductActionTest extends TestCase
       ->bodyDoesNotContain('-SNAPSHOT</option>');
   }
   
-  /**
-    * @runInSeparateProcess
-    */
+  #[RunInSeparateProcess]
   public function testDontDisplaySnapshotInVersionDropdownWhenEnabled() 
   {
     AppTester::assertThatGet('/doc-factory?showDevVersions=true')
@@ -244,9 +243,7 @@ class ProductActionTest extends TestCase
       ->bodyContains('-SNAPSHOT</option>');
   }
 
-  /**
-    * @runInSeparateProcess
-    */
+  #[RunInSeparateProcess]
   public function testDontDisplaySnapshotInVersionDropdownWhenHiding() 
   {
     AppTester::assertThatGet('/doc-factory?showDevVersions=false')
@@ -256,16 +253,16 @@ class ProductActionTest extends TestCase
 
   public function testShowBuildStatusBadge() 
   {
-    AppTester::assertThatGet('/excel-connector')
+    AppTester::assertThatGet('/excel-utils')
       ->ok()
       ->bodyContains('<img src="https://github.com/axonivy-market/excel-connector/actions/workflows/ci.yml/badge.svg" />');
   }
 
   public function testExternalVendor() 
   {
-    AppTester::assertThatGet('/jira-connector')
+    AppTester::assertThatGet('/jira')
       ->ok()
-      ->bodyContains('src="/_market/jira-connector/frox.png"')
+      ->bodyContains('src="/_market/jira/frox.png"')
       ->bodyContains('alt="FROX AG"')
       ->bodyContains('href="https://www.frox.ch"');
 

@@ -1,9 +1,30 @@
 {
+  "$schema": "https://json-schema.axonivy.com/market/10.0.2/meta.json",
   "id": "google-maps-connector",
-  "name": "Google Maps API",
-  "description": "Google Maps API lets you customize maps with your own content & imagery for display on web pages & mobile devices.",
+  "name": "Google Maps",
+  "names": [
+    {
+      "locale": "en",
+      "value": "Google Maps"
+    },
+    {
+      "locale": "de",
+      "value": "Google Maps"
+    }
+  ],
+  "description": "Customize maps with your own content and images for display in business processes.",
+  "descriptions": [
+    {
+      "locale": "en",
+      "value": "Customize maps with your own content and images for display in business processes."
+    },
+    {
+      "locale": "de",
+      "value": "Individualisiere Google-Maps-Karten für die Integration in Geschäftsprozesse."
+    }
+  ],
   "type": "connector",
-  "sourceUrl": "https://github/axonivy-market/google-maps-connector",
+  "sourceUrl": "https://github.com/axonivy-market/google-maps-connector",
   "statusBadgeUrl": "https://github.com/axonivy-market/google-maps-connector/actions/workflows/ci.yml/badge.svg",
   "language": "English",
   "industry": "Cross-Industry",

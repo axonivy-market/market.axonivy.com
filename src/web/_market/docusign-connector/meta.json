@@ -1,7 +1,28 @@
 {
+  "$schema": "https://json-schema.axonivy.com/market/10.0.2/meta.json",
   "id": "docusign-connector",
-  "name": "DocuSign",
-  "description": "DocuSign allows organizations to sign any document electronically on different systems.",
+  "name": "Docusign eSignature",
+  "names": [
+    {
+      "locale": "en",
+      "value": "Docusign eSignature"
+    },
+    {
+      "locale": "de",
+      "value": "Docusign eSignature"
+    }
+  ],
+  "description": "Make your business processes faster, simpler and more cost-efficient with electronic agreements.",
+  "descriptions": [
+    {
+      "locale": "en",
+      "value": "Make your business processes faster, simpler and more cost-efficient with electronic agreements."
+    },
+    {
+      "locale": "de",
+      "value": "Gestalte deine Geschäftsprozesse schneller, einfacher und kosteneffizienter mit eSignaturen."
+    }
+  ],
   "type": "connector",
   "platformReview": "4.5",
   "sourceUrl": "https://github.com/axonivy-market/docusign-connector",
@@ -19,4 +40,3 @@
     }
   ]
 }
-

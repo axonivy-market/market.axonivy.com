@@ -1,9 +1,29 @@
-
 {
+  "$schema": "https://json-schema.axonivy.com/market/10.0.2/meta.json",
   "id": "demos-app",
   "name": "Demos Application",
+  "names": [
+    {
+      "locale": "en",
+      "value": "Demos Application"
+    },
+    {
+      "locale": "de",
+      "value": "Demos"
+    }
+  ],
   "description": "Demos Application",
-  "type": "solution",
+  "descriptions": [
+    {
+      "locale": "en",
+      "value": "Demos Application"
+    },
+    {
+      "locale": "de",
+      "value": "Demos"
+    }
+  ],
+  "type": "demo",
   "platformReview": "4.5",
   "sourceUrl": "https://github.com/axonivy-market/demo-projects",
   "statusBadgeUrl": "https://github.com/axonivy-market/demo-projects/actions/workflows/ci.yml/badge.svg",

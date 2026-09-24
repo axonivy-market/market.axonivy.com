@@ -128,7 +128,7 @@ class ProductView
   {
     return $this->product->getMinimumIvyVersion($this->version);
   }
- 
+
   public function getDesignerVersion(): string
   {
     return $this->designerVersion;

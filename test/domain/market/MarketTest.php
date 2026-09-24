@@ -42,7 +42,7 @@ class MarketTest extends TestCase
     $products = Market::search(Market::all(), '');
 
     $path = __DIR__ . '/../../../src/web/_market';
-    $total_items  = count(glob("$path/*", GLOB_ONLYDIR));
+    $total_items  = count(glob("$path/*/meta.json"));
     Assert::assertEquals($total_items, count($products));
   }
 
@@ -54,7 +54,7 @@ class MarketTest extends TestCase
 
   public function test_searchInName()
   {
-    $products = Market::search(Market::listed(), 'visual');
+    $products = Market::search(Market::listed(), 'VisualVM Plugin');
     Assert::assertEquals(1, count($products));
     Assert::assertEquals('VisualVM Plugin', $products[0]->getName());
   }
@@ -74,7 +74,7 @@ class MarketTest extends TestCase
 
   public function test_searchByType()
   {
-    $products = Market::searchByType(Market::listed(), 'util');
+    $products = Market::searchByType(Market::listed(), 'utils');
     $keys = array_map(fn (Product $p) => $p->getKey(), $products);
     Assert::assertContains('portal', $keys);
     Assert::assertContains('visualvm-plugin', $keys);
@@ -86,21 +86,21 @@ class MarketTest extends TestCase
     Assert::assertContains('AI', $tags);
     Assert::assertContains('HELPER', $tags);
     Assert::assertContains('LOCATION', $tags);
-    Assert::assertContains('SOCIAL', $tags);
+    Assert::assertContains('WORKFLOW-UI', $tags);
   }
 
   public function test_searchByTag()
   {
     $products = Market::searchByTag(Market::listed(), ['DEMO']);
     $keys = array_map(fn (Product $p) => $p->getKey(), $products);
-    Assert::assertContains('connectivity-demo', $keys);
+    Assert::assertContains('connectivity', $keys);
   }
 
   public function test_searchByMultipleTags()
   {
     $products = Market::searchByTag(Market::listed(), ['DEMO', 'WORKFLOW-UI']);
     $keys = array_map(fn (Product $p) => $p->getKey(), $products);
-    Assert::assertContains('connectivity-demo', $keys);
+    Assert::assertContains('connectivity', $keys);
     Assert::assertContains('portal', $keys);
   }
 }

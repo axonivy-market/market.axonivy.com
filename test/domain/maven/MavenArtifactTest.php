@@ -66,9 +66,8 @@ class MavenArtifactTest extends TestCase
 
   public function testGetMavenArtifact()
   {
-    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('workflow-demo'), "10.0.0");
-    $artifact = self::getMavenArtifact('workflow-demos', 'iar');
-    $this->assertEquals('Workflow Demos', $artifact->getName());
+    $artifact = Market::getProductByKey('workflow')->getMavenProductInfo()->getProductArtifact();
+    $this->assertEquals('Workflow Demos Product', $artifact->getName());
   }
 
   public function testGetMavenArtifact_notExisting()
@@ -79,18 +78,16 @@ class MavenArtifactTest extends TestCase
 
   public function testGetWorkflowDemo()
   {
-    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('workflow-demo'), "10.0.0");
-    $artifact = self::getMavenArtifact('workflow-demos', 'iar');
-    $this->assertEquals('Workflow Demos', $artifact->getName());
+    $artifact = Market::getProductByKey('workflow')->getMavenProductInfo()->getProductArtifact();
+    $this->assertEquals('Workflow Demos Product', $artifact->getName());
   }
 
   public function testMavenArtifact()
   {
-    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('connectivity-demo'), "10.0.0");
-    $artifact = self::getMavenArtifact('connectivity-demos', 'iar');
-    $this->assertEquals('Connectivity Demos', $artifact->getName());
+    $artifact = Market::getProductByKey('connectivity')->getMavenProductInfo()->getProductArtifact();
+    $this->assertEquals('Connectivity Demos Product', $artifact->getName());
     $this->assertEquals('com.axonivy.demo', $artifact->getGroupId());
-    $this->assertEquals('connectivity-demos', $artifact->getArtifactId());
+    $this->assertEquals('connectivity-demos-product', $artifact->getArtifactId());
   }
 
   public function testParseLatestVersionFromXml()
@@ -117,9 +114,8 @@ class MavenArtifactTest extends TestCase
     $artifact = self::getMavenArtifact('ivy-demos-app', 'zip');
     Assert::assertEquals('zip', $artifact->getType());
 
-    (new ProductMavenArtifactDownloader())->download(Market::getProductByKey('workflow-demo'), "10.0.0");
-    $artifact = self::getMavenArtifact('workflow-demos', 'iar');
-    Assert::assertEquals('iar', $artifact->getType());
+    $artifact = Market::getProductByKey('workflow')->getMavenProductInfo()->getProductArtifact();
+    Assert::assertEquals('zip', $artifact->getType());
   }
 
   public function test_makeSenseAsMavenDependency()
