@@ -4,8 +4,10 @@ namespace test\domain\market;
 
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
+use app\Config;
 use app\domain\market\Market;
 use app\domain\market\MarketInstallCounter;
+use app\domain\market\ProductFactory;
 
 class ProductTest extends TestCase
 {
@@ -36,7 +38,7 @@ class ProductTest extends TestCase
     $product = Market::getProductByKey('visualvm-plugin');
     Assert::assertEquals('Axon Ivy AG', $product->getVendor());
 
-    $product = Market::getProductByKey('jira-connector');
+    $product = Market::getProductByKey('jira');
     Assert::assertEquals('FROX AG', $product->getVendor());
   }
 
@@ -45,8 +47,8 @@ class ProductTest extends TestCase
     $product = Market::getProductByKey('visualvm-plugin');
     Assert::assertEquals('/images/misc/axonivy-logo-black.svg', $product->getVendorImage());
 
-    $product = Market::getProductByKey('jira-connector');
-    Assert::assertEquals('/_market/jira-connector/frox.png', $product->getVendorImage());
+    $product = Market::getProductByKey('jira');
+    Assert::assertEquals('/_market/jira/frox.png', $product->getVendorImage());
   }
 
   public function test_vendorUrl()
@@ -54,7 +56,7 @@ class ProductTest extends TestCase
     $product = Market::getProductByKey('visualvm-plugin');
     Assert::assertEquals('https://www.axonivy.com', $product->getVendorUrl());
 
-    $product = Market::getProductByKey('jira-connector');
+    $product = Market::getProductByKey('jira');
     Assert::assertEquals('https://www.frox.ch', $product->getVendorUrl());
   }
 
@@ -97,12 +99,12 @@ class ProductTest extends TestCase
   public function test_type()
   {
     $product = Market::getProductByKey('visualvm-plugin');
-    Assert::assertEquals('util', $product->getType());
+    Assert::assertEquals('utils', $product->getType());
 
     $product = Market::getProductByKey('demos-app');
-    Assert::assertEquals('solution', $product->getType());
+    Assert::assertEquals('demo', $product->getType());
 
-    $product = Market::getProductByKey('msgraph-todo');
+    $product = self::getMicrosoftTodoProduct();
     Assert::assertEquals('connector', $product->getType());
   }
 
@@ -111,7 +113,7 @@ class ProductTest extends TestCase
     $product = Market::getProductByKey('visualvm-plugin');
     Assert::assertEquals(['monitoring'], $product->getTags());
 
-    $product = Market::getProductByKey('msgraph-todo');
+    $product = self::getMicrosoftTodoProduct();
     Assert::assertEquals(['office'], $product->getTags());
 
     $product = Market::getProductByKey('demos-app');
@@ -126,7 +128,7 @@ class ProductTest extends TestCase
 
   public function test_meta()
   {
-    $product = Market::getProductByKey('msgraph-todo');
+    $product = self::getMicrosoftTodoProduct();
     Assert::assertEquals('Axon Ivy AG', $product->getVendor());
     Assert::assertEquals('Free', $product->getCost());
     Assert::assertEquals('https://github.com/axonivy-market/msgraph-connector', $product->getSourceUrl());
@@ -156,7 +158,7 @@ class ProductTest extends TestCase
 
   public function test_installationCount()
   {
-    $product = Market::getProductByKey('msgraph-todo');
+    $product = self::getMicrosoftTodoProduct();
     $count = $product->getInstallationCount();
     Assert::assertIsInt($count);
     Assert::assertGreaterThanOrEqual(20, $count);
@@ -165,7 +167,12 @@ class ProductTest extends TestCase
     //cached value
     Assert::assertEquals($count, $product->getInstallationCount());
     //reload with incremented value
-    $product = Market::getProductByKey('msgraph-todo');
+    $product = self::getMicrosoftTodoProduct();
     Assert::assertEquals($count + 1, $product->getInstallationCount());
+  }
+
+  private static function getMicrosoftTodoProduct()
+  {
+    return ProductFactory::create('msgraph-todo', Config::marketDirectory() . '/microsoft365/toDo/meta.json');
   }
 }
