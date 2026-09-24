@@ -1,8 +1,29 @@
 {
+  "$schema": "https://json-schema.axonivy.com/market/10.0.5/meta.json",
   "id": "doc-factory",
   "name": "DocFactory",
+  "names": [
+    {
+      "locale": "en",
+      "value": "DocFactory"
+    },
+    {
+      "locale": "de",
+      "value": "DocFactory"
+    }
+  ],
   "description": "Based on Aspose technology the DocFactory creates any type of document out of your process data.",
-  "type": "util",
+  "descriptions": [
+    {
+      "locale": "en",
+      "value": "Based on Aspose technology the DocFactory creates any type of document out of your process data."
+    },
+    {
+      "locale": "de",
+      "value": "DocFactory nutzt Aspose-Technologie, um aus deinen Prozessdaten beliebige Dokumente zu generieren."
+    }
+  ],
+  "type": "utils",
   "platformReview": "4.5",
   "sourceUrl": "https://github.com/axonivy-market/doc-factory",
   "language": "English",
@@ -23,5 +44,5 @@
       "type": "zip",
       "doc": true
     }
-  ]	
+  ]
 }
