@@ -25,7 +25,7 @@ class OpenAPIProvider
     }
     return "";
   }
- 
+
   private function getOpenApiFile(string $version): string
   {
     // auto detect openapi.*

@@ -186,7 +186,7 @@ class MavenArtifact
 
   private function getVersionsByBaseUrl(string $baseUrl): array
   {
-    $v = null;
+    $v = [];
     $xml = HttpRequester::request("$baseUrl/maven-metadata.xml");
     if (!empty($xml)) {
       $v = self::parseVersions($xml);
@@ -199,10 +199,6 @@ class MavenArtifact
 
   private function mergeWithVersionCache(array $versions)
   {
-    if ($versions == null) {
-      return;
-    }
-
     if ($this->versionCache != null) {
       $versions = array_merge($this->versionCache, $versions);
     }

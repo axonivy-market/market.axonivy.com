@@ -15,10 +15,14 @@ class HttpRequester
     if (!isset(self::$cache[$url])) {
       $client = new Client();
       $options = ['http_errors' => false];
-      $res = $client->request('GET', $url, $options);
       $content = '';
-      if ('200' == $res->getStatusCode()) {
-        $content = $res->getBody();
+      try {
+        $res = $client->request('GET', $url, $options);
+        if ('200' == $res->getStatusCode()) {
+          $content = (string) $res->getBody();
+        }
+      } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+        $content = '';
       }
       self::$cache[$url] = $content;
     }

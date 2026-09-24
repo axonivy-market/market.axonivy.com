@@ -26,7 +26,7 @@ pipeline {
         sh "tar -cf ${env.DIST_FILE} --exclude=src/web/_market --exclude=src/web/market-cache src vendor"
         archiveArtifacts env.DIST_FILE
         stash name: 'website-tar', includes: env.DIST_FILE
- 
+
         sh 'composer install --no-progress'
         sh './vendor/bin/phpunit --log-junit phpunit-junit.xml || exit 0'
         junit 'phpunit-junit.xml'

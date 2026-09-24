@@ -34,7 +34,7 @@ class ProductAction
     if ($mavenProductInfo == null && !empty($version)) {
       throw new HttpNotFoundException($request, "this product is not versionized");
     }
-  
+
     // redirect to full version for shortcut versions (e.g. 9, 9.0, dev, nightly, sprint, latest)
     if (!empty($version) && $mavenProductInfo != null) {
       $v = VersionResolver::get($mavenProductInfo, $version);
@@ -65,7 +65,7 @@ class ProductAction
     if ($mavenProductInfo == null || $mavenProductInfo->getProductArtifact() == null) {
       return $version;
     }
-  
+
     // favor $version from url
     if (!empty($version)) {
       if ($mavenProductInfo->hasVersion($version)) {
